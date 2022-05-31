@@ -1,0 +1,11 @@
+{
+  "development": {
+    "API_VERSIONS": ["v1"]
+  },
+  "stage": {
+    "API_VERSIONS": ["v1"]
+  },
+  "production": {
+    "API_VERSIONS": ["v1"]
+  }
+}
