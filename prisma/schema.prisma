@@ -6,3 +6,61 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id           Int         @id @default(autoincrement())
+  firstName    String      @db.VarChar(30)
+  lastName     String      @db.VarChar(30)
+  email        String      @unique @db.VarChar(30)
+  password     String      @db.VarChar(50)
+  refreshToken String      @unique
+  roleId       Int
+  role         Role        @relation(fields: [roleId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  userGroup    UserGroup[]
+}
+
+model UserGroup {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  groupId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  group     Group    @relation(fields: [groupId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(30)
+  user User[]
+}
+
+model Group {
+  id        Int         @id @default(autoincrement())
+  name      String      @unique @db.VarChar(30)
+  schedule  Schedule[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  userGroup UserGroup[]
+}
+
+model Schedule {
+  id        Int       @id @default(autoincrement())
+  day       String    @db.VarChar(30)
+  group     Group     @relation(fields: [groupId], references: [id])
+  groupId   Int
+  subject   Subject[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Subject {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  schdule    Schedule @relation(fields: [scheduleId], references: [id])
+  scheduleId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
