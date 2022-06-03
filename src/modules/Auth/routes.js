@@ -7,7 +7,7 @@ const { loginSchema } = validations
 
 const router = Router()
 
-router.post('/login',validateSchema(loginSchema) ,handleLogin)
+router.post('/login',validateSchema(loginSchema) ,handleLogin);
 router.get('/refresh', handleRefreshToken);
 
 export { router as authRoutes }

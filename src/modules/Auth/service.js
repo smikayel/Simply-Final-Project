@@ -1,6 +1,3 @@
-// const User = require('../model/User');
-
-// import User from 
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js';

@@ -7,14 +7,13 @@ import { verifyJWT } from '../helpers/validations.js';
 const router = Router();
 
 router.use('/auth', authRoutes);
+
 router.use(verifyJWT);
-
-
 router.use('/users', usersRoutes);
 
 
 
-router.use('/group', groupsRoutes);
+router.use('/groups', groupsRoutes);
 
 
 

@@ -40,6 +40,20 @@ export const updateUserbyId = async (id, data) => {
     }
 }
 
+export const deleteUserById = async (id) => {
+    try{
+        const deletedUser = await user.delete({
+            where: {
+                id,
+            }
+        });
+        return deletedUser
+    } catch (error){
+        return error;
+    }
+}
+
+
 export const createUser = async (data) => {
     try{
         const createdUser = await user.create({

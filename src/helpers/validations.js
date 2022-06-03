@@ -46,7 +46,6 @@ export const verifyRoles = (allowedRoles) => {
         return res.json(unauthorizedErrorCreator('Role not found!'));
 
       const result = allowedRoles.some(allowedRole => allowedRole === name);
-      console.log(result)
       if (!result) 
         return res.json(unauthorizedErrorCreator('Role not allowed!'));
       next();

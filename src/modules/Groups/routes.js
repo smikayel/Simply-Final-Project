@@ -1,13 +1,17 @@
 import { Router } from "express"
-import { validateSchema  } from "../../helpers/validations.js"
-// import { handleCreateGroup } from "./service.js"
+import { validateSchema, verifyRoles  } from "../../helpers/validations.js"
+import { handleCreateGroup, handleGetAllGroups, handleGetGroupById, handleDeleteGroupById } from "./service.js"
 import validations from './validation.js'
 
-const { createGroupSchema } = validations
+const { createGroupSchema, getGroupByIdSchema, deleteGroupSchema } = validations
 
 const router = Router()
 
-// router.post('/',validateSchema(createGroupSchema), handleCreateGroup);
+
+router.get('/', verifyRoles(["Admin"]), handleGetAllGroups);
+router.post('/', validateSchema(createGroupSchema), verifyRoles(["Admin"]), handleCreateGroup);
+router.delete('/', validateSchema(deleteGroupSchema), verifyRoles(["Admin"]), handleDeleteGroupById);
+router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(["Admin"]), handleGetGroupById);
 
 
 export { router as groupsRoutes }
