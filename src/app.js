@@ -4,6 +4,7 @@ import fs from 'fs'
 import path from 'path'
 import cors from 'cors'
 import corsOptions from "../config/corsOptions.js";
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -15,6 +16,7 @@ const config = JSON.parse(configStr)[env]
 app.use(cors(corsOptions))
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(logger('dev' /*, { skip: (req, res) => res.statusCode < 400 }*/))
 
 app.set('port', process.env.PORT)

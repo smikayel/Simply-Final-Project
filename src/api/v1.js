@@ -1,8 +1,20 @@
 import { Router } from 'express'
-import { companiesRoutes } from '../modules/companies/routes.js'
-import { UserRoutes } from '../modules/Users/routes.js'
+import { authRoutes } from '../modules/Auth/routes.js'
+import { usersRoutes } from '../modules/Users/routes.js'
+import { groupsRoutes } from '../modules/Groups/routes.js'
+import { verifyJWT } from '../helpers/validations.js';
 
-const router = Router()
+const router = Router();
+
+router.use('/auth', authRoutes);
+router.use(verifyJWT);
+
+
+router.use('/users', usersRoutes);
+
+
+
+router.use('/group', groupsRoutes);
 
 
 

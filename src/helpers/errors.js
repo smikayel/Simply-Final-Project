@@ -12,10 +12,16 @@ export const internalServerErrorCreator = () => {
   return error
 }
 
-export const badRequestErrorCreator = (details) => {
-  const error = new Error('Bad Request')
+export const badRequestErrorCreator = (message) => {
+  const error = new Error(message)
   error.status = 400
-  error.details = details
+
+  return error
+}
+
+export const unauthorizedErrorCreator = (message) => {
+  const error = new Error(message)
+  error.status = 401
 
   return error
 }
