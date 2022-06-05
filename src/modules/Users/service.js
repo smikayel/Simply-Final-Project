@@ -1,35 +1,47 @@
-import { responseDataCreator } from "../../helpers/common.js";
-import { badRequestErrorCreator } from "../../helpers/errors.js";
-import { getAllUsers, createUser, deleteUserById } from "./db.js"
+import { responseDataCreator } from '../../helpers/common.js'
+import { badRequestErrorCreator } from '../../helpers/errors.js'
+import { getAllUsers, createUser, deleteUserById, updateUserbyId } from './db.js'
 import bcrypt from 'bcrypt'
 
 export const handleGetAllUsers = async (req, res) => {
-    try {
-        const users = await getAllUsers();
-        res.json(responseDataCreator({users}));
-    } catch (err) {
-        return res.json(badRequestErrorCreator());
-    }
+  try {
+    const users = await getAllUsers()
+    res.json(responseDataCreator({ users }))
+  } catch (err) {
+    return res.json(badRequestErrorCreator())
+  }
 }
 
 export const handleCreateUser = async (req, res) => {
-    try {
-        bcrypt.hash(req.body.password, 5, async function (err, hash) {
-            req.body.password = hash
-            req.body.roleId  = parseInt(req.body.roleId);
-            const createdUser = await createUser(req.body);
-            res.json(responseDataCreator({ createdUser }));
-        });
-    } catch (err) {
-        return res.json(badRequestErrorCreator());
-    }
+  try {
+    bcrypt.hash(req.body.password, 5, async function (err, hash) {
+      req.body.password = hash
+      req.body.roleId = parseInt(req.body.roleId)
+      const createdUser = await createUser(req.body)
+      res.json(responseDataCreator({ createdUser }))
+    })
+  } catch (err) {
+    return res.json(badRequestErrorCreator())
+  }
 }
 
 export const handleDeleteUser = async (req, res) => {
-    try {
-        const deletedUser = await deleteUserById(parseInt(req.body.id));
-        res.json(responseDataCreator({ deletedUser }));
-    } catch (err) {
-        return res.json(badRequestErrorCreator());
+  try {
+    const deletedUser = await deleteUserById(parseInt(req.body.id))
+    res.json(responseDataCreator({ deletedUser }))
+  } catch (err) {
+    return res.json(badRequestErrorCreator())
+  }
+}
+
+export const handleUpdateUser = async (req, res) => {
+  try {
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10)
     }
+    const updatedUser = await updateUserbyId(+req.body.id, req.body)
+    res.json(responseDataCreator({ updatedUser }))
+  } catch (err) {
+    return res.json(badRequestErrorCreator())
+  }
 }

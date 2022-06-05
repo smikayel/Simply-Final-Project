@@ -23,6 +23,7 @@ export const verifyJWT = (req, res, next) => {
       return res.json(unauthorizedErrorCreator("Access token expired!"));
 
       const token = authHeader.split(' ')[1];
+
       jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
