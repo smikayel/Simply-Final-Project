@@ -17,8 +17,8 @@ export const getUser = async (data) => {
         const foundUser = await user.findUnique({
             where: data,
             include: {
-                role: true
-            }
+                role: true,
+            },
         });
         return foundUser
     } catch (error) {
@@ -45,7 +45,7 @@ export const deleteUserById = async (id) => {
         const deletedUser = await user.delete({
             where: {
                 id,
-            }
+            },
         });
         return deletedUser
     } catch (error){
@@ -64,3 +64,5 @@ export const createUser = async (data) => {
         return error
     }
 }
+
+

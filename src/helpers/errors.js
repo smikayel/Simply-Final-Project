@@ -20,7 +20,8 @@ export const badRequestErrorCreator = (message) => {
 }
 
 export const unauthorizedErrorCreator = (message) => {
-  const error = new Error(message)
+  const error = new Error()
+  error.message = message
   error.status = 401
 
   return error

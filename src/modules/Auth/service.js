@@ -10,7 +10,7 @@ dotenv.config();
 export const handleLogin = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) 
-        return res.json(badRequestErrorCreator("Email and password are required!"));
+        return res.json(unauthorizedErrorCreator("Email and password are required!"));
 
     const foundUser = await getUser({email});
     if (!foundUser) return res.json(unauthorizedErrorCreator()); //Unauthorized 
@@ -38,9 +38,11 @@ export const handleLogin = async (req, res) => {
         // Creates Secure Cookie with refresh token            /// secure: true, 
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
+        const sendUserDataFront = { ...foundUser };
+        delete sendUserDataFront.refreshToken;
         // Send authorization roles and access token to user
         res.json(responseDataCreator({
-            user: foundUser,
+            user: sendUserDataFront,
             accessToken
         }));
         // Saving refreshToken with current user
@@ -59,6 +61,9 @@ export const handleRefreshToken = async (req, res) => {
     const foundUser = await getUser({ refreshToken });
     if (!foundUser) 
         return res.sendStatus(403); //Forbidden 
+    
+    const sendUserDataFront = { ...foundUser };
+    delete sendUserDataFront.refreshToken;
     // evaluate jwt 
     jwt.verify(
         refreshToken,
@@ -76,9 +81,30 @@ export const handleRefreshToken = async (req, res) => {
                 { expiresIn: '300s' }
             );
             res.json(responseDataCreator({
-                user: foundUser,
+                user: sendUserDataFront,
                 accessToken
             }));
         }
     );
+}
+
+export const handleLogout = async (req, res) => {
+  // On client, also delete the accessToken
+  const cookies = req.cookies
+  if (!cookies?.jwt) return res.sendStatus(204) //No content
+  const refreshToken = cookies.jwt
+
+  // Is refreshToken in db?
+  const foundUser = await getUser({ refreshToken })
+  if (!foundUser) {
+    res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
+    return res.sendStatus(204)
+  }
+
+  // Delete refreshToken in db
+  foundUser.refreshToken = ''
+  await updateUserbyId(foundUser.id, { refreshToken: '' })
+
+  res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
+  res.sendStatus(204)
 }
