@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="646dc1a5-25b9-473d-bb79-ef07ae65932e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env.sample" beforeDir="false" afterPath="$PROJECT_DIR$/.env.sample" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/helpers/validations.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/helpers/validations.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/Users/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Users/routes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/Users/service.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Users/service.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/modules/Users/validation.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/modules/Users/validation.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +42,7 @@
       <option name="presentableId" value="Default" />
       <updated>1654435565963</updated>
       <workItem from="1654435568806" duration="7000" />
-      <workItem from="1654435591356" duration="3102000" />
+      <workItem from="1654435591356" duration="3144000" />
     </task>
     <servers />
   </component>
