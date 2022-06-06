@@ -14,4 +14,4 @@ router.delete('/', validateSchema(deleteGroupSchema), verifyRoles(["Admin"]), ha
 router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(["Admin"]), handleGetGroupById);
 
 
-export { router as groupsRoutes }
+export { router as groupsRoutes}

@@ -1,6 +1,6 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { badRequestErrorCreator, unauthorizedErrorCreator } from "../../helpers/errors.js";
-import { getAllUsers, createUser, deleteUserById, updateUserbyId, getUser } from './db.js'
+import { badRequestErrorCreator } from '../../helpers/errors.js'
+import { getAllUsers, createUser, deleteUserById, updateUserbyId } from './db.js'
 import bcrypt from 'bcrypt'
 
 export const handleGetAllUsers = async (req, res) => {
@@ -36,19 +36,12 @@ export const handleDeleteUser = async (req, res) => {
 
 export const handleUpdateUser = async (req, res) => {
   try {
-    const {id, password, newPassword} = req.body;
-    const foundUser = await getUser({id: +id});
-    const match = await bcrypt.compare(password, foundUser.password);
-    if (match) {
-      const pwHashed = await bcrypt.hash(newPassword, 10)
-
-      const { refreshToken, password, ...updatedUser } = await updateUserbyId(+id, {password: pwHashed})
-      res.json(responseDataCreator({ updatedUser }));
-      return;
+    if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 10)
     }
-    throw new Error('Password is incorrect');
-
+    const updatedUser = await updateUserbyId(+req.body.id, req.body)
+    res.json(responseDataCreator({ updatedUser }))
   } catch (err) {
-    return res.json(unauthorizedErrorCreator(err.message))
+    return res.json(badRequestErrorCreator())
   }
 }

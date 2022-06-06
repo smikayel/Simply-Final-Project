@@ -19,6 +19,7 @@ model User {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   userGroup    UserGroup[]
+  tests        Test[]
 }
 
 model UserGroup {
@@ -63,4 +64,37 @@ model Subject {
   scheduleId Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Test {
+    id        Int       @id @default(autoincrement())
+    name      String    @unique
+    subjectId Int
+    userId    Int
+    subject  Subject   @relation(fields: [subjectId], references: [id])
+    user      User      @relation(fields: [userId], references: [id])
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    questions  Question[]
+}
+
+model Question {
+    id        Int       @id @default(autoincrement())
+    name      String    @db.VarChar(160)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    test      Test      @relation(fields: [testId], references: [id])
+    testId    Int
+    correctAnswer Int
+    answers   Answer[]
+
+}
+
+model Answer {
+    id        Int       @id @default(autoincrement())
+    name      String    @db.VarChar(30)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    question  Question  @relation(fields: [questionId], references: [id])
+    questionId Int
 }
