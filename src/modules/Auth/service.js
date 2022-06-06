@@ -14,7 +14,8 @@ export const handleLogin = async (req, res) => {
 
     const foundUser = await getUser({email});
     if (!foundUser) return res.json(unauthorizedErrorCreator()); //Unauthorized 
-    // evaluate password 
+    // evaluate password
+
     const match = await bcrypt.compare(password, foundUser.password);
     if (match) {
         // create JWTs
@@ -38,8 +39,8 @@ export const handleLogin = async (req, res) => {
         // Creates Secure Cookie with refresh token            /// secure: true, 
         res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
-        const sendUserDataFront = { ...foundUser };
-        delete sendUserDataFront.refreshToken;
+        const {refreshToken : rT, password : pw, ...sendUserDataFront } = foundUser;
+
         // Send authorization roles and access token to user
         res.json(responseDataCreator({
             user: sendUserDataFront,
@@ -54,6 +55,7 @@ export const handleLogin = async (req, res) => {
 
 export const handleRefreshToken = async (req, res) => {
     const cookies = req.cookies;
+
     if (!cookies?.jwt)
         return res.json(unauthorizedErrorCreator('Refresh token expired!'));
     const refreshToken = cookies.jwt;

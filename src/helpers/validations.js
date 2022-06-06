@@ -1,7 +1,9 @@
 import { badRequestErrorCreator, unauthorizedErrorCreator } from './errors.js'
 import jwt from 'jsonwebtoken'
+import { handleRefreshToken } from "../modules/Auth/service.js";
 
 export const validateSchema = (schema) => {
+
   if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
 
   return async (req, res, next) => {
@@ -12,6 +14,7 @@ export const validateSchema = (schema) => {
       schema.body && (await schema.body.validateAsync(body))
       return next()
     } catch (error) {
+      console.log(error.details);
       next(badRequestErrorCreator(error.details))
     }
   }
@@ -27,8 +30,12 @@ export const verifyJWT = (req, res, next) => {
       jwt.verify(
         token,
         process.env.ACCESS_TOKEN_SECRET,
-        (err, decoded) => {
-            if (err) return res.status(403).json(err); //invalid token
+        async (err, decoded) => {
+            if (err) {
+              await handleRefreshToken(req, res);
+              return;
+              // return res.status(403).json(err);
+            } //invalid token
             req.email = decoded.UserInfo.email;
             req.role = decoded.UserInfo.role;
             next();
@@ -47,6 +54,7 @@ export const verifyRoles = (allowedRoles) => {
         return res.json(unauthorizedErrorCreator('Role not found!'));
 
       const result = allowedRoles.some(allowedRole => allowedRole === name);
+
       if (!result) 
         return res.json(unauthorizedErrorCreator('Role not allowed!'));
       next();
