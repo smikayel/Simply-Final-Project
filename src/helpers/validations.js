@@ -32,9 +32,7 @@ export const verifyJWT = (req, res, next) => {
         process.env.ACCESS_TOKEN_SECRET,
         async (err, decoded) => {
             if (err) {
-              await handleRefreshToken(req, res);
-              return;
-              // return res.status(403).json(err);
+              return res.status(403).json(err);
             } //invalid token
             req.email = decoded.UserInfo.email;
             req.role = decoded.UserInfo.role;
