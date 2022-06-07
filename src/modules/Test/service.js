@@ -1,8 +1,12 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from "../../helpers/errors.js";
-import { getTest } from "./db.js";
+import { getTest, getAllTests } from "./db.js";
 import { getUserTests } from "../Users/db.js";
-import bcrypt from 'bcrypt'
+
+export const handleGetAllTests = async (req, res) => {
+  const tests = await getAllTests();
+  res.json(responseDataCreator(tests));
+}
 
 export const handleGetTest = async (req, res) => {
   try {
@@ -20,11 +24,9 @@ export const handleGetTest = async (req, res) => {
     }
 
     const test = await getTest(+testId);
-
     res.json(responseDataCreator(test));
 
   } catch (err) {
-    console.log('as');
     return res.json(badRequestErrorCreator(err.message))
   }
 }

@@ -1,12 +1,12 @@
 import { Router } from "express"
 import {validateSchema, verifyJWT, verifyRoles} from "../../helpers/validations.js"
-import { handleGetTest } from "./service.js";
+import { handleGetTest, handleGetAllTests } from "./service.js";
 import validations from './validation.js'
 
-const { createUserSchema, deleteUserSchema, changePasswordSchema } = validations
 
 const router = Router()
 
-router.get('/:id', verifyRoles(["Admin", "Student", "Teacher"]), handleGetTest);
+router.get('/', verifyJWT, verifyRoles(["Admin"]), handleGetAllTests);
+router.get('/:id', verifyJWT, verifyRoles(["Admin", "Student", "Teacher"]), handleGetTest);
 
 export { router as testsRoutes }
