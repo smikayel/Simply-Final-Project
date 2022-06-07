@@ -65,4 +65,22 @@ export const createUser = async (data) => {
     }
 }
 
+export const getUserTests = async (id) => {
+    try{
+        const foundedTests = await user.findUnique({
+            where: {id},
+            select: {
+                userTest: {
+                    select: {
+                        test: true,
+                    }
+                }
+            }
+        });
+        return foundedTests.userTest;
+    } catch (error) {
+        return error
+    }
+}
+
 

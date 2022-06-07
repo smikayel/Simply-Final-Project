@@ -1,15 +1,12 @@
 import { Router } from "express"
 import {validateSchema, verifyJWT, verifyRoles} from "../../helpers/validations.js"
-import {handleGetAllUsers, handleCreateUser, handleDeleteUser, handleUpdateUser} from "./service.js"
+import { handleGetTest } from "./service.js";
 import validations from './validation.js'
 
 const { createUserSchema, deleteUserSchema, changePasswordSchema } = validations
 
 const router = Router()
 
-router.get('/', verifyRoles(["Admin"]), handleGetAllUsers);
-router.post('/', validateSchema(createUserSchema), verifyRoles(["Admin"]), handleCreateUser);
-router.post('/updateUser', verifyJWT, validateSchema(changePasswordSchema), handleUpdateUser);
-router.delete('/', validateSchema(deleteUserSchema), verifyRoles(["Admin"]), handleDeleteUser)
+router.get('/:id', verifyRoles(["Admin", "Student", "Teacher"]), handleGetTest);
 
-export { router as usersRoutes }
+export { router as testsRoutes }

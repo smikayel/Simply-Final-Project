@@ -55,6 +55,8 @@ export const verifyRoles = (allowedRoles) => {
 
       if (!result) 
         return res.json(unauthorizedErrorCreator('Role not allowed!'));
+
+      req.role = UserInfo.role.name;
       next();
   }
 

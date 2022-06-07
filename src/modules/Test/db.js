@@ -1,68 +1,34 @@
 import { prisma } from '../../services/Prisma.js'
 
-const { user } = prisma
+const { test } = prisma
 
-export const getAllUsers = async () => {
+export const getTest = async (id) => {
     try{
-        const users = await user.findMany();
-        return users
-    } catch (error) {
-        return error
-    }
-}
-
-export const getUser = async (data) => {
-    
-    try{
-        const foundUser = await user.findUnique({
-            where: data,
+        const foundedTest = await test.findUnique({
+            where: {id},
             include: {
-                role: true,
-            },
+                userTest: {
+                    select: {
+                        user: {
+                            select: {
+                                id: true,
+                                firstName: true,
+                                lastName: true,
+                                email: true,
+                            }
+                        }
+                    }
+                } ,
+                subject: true,
+                questions: {
+                    include: {
+                        answers: true,
+                    }
+                }
+            }
         });
-        return foundUser
+        return foundedTest;
     } catch (error) {
-        return error
+        throw error;
     }
 }
-
-export const updateUserbyId = async (id, data) => {
-    try{
-        const updatedUser = await user.update({
-            where:{
-                id,
-            },
-            data,
-        });
-        return updatedUser
-    } catch (error) {
-        return error
-    }
-}
-
-export const deleteUserById = async (id) => {
-    try{
-        const deletedUser = await user.delete({
-            where: {
-                id,
-            },
-        });
-        return deletedUser
-    } catch (error){
-        return error;
-    }
-}
-
-
-export const createUser = async (data) => {
-    try{
-        const createdUser = await user.create({
-            data,
-        });
-        return createdUser
-    } catch (error) {
-        return error
-    }
-}
-
-

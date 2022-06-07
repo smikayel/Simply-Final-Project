@@ -1,47 +1,30 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { badRequestErrorCreator } from '../../helpers/errors.js'
-import { getAllUsers, createUser, deleteUserById, updateUserbyId } from './db.js'
+import { badRequestErrorCreator, unauthorizedErrorCreator } from "../../helpers/errors.js";
+import { getTest } from "./db.js";
+import { getUserTests } from "../Users/db.js";
 import bcrypt from 'bcrypt'
 
-export const handleGetAllUsers = async (req, res) => {
+export const handleGetTest = async (req, res) => {
   try {
-    const users = await getAllUsers()
-    res.json(responseDataCreator({ users }))
-  } catch (err) {
-    return res.json(badRequestErrorCreator())
-  }
-}
+    const {id: testId} = req.params;
+    if (req.role !== "Admin") {
+      const {id: userId} = req.body;
 
-export const handleCreateUser = async (req, res) => {
-  try {
-    bcrypt.hash(req.body.password, 5, async function (err, hash) {
-      req.body.password = hash
-      req.body.roleId = parseInt(req.body.roleId)
-      const createdUser = await createUser(req.body)
-      res.json(responseDataCreator({ createdUser }))
-    })
-  } catch (err) {
-    return res.json(badRequestErrorCreator())
-  }
-}
+      const tests = await getUserTests(userId)
+      const match = tests.some(test => +test.test.id === +testId);
 
-export const handleDeleteUser = async (req, res) => {
-  try {
-    const deletedUser = await deleteUserById(parseInt(req.body.id))
-    res.json(responseDataCreator({ deletedUser }))
-  } catch (err) {
-    return res.json(badRequestErrorCreator())
-  }
-}
-
-export const handleUpdateUser = async (req, res) => {
-  try {
-    if (req.body.password) {
-      req.body.password = await bcrypt.hash(req.body.password, 10)
+      if (!match) {
+        res.json(unauthorizedErrorCreator("You cant access this test"));
+        return;
+      }
     }
-    const updatedUser = await updateUserbyId(+req.body.id, req.body)
-    res.json(responseDataCreator({ updatedUser }))
+
+    const test = await getTest(+testId);
+
+    res.json(responseDataCreator(test));
+
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    console.log('as');
+    return res.json(badRequestErrorCreator(err.message))
   }
 }

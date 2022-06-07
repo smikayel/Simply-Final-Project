@@ -19,7 +19,7 @@ model User {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   userGroup    UserGroup[]
-  tests        Test[]
+  userTest     UserTest[]
 }
 
 model UserGroup {
@@ -71,12 +71,23 @@ model Test {
     id        Int       @id @default(autoincrement())
     name      String    @unique
     subjectId Int
-    userId    Int
+
     subject  Subject   @relation(fields: [subjectId], references: [id])
-    user      User      @relation(fields: [userId], references: [id])
+
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     questions  Question[]
+    userTest       UserTest[]
+}
+
+model UserTest {
+    id        Int      @id @default(autoincrement())
+    userId    Int
+    testId   Int
+    user      User     @relation(fields: [userId], references: [id])
+    test     Test    @relation(fields: [testId], references: [id])
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Question {
