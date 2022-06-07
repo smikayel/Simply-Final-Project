@@ -9,7 +9,8 @@ const corsOptions = {
     }
   },
   optionsSuccessStatus: 200,
-  credentials: true
+  credentials: true,
+
 };
 
 export default corsOptions;
