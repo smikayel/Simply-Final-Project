@@ -37,7 +37,7 @@ export const handleLogin = async (req, res) => {
 
 
         // Creates Secure Cookie with refresh token            /// secure: true, 
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+        res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
 
         const {refreshToken : rT, password : pw, ...sendUserDataFront } = foundUser;
 
