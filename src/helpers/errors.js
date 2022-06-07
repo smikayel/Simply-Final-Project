@@ -1,20 +1,23 @@
 export const notFoundErrorCreator = () => {
-  const error = new Error('Not Found')
+  const error = new Error()
+  error.message = "Not found"
   error.status = 404
 
   return error
 }
 
 export const internalServerErrorCreator = () => {
-  const error = new Error('Internal server error')
+  const error = new Error()
+  error.message = 'Internal server error'
   error.status = 500
 
   return error
 }
 
 export const badRequestErrorCreator = (message) => {
-  const error = new Error(message)
+  const error = new Error()
   error.status = 400
+  error.message = message
 
   return error
 }
