@@ -13,7 +13,7 @@ model User {
   lastName     String      @db.VarChar(30)
   email        String      @unique @db.VarChar(30)
   password     String      @db.VarChar(100)
-  refreshToken String?      @unique
+  refreshToken String?     @unique
   roleId       Int
   role         Role        @relation(fields: [roleId], references: [id])
   createdAt    DateTime    @default(now())
@@ -48,65 +48,73 @@ model Group {
 }
 
 model Schedule {
-  id        Int       @id @default(autoincrement())
-  day       String    @db.VarChar(30)
-  group     Group     @relation(fields: [groupId], references: [id])
-  groupId   Int
-  subject   Subject[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id              Int               @id @default(autoincrement())
+  day             Int
+  group           Group             @relation(fields: [groupId], references: [id])
+  groupId         Int
+  scheduleSubject ScheduleSubject[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+}
+
+model ScheduleSubject {
+  id         Int      @id @default(autoincrement())
+  time       DateTime @db.Time()
+  scheduleId Int
+  subjectId  Int
+  subject    Subject  @relation(fields: [subjectId], references: [id])
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+
 }
 
 model Subject {
-  id         Int      @id @default(autoincrement())
-  name       String   @unique
-  schdule    Schedule @relation(fields: [scheduleId], references: [id])
-  scheduleId Int
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  test       Test[]
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  scheduleSubject ScheduleSubject[]
+  test            Test[]
 }
 
 model Test {
-    id        Int       @id @default(autoincrement())
-    name      String    @unique
-    subjectId Int
-
-    subject  Subject   @relation(fields: [subjectId], references: [id])
-
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    questions  Question[]
-    userTest       UserTest[]
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  subjectId Int
+  start     DateTime   @db.Timestamp()
+  length    Int
+  subject   Subject    @relation(fields: [subjectId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  questions Question[]
+  userTest  UserTest[]
 }
 
 model UserTest {
-    id        Int      @id @default(autoincrement())
-    userId    Int
-    testId   Int
-    user      User     @relation(fields: [userId], references: [id])
-    test     Test    @relation(fields: [testId], references: [id])
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  testId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  test      Test     @relation(fields: [testId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Question {
-    id        Int       @id @default(autoincrement())
-    name      String    @db.VarChar(160)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    test      Test      @relation(fields: [testId], references: [id])
-    testId    Int
-    correctAnswer Int
-    answers   Answer[]
-
+  id            Int      @id @default(autoincrement())
+  name          String   @db.VarChar(160)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  test          Test     @relation(fields: [testId], references: [id])
+  testId        Int
+  correctAnswer Int
+  answers       Answer[]
 }
 
 model Answer {
-    id        Int       @id @default(autoincrement())
-    name      String    @db.VarChar(30)
-    createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    question  Question  @relation(fields: [questionId], references: [id])
-    questionId Int
+  id         Int      @id @default(autoincrement())
+  name       String   @db.VarChar(30)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId Int
 }
