@@ -1,10 +1,11 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 model User {
@@ -49,7 +50,7 @@ model Group {
 
 model Schedule {
   id              Int               @id @default(autoincrement())
-  day             Int
+  date            DateTime          @db.Date
   group           Group             @relation(fields: [groupId], references: [id])
   groupId         Int
   scheduleSubject ScheduleSubject[]
@@ -80,7 +81,7 @@ model Test {
   id        Int        @id @default(autoincrement())
   name      String     @unique
   subjectId Int
-  start     DateTime   @db.Timestamp()
+  // start     DateTime   @db.()
   length    Int
   subject   Subject    @relation(fields: [subjectId], references: [id])
   createdAt DateTime   @default(now())
@@ -115,6 +116,6 @@ model Answer {
   name       String   @db.VarChar(30)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  question   Question @relation(fields: [questionId], references: [id])
   questionId Int
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }

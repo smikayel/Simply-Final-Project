@@ -8,6 +8,8 @@ const { createUserSchema, deleteUserSchema, changePasswordSchema } = validations
 const router = Router()
 
 router.get('/:id', verifyRoles(["Admin", "Student", "Teacher"]), handleGetTest);
-router.post('/', verifyRoles(["Admin", "Teacher"]), handleCreateTest);
+router.post('/',verifyJWT, verifyRoles(["Admin", "Teacher"]), handleCreateTest);
+// router.delete('/',verifyJWT, verifyRoles(["Admin", "Teacher"]), handleDeleteTest);
+
 
 export { router as testsRoutes }

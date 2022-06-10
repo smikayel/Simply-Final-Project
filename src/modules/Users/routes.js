@@ -9,7 +9,7 @@ const router = Router()
 
 router.get('/', verifyRoles(["Admin", "Teacher", "Student"]), handleGetAllUsers);
 router.post('/', validateSchema(createUserSchema), verifyRoles(["Admin"]), handleCreateUser);
-router.put('/', verifyJWT, verifyRoles(["Admin", "Student", "Teacher"]), validateSchema(changePasswordSchema), handleUpdateUser);
+router.put('/', verifyRoles(["Admin", "Student", "Teacher"]), validateSchema(changePasswordSchema), handleUpdateUser);
 router.delete('/', validateSchema(deleteUserSchema), verifyRoles(["Admin"]), handleDeleteUser)
 
 export { router as usersRoutes }
