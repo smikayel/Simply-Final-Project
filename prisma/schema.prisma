@@ -55,6 +55,7 @@ model Schedule {
   scheduleSubject ScheduleSubject[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  @@unique([day, groupId])
 }
 
 model ScheduleSubject {

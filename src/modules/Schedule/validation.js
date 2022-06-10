@@ -1,16 +1,18 @@
-// import Joi from 'joi'
+import JoiF from 'joi'
+import JoiDate from '@joi/date'
 
-// export default {
-//   createUserSchema: {
-//     body: Joi.object({
-//       firstName: Joi.string().min(3).max(30).required(),
-//       lastName: Joi.string().min(3).max(30).required(),
-//       email: Joi.string()
-//         .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'am'] } })
-//         .required(),
-//       password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-//       // userGroup: Joi.array().items()
-//       roleId: Joi.number().required(),
-//     }),
-//   },
-// }
+const Joi = JoiF.extend(JoiDate)
+
+export default {
+  createScheduleSchema: {
+    body: Joi.object({
+      day: Joi.number().integer().greater(0).less(8).required(),
+      groupId: Joi.number().required(),
+      scheduleSubject: Joi.array().items(Joi.object({
+        subjectId: Joi.number().required(),
+        time: Joi.string().required(),
+        // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
+      })).required(),
+    }),
+  },
+}
