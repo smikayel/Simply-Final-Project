@@ -53,3 +53,37 @@ export const deleteSchedule = async (id) => {
     throw err.message
   }
 }
+
+export const updateSchedule = async ({ id, day, groupId, scheduleSubject }) => {
+  try {
+    return prisma.$transaction(async (prisma) => {
+      const schedules = await prisma.schedule.update({
+        data: {
+          day,
+          groupId,
+        },
+        where: {
+          id,
+        },
+      })
+      for (const { time, oldTime, subjectId, id: schSubId } of scheduleSubject) {
+        await prisma.scheduleSubject.update({
+          data: {
+            time: new Date(time).toISOString(),
+            subjectId,
+          },
+          where: {
+            id: schSubId,
+            // scheduleId_time: {
+            //   scheduleId: id,
+            //   time: new Date(oldTime).toISOString(),
+            // },
+          },
+        })
+      }
+      return schedules
+    })
+  } catch (err) {
+    throw err.message
+  }
+}

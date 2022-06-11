@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -66,6 +67,8 @@ model ScheduleSubject {
   subjectId  Int
   subject    Subject  @relation(fields: [subjectId], references: [id])
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+
+  @@unique([scheduleId, time])
 }
 
 model Subject {
@@ -78,26 +81,30 @@ model Subject {
 }
 
 model Test {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  subjectId Int
-  start     DateTime   @db.Timestamp()
-  length    Int
-  subject   Subject    @relation(fields: [subjectId], references: [id])
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  questions Question[]
-  userTest  UserTest[]
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  subjectId    Int
+  start        DateTime   @db.Timestamp()
+  length       Int
+  highestScore Int
+  subject      Subject    @relation(fields: [subjectId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  questions    Question[]
+  userTest     UserTest[]
 }
 
 model UserTest {
   id        Int      @id @default(autoincrement())
   userId    Int
   testId    Int
+  mark      Int
   user      User     @relation(fields: [userId], references: [id])
   test      Test     @relation(fields: [testId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, testId])
 }
 
 model Question {

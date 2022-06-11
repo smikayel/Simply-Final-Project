@@ -8,11 +8,34 @@ export default {
     body: Joi.object({
       day: Joi.number().integer().greater(0).less(8).required(),
       groupId: Joi.number().required(),
-      scheduleSubject: Joi.array().items(Joi.object({
-        subjectId: Joi.number().required(),
-        time: Joi.string().required(),
-        // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
-      })).required(),
+      scheduleSubject: Joi.array()
+        .items(
+          Joi.object({
+            subjectId: Joi.number().required(),
+            time: Joi.string().required(),
+            // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
+          })
+        )
+        .required(),
+    }),
+  },
+
+  updateScheduleSchema: {
+    body: Joi.object({
+      id: Joi.number().integer().required(),
+      day: Joi.number().integer().greater(0).less(8).required(),
+      groupId: Joi.number().required(),
+      scheduleSubject: Joi.array()
+        .items(
+          Joi.object({
+            id: Joi.number().integer().required(),
+            // oldTime: Joi.string().required(),
+            subjectId: Joi.number().required(),
+            time: Joi.string().required(),
+            // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
+          })
+        )
+        .required(),
     }),
   },
 }

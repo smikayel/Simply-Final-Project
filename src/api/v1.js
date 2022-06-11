@@ -9,7 +9,7 @@ import { scheduleRoutes } from '../modules/Schedule/routes.js'
 const router = Router()
 
 router.use('/auth', authRoutes)
-// router.use(verifyJWT);
+router.use(verifyJWT)
 
 router.use('/tests', testsRoutes)
 router.use('/users', usersRoutes)
