@@ -64,7 +64,7 @@ model ScheduleSubject {
   scheduleId Int
   subjectId  Int
   subject    Subject  @relation(fields: [subjectId], references: [id])
-  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 
 }
 
