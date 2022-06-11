@@ -1,22 +1,22 @@
 const includes = {
-    userTest: {
+  userTest: {
+    select: {
+      user: {
         select: {
-            user: {
-                select: {
-                    id: true,
-                    firstName: true,
-                    lastName: true,
-                    email: true,
-                }
-            }
-        }
-    } ,
-    subject: true,
-    questions: {
-        include: {
-            answers: true,
-        }
-    }
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+        },
+      },
+    },
+  },
+  subject: true,
+  questions: {
+    include: {
+      answers: true,
+    },
+  },
 }
 
-export  default includes;
+export default includes

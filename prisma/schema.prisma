@@ -1,11 +1,11 @@
-datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -50,12 +50,13 @@ model Group {
 
 model Schedule {
   id              Int               @id @default(autoincrement())
-  date            DateTime          @db.Date
+  day             Int
   group           Group             @relation(fields: [groupId], references: [id])
   groupId         Int
   scheduleSubject ScheduleSubject[]
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+
   @@unique([day, groupId])
 }
 
@@ -65,8 +66,9 @@ model ScheduleSubject {
   scheduleId Int
   subjectId  Int
   subject    Subject  @relation(fields: [subjectId], references: [id])
-  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 
+  @@unique([scheduleId, time])
 }
 
 model Subject {
@@ -79,26 +81,30 @@ model Subject {
 }
 
 model Test {
-  id        Int        @id @default(autoincrement())
-  name      String     @unique
-  subjectId Int
-  // start     DateTime   @db.()
-  length    Int
-  subject   Subject    @relation(fields: [subjectId], references: [id])
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  questions Question[]
-  userTest  UserTest[]
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  subjectId    Int
+  start        DateTime   @db.Timestamp()
+  length       Int
+  highestScore Int
+  subject      Subject    @relation(fields: [subjectId], references: [id])
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  questions    Question[]
+  userTest     UserTest[]
 }
 
 model UserTest {
   id        Int      @id @default(autoincrement())
   userId    Int
   testId    Int
+  mark      Int
   user      User     @relation(fields: [userId], references: [id])
   test      Test     @relation(fields: [testId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, testId])
 }
 
 model Question {
@@ -117,6 +123,6 @@ model Answer {
   name       String   @db.VarChar(30)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  question   Question @relation(fields: [questionId], references: [id])
   questionId Int
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 }
