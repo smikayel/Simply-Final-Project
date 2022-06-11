@@ -1,7 +1,16 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
-import { createTests, getTest } from './db.js'
+import { createTests, getTest, deleteTest, getAllTests } from './db.js'
 import { getUserTests } from '../Users/db.js'
+
+export const handleGetAllTests = async (req, res) => {
+  try {
+    const allTests = await getAllTests()
+    res.json(responseDataCreator(allTests))
+  } catch (err) {
+    return res.json(badRequestErrorCreator(err.message))
+  }
+}
 
 export const handleGetTest = async (req, res) => {
   try {
@@ -29,7 +38,6 @@ export const handleGetTest = async (req, res) => {
 
     res.json(responseDataCreator(test))
   } catch (err) {
-    console.log(err)
     return res.json(badRequestErrorCreator(err.message))
   }
 }
@@ -43,11 +51,11 @@ export const handleCreateTest = async (req, res) => {
   }
 }
 
-// export const handleDeleteTest = async (req, res) => {
-//   try {
-//     const deletedTest = await deleteTest(req.body);
-//     res.json(responseDataCreator(deletedTest));
-//   } catch (err) {
-//     return res.json(badRequestErrorCreator(err.message))
-//   }
-// }
+export const handleDeleteTest = async (req, res) => {
+  try {
+    const deletedTest = await deleteTest(req.body);
+    res.json(responseDataCreator(deletedTest));
+  } catch (err) {
+    return res.json(badRequestErrorCreator(err.message))
+  }
+}

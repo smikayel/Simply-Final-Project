@@ -1,28 +1,20 @@
 import Joi from 'joi'
 
 export default {
-  createUserSchema: {
+  createTestSchema: {
     body: Joi.object({
-      firstName: Joi.string().min(3).max(30).required(),
-      lastName: Joi.string().min(3).max(30).required(),
-      email: Joi.string()
-        .email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'am'] } })
-        .required(),
-      password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
-      // userGroup: Joi.array().items()
-      roleId: Joi.number().required(),
-    }),
-  },
-  deleteUserSchema: {
-    body: Joi.object({
-      id: Joi.number().required(),
-    }),
-  },
-
-  changePasswordSchema: {
-    body: Joi.object({
-      id: Joi.number().required(),
-      password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+      userId: Joi.number().strict().required(),
+      name: Joi.string().min(3).required(),
+      subjectId: Joi.number().strict().required(),
+      start: Joi.string().required(),
+      length: Joi.number().strict().required(),
+      highestScore: Joi.number().strict().required(),
+      questions: Joi.array().items(Joi.object({
+        name: Joi.string().max(160).required(),
+        correctAnswer: Joi.number().strict().required(),
+      })),
+      answers: Joi.array().items(Joi.array().items(Joi.string())),
     }),
   },
 }
+

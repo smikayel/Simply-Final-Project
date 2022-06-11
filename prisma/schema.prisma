@@ -98,9 +98,9 @@ model UserTest {
   id        Int      @id @default(autoincrement())
   userId    Int
   testId    Int
-  mark      Int
+  mark      Int      @default(0)
   user      User     @relation(fields: [userId], references: [id])
-  test      Test     @relation(fields: [testId], references: [id])
+  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -112,7 +112,7 @@ model Question {
   name          String   @db.VarChar(160)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
-  test          Test     @relation(fields: [testId], references: [id])
+  test          Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
   testId        Int
   correctAnswer Int
   answers       Answer[]
@@ -123,6 +123,6 @@ model Answer {
   name       String   @db.VarChar(30)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
   questionId Int
 }

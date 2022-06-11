@@ -33,6 +33,7 @@ export function createTests(testData) {
         subjectId: testData.subjectId,
         start: testData.start,
         length: testData.length,
+        highestScore: testData.highestScore,
         questions: {
           create: testData.questions,
         },
@@ -57,16 +58,12 @@ export function createTests(testData) {
   })
 }
 
-// export const deleteTest = async (testData) => {
-// 	try {
-// 		const deletedTest = await prisma.UserTest.delete({
-// 			where: {
-// 				id: testData.id
-// 			},
-// 			// include: includes,
-// 		});
-// 		return deletedTest;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// }
+export async function deleteTest(testData) {
+    const deletedTest = await prisma.Test.delete({
+      where: {
+        id: testData.id,
+      },
+  })
+  return deletedTest
+}
+
