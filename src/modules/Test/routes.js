@@ -9,7 +9,12 @@ const router = Router()
 
 router.get('/', verifyRoles(['Admin']), handleGetAllTests)
 router.get('/:id', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetTest)
-router.post('/', validateSchema(createTestSchema),verifyRoles(['Admin', 'Teacher']), handleCreateTest)
-router.delete('/', verifyRoles(["Admin", "Teacher"]), handleDeleteTest);
+router.post(
+  '/',
+  validateSchema(createTestSchema),
+  verifyRoles(['Admin', 'Teacher']),
+  handleCreateTest
+)
+router.delete('/', verifyRoles(['Admin', 'Teacher']), handleDeleteTest)
 
 export { router as testsRoutes }
