@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config src/index.js"
+    "dev": "nodemon -r dotenv/config src/index.js",
+    "lint": "eslint --ext .js",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",

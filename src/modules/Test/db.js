@@ -3,26 +3,18 @@ import { changeStructureForAnswers } from './helpers.js'
 import includes from './includes.js'
 
 export const getAllTests = async () => {
-  try {
-    const allTests = await prisma.test.findMany({
-      include: includes,
-    })
-    return allTests
-  } catch (error) {
-    throw error
-  }
+  const allTests = await prisma.test.findMany({
+    include: includes,
+  })
+  return allTests
 }
 
 export const getTest = async (id) => {
-  try {
-    const foundedTest = await prisma.test.findUnique({
-      where: { id },
-      include: includes,
-    })
-    return foundedTest
-  } catch (error) {
-    throw error
-  }
+  const foundedTest = await prisma.test.findUnique({
+    where: { id },
+    include: includes,
+  })
+  return foundedTest
 }
 
 export function createTests(testData) {
@@ -48,10 +40,10 @@ export function createTests(testData) {
     }, [])
     const answersData = changeStructureForAnswers(testData.answers, questionsIds)
 
-    const newAnswers = await prisma.Answer.createMany({
+    await prisma.Answer.createMany({
       data: answersData,
     })
-    const newUserTest = await prisma.UserTest.create({
+    await prisma.UserTest.create({
       data: { userId: testData.userId, testId: newTest.id },
     })
     return newTest
