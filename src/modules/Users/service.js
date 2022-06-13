@@ -8,16 +8,16 @@ export const handleGetUser = async (req, res) => {
     const { id, testId } = req.params
     const user = await getUser(+id, +testId)
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
 
 export const handleGetAllUsers = async (req, res) => {
   try {
     const users = await getAllUsers()
-    res.json(responseDataCreator({ users }))
+    res.status(200).json(responseDataCreator({ users }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
@@ -27,19 +27,19 @@ export const handleCreateUser = async (req, res) => {
       req.body.password = hash
       req.body.roleId = parseInt(req.body.roleId)
       const createdUser = await createUser(req.body)
-      res.json(responseDataCreator({ createdUser }))
+      res.status(200).json(responseDataCreator({ createdUser }))
     })
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
 export const handleDeleteUser = async (req, res) => {
   try {
     const deletedUser = await deleteUserById(parseInt(req.body.id))
-    res.json(responseDataCreator({ deletedUser }))
+    res.status(200).json(responseDataCreator({ deletedUser }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
@@ -54,23 +54,23 @@ export const handleUpdateUser = async (req, res) => {
       const { refreshToken, password, ...updatedUser } = await updateUserbyId(+id, {
         password: pwHashed,
       })
-      res.json(responseDataCreator({ updatedUser }))
+      res.status(200).json(responseDataCreator({ updatedUser }))
       return
     }
     throw new Error('Password is incorrect')
   } catch (err) {
-    return res.json(unauthorizedErrorCreator(err.message))
+    return res.status(401).json(unauthorizedErrorCreator(err.message))
   }
 }
 
 export const handleSetUserMark = async (req, res) => {
   try {
     if (req.role.name !== 'Teacher') {
-      return res.json(badRequestErrorCreator('You are not authorized to do this'))
+      return res.status(400).json(badRequestErrorCreator('You are not authorized to do this'))
     }
     const studentMark = await addMark(req.email, req.body)
-    res.json(responseDataCreator({ studentMark }))
+    res.status(200).json(responseDataCreator({ studentMark }))
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

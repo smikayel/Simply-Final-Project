@@ -8,35 +8,35 @@ dotenv.config()
 export const handleCreateGroup = async (req, res) => {
   try {
     const createdGroup = await createGroup(req.body)
-    res.json(responseDataCreator({ createdGroup }))
+    res.status(200).json(responseDataCreator({ createdGroup }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
 export const handleGetAllGroups = async (req, res) => {
   try {
     const groups = await getAllGroups()
-    res.json(responseDataCreator({ groups }))
+    res.status(200).json(responseDataCreator({ groups }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
 export const handleGetGroupById = async (req, res) => {
   try {
     const group = await getGroupById(parseInt(req.params.id))
-    res.json(responseDataCreator({ group }))
+    res.status(200).json(responseDataCreator({ group }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }
 
 export const handleDeleteGroupById = async (req, res) => {
   try {
     const deletedGroup = await deleteGroupById(parseInt(req.body.id))
-    res.json(responseDataCreator({ deletedGroup }))
+    res.status(200).json(responseDataCreator({ deletedGroup }))
   } catch (err) {
-    return res.json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator())
   }
 }

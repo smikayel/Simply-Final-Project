@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
+import { unauthorizedErrorCreator } from '../../helpers/errors.js'
 import { getUser, updateUserbyId } from '../Users/db.js'
 import dotenv from 'dotenv'
 import { responseDataCreator } from '../../helpers/common.js'
@@ -9,10 +9,10 @@ dotenv.config()
 export const handleLogin = async (req, res) => {
   const { email, password } = req.body
   if (!email || !password)
-    return res.json(unauthorizedErrorCreator('Email and password are required!'))
+    return res.status(400).json(unauthorizedErrorCreator('Email and password are required!'))
 
   const foundUser = await getUser({ email })
-  if (!foundUser) return res.json(unauthorizedErrorCreator()) //Unauthorized
+  if (!foundUser) return res.status(401).json(unauthorizedErrorCreator()) //Unauthorized
   // evaluate password
 
   const match = await bcrypt.compare(password, foundUser.password)
@@ -43,7 +43,7 @@ export const handleLogin = async (req, res) => {
     const { refreshToken: rT, password: pw, ...sendUserDataFront } = foundUser
 
     // Send authorization roles and access token to user
-    res.json(
+    res.status(200).json(
       responseDataCreator({
         user: sendUserDataFront,
         accessToken,
@@ -52,14 +52,14 @@ export const handleLogin = async (req, res) => {
     // Saving refreshToken with current user
     await updateUserbyId(foundUser.id, { refreshToken })
   } else {
-    res.json(unauthorizedErrorCreator())
+    res.status(401).json(unauthorizedErrorCreator())
   }
 }
 
 export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies
 
-  if (!cookies?.jwt) return res.json(unauthorizedErrorCreator('Refresh token expired!'))
+  if (!cookies?.jwt) return res.status(401).json(unauthorizedErrorCreator('Refresh token expired!'))
   const refreshToken = cookies.jwt
 
   const foundUser = await getUser({ refreshToken })
@@ -80,7 +80,7 @@ export const handleRefreshToken = async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: '300s' }
     )
-    res.json(
+    res.status(200).json(
       responseDataCreator({
         user: sendUserDataFront,
         accessToken,

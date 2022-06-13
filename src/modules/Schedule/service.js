@@ -9,9 +9,9 @@ export const handleGetSchedule = async (req, res) => {
     let { day } = req.query
     day = +day || day
     const schedules = await getScheduleByGroupId(+groupId, day)
-    res.json(responseDataCreator(schedules))
+    res.status(200).json(responseDataCreator(schedules))
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
 
@@ -19,9 +19,9 @@ export const handleCreateSchedule = async (req, res) => {
   try {
     const body = req.body
     const schedules = await createSchedule(body)
-    res.json(responseDataCreator(schedules))
+    res.status(200).json(responseDataCreator(schedules))
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
 
@@ -29,9 +29,9 @@ export const handleDeleteSchedule = async (req, res) => {
   try {
     const { id } = req.params
     const schedules = await deleteSchedule(+id)
-    res.json(responseDataCreator(schedules))
+    res.status(200).json(responseDataCreator(schedules))
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
 
@@ -39,8 +39,8 @@ export const handleUpdateSchedule = async (req, res) => {
   try {
     const body = req.body
     const schedules = await updateSchedule(body)
-    res.json(responseDataCreator(schedules))
+    res.status(200).json(responseDataCreator(schedules))
   } catch (err) {
-    return res.json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
