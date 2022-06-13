@@ -59,7 +59,7 @@ export const handleLogin = async (req, res) => {
 export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies
   console.log(cookies)
-  if (!cookies?.jwt) return res.json(unauthorizedErrorCreator('Refresh token expired!'))
+  if (!cookies?.jwt) return res.status(401).json(unauthorizedErrorCreator('Refresh token expired!'))
 
   const refreshToken = cookies.jwt
 
