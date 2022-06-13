@@ -16,9 +16,8 @@ export const handleGetTest = async (req, res) => {
   try {
     const { id: testId } = req.params
     if (req.role !== 'Admin') {
-      const { id: userId } = req.body
 
-      const tests = await getUserTests(userId)
+      const tests = await getUserTests(req.email)
       const match = tests.some(({ test }) => {
         if (req.role !== 'Teacher') {
           const tmp = new Date()

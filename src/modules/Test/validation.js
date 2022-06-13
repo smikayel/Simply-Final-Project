@@ -11,9 +11,11 @@ export default {
       highestScore: Joi.number().strict().required(),
       questions: Joi.array().items(Joi.object({
         name: Joi.string().max(160).required(),
-        correctAnswer: Joi.number().strict().required(),
       })),
-      answers: Joi.array().items(Joi.array().items(Joi.string())),
+      answers: Joi.array().items(Joi.array().items(Joi.object({
+        name: Joi.string().max(160).required(),
+        isCorrect: Joi.boolean().required(),
+      }))),
     }),
   },
 }
