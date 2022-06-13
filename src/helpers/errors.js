@@ -1,6 +1,6 @@
 export const notFoundErrorCreator = () => {
   const error = new Error()
-  error.message = "Not found"
+  error.message = 'Not found'
   error.status = 404
 
   return error
