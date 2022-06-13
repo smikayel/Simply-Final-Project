@@ -7,6 +7,7 @@ export const handleGetUser = async (req, res) => {
   try {
     const { id, testId } = req.params
     const user = await getUser(+id, +testId)
+    return user
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }

@@ -123,3 +123,15 @@ export const addMark = async (teacherEmail, { studentId: userId, testId, mark })
   })
   return updatedUserTest
 }
+
+export const getMarks = async (userId) => {
+  const testsMarks = prisma.userTest.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      test: true,
+    },
+  })
+  return testsMarks
+}

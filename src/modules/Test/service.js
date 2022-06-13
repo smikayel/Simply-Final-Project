@@ -1,7 +1,10 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests } from './db.js'
-import { getUserTests } from '../Users/db.js'
+import { getUserTests, getMarks } from '../Users/db.js'
+import url from 'url'
+
+
 
 export const handleGetAllTests = async (req, res) => {
   try {
@@ -12,8 +15,23 @@ export const handleGetAllTests = async (req, res) => {
   }
 }
 
+export const handleGetMarks = async (req, res) => {
+  try {
+    const query = url.parse(req.url, true).query
+    if (!query.userId) throw 'Query have not userId'
+    const resault = await getMarks(+query.userId)
+    res.status(200).json(responseDataCreator(resault))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
 export const handleGetTest = async (req, res) => {
   try {
+    if (req.url.includes('?')) {
+      handleGetMarks(req, res)
+      return
+    }
     const { id: testId } = req.params
     if (req.role !== 'Admin') {
       const tests = await getUserTests(req.email)
@@ -57,3 +75,4 @@ export const handleDeleteTest = async (req, res) => {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
+
