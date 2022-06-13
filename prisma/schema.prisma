@@ -114,13 +114,13 @@ model Question {
   updatedAt     DateTime @updatedAt
   test          Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
   testId        Int
-  correctAnswer Int
   answers       Answer[]
 }
 
 model Answer {
   id         Int      @id @default(autoincrement())
   name       String   @db.VarChar(30)
+  isCorrect  Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)

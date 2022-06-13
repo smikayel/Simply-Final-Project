@@ -59,11 +59,10 @@ export function createTests(testData) {
 }
 
 export async function deleteTest(testData) {
-    const deletedTest = await prisma.Test.delete({
-      where: {
-        id: testData.id,
-      },
+  const deletedTest = await prisma.Test.delete({
+    where: {
+      id: testData.id,
+    },
   })
   return deletedTest
 }
-
