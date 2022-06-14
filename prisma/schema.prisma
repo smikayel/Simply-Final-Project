@@ -95,26 +95,27 @@ model Test {
 }
 
 model UserTest {
-  id        Int      @id @default(autoincrement())
-  userId    Int
-  testId    Int
-  mark      Int      @default(0)
-  user      User     @relation(fields: [userId], references: [id])
-  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  testId     Int
+  mark       Int      @default(-1)
+  isComplete Boolean  @default(false)
+  user       User     @relation(fields: [userId], references: [id])
+  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([userId, testId])
 }
 
 model Question {
-  id            Int      @id @default(autoincrement())
-  name          String   @db.VarChar(160)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  test          Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-  testId        Int
-  answers       Answer[]
+  id        Int      @id @default(autoincrement())
+  name      String   @db.VarChar(160)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  test      Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId    Int
+  answers   Answer[]
 }
 
 model Answer {

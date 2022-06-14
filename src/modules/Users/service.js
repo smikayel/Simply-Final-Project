@@ -1,6 +1,14 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
-import { getAllUsers, createUser, deleteUserById, updateUserbyId, getUser, addMark } from './db.js'
+import {
+  getAllUsers,
+  createUser,
+  deleteUserById,
+  updateUserbyId,
+  getUser,
+  addMark,
+  updateUserTest,
+} from './db.js'
 import bcrypt from 'bcrypt'
 
 export const handleGetUser = async (req, res) => {
@@ -51,10 +59,11 @@ export const handleUpdateUser = async (req, res) => {
     const match = await bcrypt.compare(password, foundUser.password)
     if (match) {
       const pwHashed = await bcrypt.hash(newPassword, 10)
-
+      /* eslint-disable no-unused-vars */
       const { refreshToken, password, ...updatedUser } = await updateUserbyId(+id, {
         password: pwHashed,
       })
+      /* eslint-disable no-unused-vars */
       res.status(200).json(responseDataCreator({ updatedUser }))
       return
     }
@@ -73,5 +82,14 @@ export const handleSetUserMark = async (req, res) => {
     res.status(200).json(responseDataCreator({ studentMark }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleUpdateUserTest = async (req, res) => {
+  try {
+    const userTest = await updateUserTest(req.id, req.body)
+    res.status(200).json(responseDataCreator(userTest))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator())
   }
 }

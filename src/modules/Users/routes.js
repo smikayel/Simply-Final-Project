@@ -6,10 +6,17 @@ import {
   handleDeleteUser,
   handleUpdateUser,
   handleSetUserMark,
+  handleUpdateUserTest,
 } from './service.js'
 import validations from './validation.js'
 
-const { createUserSchema, deleteUserSchema, changePasswordSchema } = validations
+const {
+  createUserSchema,
+  deleteUserSchema,
+  setTestFinishSchema,
+  setUserMarkSchema,
+  changePasswordSchema,
+} = validations
 
 const router = Router()
 
@@ -21,7 +28,18 @@ router.put(
   validateSchema(changePasswordSchema),
   handleUpdateUser
 )
-router.put('/setMark', verifyRoles(['Teacher']), handleSetUserMark)
+router.put(
+  '/setMark',
+  verifyRoles(['Teacher']),
+  validateSchema(setUserMarkSchema),
+  handleSetUserMark
+)
+router.put(
+  '/finishTest',
+  verifyRoles(['Student']),
+  validateSchema(setTestFinishSchema),
+  handleUpdateUserTest
+)
 router.delete('/', validateSchema(deleteUserSchema), verifyRoles(['Admin']), handleDeleteUser)
 
 export { router as usersRoutes }

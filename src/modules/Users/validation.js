@@ -26,4 +26,19 @@ export default {
       newPassword: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
     }),
   },
+
+  setTestFinishSchema: {
+    body: Joi.object({
+      testId: Joi.number().integer().required(),
+      isComplete: Joi.boolean().required(),
+    }),
+  },
+
+  setUserMarkSchema: {
+    body: Joi.object({
+      studentId: Joi.number().integer().required(),
+      testId: Joi.number().integer().required(),
+      mark: Joi.number().min(0).required(),
+    }),
+  },
 }

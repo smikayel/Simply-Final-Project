@@ -4,17 +4,30 @@ import validations from './validation.js'
 import {
   handleCreateSchedule,
   handleDeleteSchedule,
-  handleGetSchedule,
+  handleGetScheduleByGroup,
   handleUpdateSchedule,
+  handleGetScheduleById,
 } from './service.js'
 
-const { createScheduleSchema } = validations
+const {
+  createScheduleSchema,
+  getSchedulebyGroupSchema,
+  getScheduleSchema,
+  deleteScheduleSchema,
+  updateScheduleSchema,
+} = validations
 
 const router = Router()
 
-router.get('/:groupId', handleGetSchedule)
+router.get('/:id', validateSchema(getScheduleSchema), handleGetScheduleById)
+router.get('/group/:groupId', validateSchema(getSchedulebyGroupSchema), handleGetScheduleByGroup)
 router.post('/', verifyRoles(['Admin']), validateSchema(createScheduleSchema), handleCreateSchedule)
-router.delete('/:id', handleDeleteSchedule)
-router.put('/', handleUpdateSchedule)
+router.delete(
+  '/:id',
+  validateSchema(deleteScheduleSchema),
+  verifyRoles(['Admin']),
+  handleDeleteSchedule
+)
+router.put('/', validateSchema(updateScheduleSchema), handleUpdateSchedule)
 
 export { router as scheduleRoutes }

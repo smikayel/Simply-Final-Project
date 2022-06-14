@@ -2,6 +2,17 @@ import { prisma } from '../../services/Prisma.js'
 
 const { schedule } = prisma
 
+export const getScheduleById = async (id) => {
+  return schedule.findUnique({
+    include: {
+      scheduleSubject: true,
+    },
+    where: {
+      id,
+    },
+  })
+}
+
 export const getScheduleByGroupId = async (groupId, day) => {
   try {
     const schedules = await schedule.findMany({

@@ -1,9 +1,24 @@
-import { getScheduleByGroupId } from './db.js'
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator } from '../../helpers/errors.js'
-import { createSchedule, deleteSchedule, updateSchedule } from './db.js'
+import {
+  getScheduleByGroupId,
+  getScheduleById,
+  createSchedule,
+  deleteSchedule,
+  updateSchedule,
+} from './db.js'
 
-export const handleGetSchedule = async (req, res) => {
+export const handleGetScheduleById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const schedule = await getScheduleById(+id)
+    res.status(200).json(responseDataCreator(schedule))
+  } catch (err) {
+    res.status(400).json(badRequestErrorCreator(err))
+  }
+}
+
+export const handleGetScheduleByGroup = async (req, res) => {
   try {
     const { groupId } = req.params
     let { day } = req.query
