@@ -4,7 +4,16 @@ const { user, userGroup, userTest } = prisma
 
 export const getAllUsers = async () => {
   try {
-    const users = await user.findMany()
+    let users = await user.findMany({
+      include: {
+        role: true,
+      },
+    })
+    users = users.map((user) => {
+      //eslint-disable-next-line
+      const { password, refreshToken, ...userData } = user
+      return userData
+    })
     return users
   } catch (error) {
     return error
