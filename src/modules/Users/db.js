@@ -7,8 +7,14 @@ export const getAllUsers = async () => {
     let users = await user.findMany({
       include: {
         role: true,
+        userGroup: {
+          select: {
+            group: true,
+          },
+        },
       },
     })
+    console.log(users)
     users = users.map((user) => {
       //eslint-disable-next-line
       const { password, refreshToken, ...userData } = user
