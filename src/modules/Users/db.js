@@ -101,9 +101,13 @@ export const addMark = async (teacherEmail, { studentId: userId, testId, mark })
   const foundUser = await userGroup.findFirst({
     where: {
       userId,
-      roleId: 3, // student
       groupId: {
         in: teacherGroups,
+      },
+      user: {
+        role: {
+          name: 'Student',
+        },
       },
     },
   })
@@ -134,4 +138,17 @@ export const getMarks = async (userId) => {
     },
   })
   return testsMarks
+}
+
+export const updateUserTest = async (userId, { testId, ...data }) => {
+  const updatedUserTest = await userTest.update({
+    data,
+    where: {
+      userId_testId: {
+        userId,
+        testId,
+      },
+    },
+  })
+  return updatedUserTest
 }

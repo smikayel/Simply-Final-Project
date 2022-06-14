@@ -5,10 +5,12 @@ export const validateSchema = (schema) => {
   if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
 
   return async (req, res, next) => {
-    const { params, body } = req
+    const { params, body, query } = req
     try {
+      console.log(req.params.id)
       schema.params && (await schema.params.validateAsync(params))
       schema.body && (await schema.body.validateAsync(body))
+      schema.query && (await schema.query.validateAsync(query))
       return next()
     } catch (error) {
       console.log(error.details)
@@ -30,6 +32,7 @@ export const verifyJWT = (req, res, next) => {
     } //invalid token
     req.email = decoded.UserInfo.email
     req.role = decoded.UserInfo.role
+    req.id = decoded.UserInfo.id
     next()
   })
 }

@@ -21,6 +21,7 @@ export const handleLogin = async (req, res) => {
     const accessToken = jwt.sign(
       {
         UserInfo: {
+          id: foundUser.id,
           email: foundUser.email,
           role: foundUser.role,
         },
@@ -40,7 +41,7 @@ export const handleLogin = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000,
     })
 
-    const { refreshToken: rT, password: pw, ...sendUserDataFront } = foundUser
+    const { refreshToken: rT, password: pw, ...sendUserDataFront } = foundUser // eslint-disable-line no-unused-vars
 
     // Send authorization roles and access token to user
     res.status(200).json(
@@ -58,7 +59,7 @@ export const handleLogin = async (req, res) => {
 
 export const handleRefreshToken = async (req, res) => {
   const cookies = req.cookies
-  console.log(cookies)
+
   if (!cookies?.jwt) return res.status(401).json(unauthorizedErrorCreator('Refresh token expired!'))
 
   const refreshToken = cookies.jwt
@@ -74,6 +75,7 @@ export const handleRefreshToken = async (req, res) => {
     const accessToken = jwt.sign(
       {
         UserInfo: {
+          id: foundUser.id,
           email: decoded.email,
           role: foundUser.role,
         },
