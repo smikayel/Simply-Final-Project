@@ -63,10 +63,10 @@ export const deleteUserById = async (id) => {
 
 export const createUsers = async (data) => {
   try {
-    const createdUser = await user.createMany({
+    const createdUsers = await user.createMany({
       data,
     })
-    return createdUser
+    return createdUsers
   } catch (error) {
     return error
   }

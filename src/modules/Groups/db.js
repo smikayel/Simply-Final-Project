@@ -13,6 +13,38 @@ export const createGroup = async (data) => {
   }
 }
 
+export const createGroupWithUsers = (data) => {
+
+  //to be continued
+  return prisma.$transaction(async (prisma) => {
+    const createdGroup = await group.create({
+      id: data.id,
+      name: data.name,
+    })
+    const createdUsers = await user.createMany({
+      data.users,
+    })
+   ///
+  })
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const getGroupById = async (id) => {
   try {
     const foundGroup = await group.findUnique({
