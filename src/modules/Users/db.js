@@ -61,9 +61,9 @@ export const deleteUserById = async (id) => {
   }
 }
 
-export const createUser = async (data) => {
+export const createUsers = async (data) => {
   try {
-    const createdUser = await user.create({
+    const createdUser = await user.createMany({
       data,
     })
     return createdUser

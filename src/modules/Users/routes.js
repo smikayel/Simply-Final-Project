@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { validateSchema, verifyRoles } from '../../helpers/validations.js'
 import {
   handleGetAllUsers,
-  handleCreateUser,
+  handleCreateUsers,
   handleDeleteUser,
   handleUpdateUser,
   handleSetUserMark,
@@ -11,7 +11,7 @@ import {
 import validations from './validation.js'
 
 const {
-  createUserSchema,
+  createUsersSchema,
   deleteUserSchema,
   setTestFinishSchema,
   setUserMarkSchema,
@@ -21,7 +21,7 @@ const {
 const router = Router()
 
 router.get('/', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetAllUsers)
-router.post('/', validateSchema(createUserSchema), verifyRoles(['Admin']), handleCreateUser)
+router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
   '/',
   verifyRoles(['Admin', 'Student', 'Teacher']),

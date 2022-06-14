@@ -2,9 +2,6 @@ import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
-import url from 'url'
-
-
 
 export const handleGetAllTests = async (req, res) => {
   try {
@@ -17,7 +14,7 @@ export const handleGetAllTests = async (req, res) => {
 
 export const handleGetMarks = async (req, res) => {
   try {
-    const query = url.parse(req.url, true).query
+    const { query } = req
     if (!query.userId) throw 'Query have not userId'
     const resault = await getMarks(+query.userId)
     res.status(200).json(responseDataCreator(resault))
@@ -75,4 +72,3 @@ export const handleDeleteTest = async (req, res) => {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
-

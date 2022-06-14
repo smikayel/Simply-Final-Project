@@ -77,7 +77,7 @@ export const updateSchedule = async ({ id, day, groupId, scheduleSubject }) => {
           id,
         },
       })
-      for (const { time, oldTime, subjectId, id: schSubId } of scheduleSubject) {
+      for (const { time, subjectId, id: schSubId } of scheduleSubject) {
         await prisma.scheduleSubject.update({
           data: {
             time: new Date(time).toISOString(),
