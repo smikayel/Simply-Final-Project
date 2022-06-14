@@ -2,7 +2,7 @@ import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
 import {
   getAllUsers,
-  createUser,
+  createUsers,
   deleteUserById,
   updateUserbyId,
   getUser,
@@ -30,14 +30,13 @@ export const handleGetAllUsers = async (req, res) => {
   }
 }
 
-export const handleCreateUser = async (req, res) => {
+export const handleCreateUsers = async (req, res) => {
   try {
-    bcrypt.hash(req.body.password, 5, async function (err, hash) {
-      req.body.password = hash
-      req.body.roleId = parseInt(req.body.roleId)
-      const createdUser = await createUser(req.body)
-      res.status(200).json(responseDataCreator({ createdUser }))
-    })
+    for (const user of req.body) {
+      user.password = await bcrypt.hash(user.password, 10)
+    }
+    const createdUser = await createUsers(req.body)
+    res.status(200).json(responseDataCreator({ createdUser }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
   }
