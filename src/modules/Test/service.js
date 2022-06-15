@@ -1,6 +1,6 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
-import { createTests, getTest, deleteTest, getAllTests } from './db.js'
+import { createTests, getTest, deleteTest, getAllTests, getAllUserTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
 
 export const handleGetAllTests = async (req, res) => {
@@ -70,5 +70,14 @@ export const handleDeleteTest = async (req, res) => {
     res.status(200).json(responseDataCreator(deletedTest))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleGetAllTestsForUser = async (req, res) => {
+  try {
+    const userTests = await getAllUserTests(req.body.userId)
+    res.status(200).json(responseDataCreator(userTests))
+  } catch (err) {
+    return res.status(401).json(badRequestErrorCreator(err.message))
   }
 }

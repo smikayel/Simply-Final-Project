@@ -26,7 +26,7 @@ export const getUser = async (data) => {
       where: data,
       include: {
         role: true,
-        userTest: { include: { test: { include: { questions: { include: { answers: true } } } } } },
+        userTest: true,
       },
     })
     return foundUser
