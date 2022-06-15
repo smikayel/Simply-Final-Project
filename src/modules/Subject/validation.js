@@ -5,8 +5,10 @@ const Joi = JoiF.extend(JoiDate)
 
 export default {
   createSubjectSchema: {
-    body: Joi.object({
-      name: Joi.string().required(),
-    }),
+    body: Joi.array().items(
+      Joi.object({
+        name: Joi.string().required(),
+      })
+    ),
   },
 }

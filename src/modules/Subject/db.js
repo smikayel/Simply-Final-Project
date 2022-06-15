@@ -12,7 +12,7 @@ export const getSubjects = async () => {
 }
 export const createSubjects = async (data) => {
   try {
-    const createdSubject = await subject.create({
+    const createdSubject = await subject.createMany({
       data,
     })
     return createdSubject
