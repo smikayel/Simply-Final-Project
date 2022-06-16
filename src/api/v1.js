@@ -5,6 +5,7 @@ import { groupsRoutes } from '../modules/Groups/routes.js'
 import { verifyJWT } from '../helpers/validations.js'
 import { testsRoutes } from '../modules/Test/routes.js'
 import { scheduleRoutes } from '../modules/Schedule/routes.js'
+import { subjectRoutes } from '../modules/Subject/routes.js'
 
 const router = Router()
 
@@ -16,5 +17,6 @@ router.use('/users', usersRoutes)
 
 router.use('/groups', groupsRoutes)
 router.use('/schedules', scheduleRoutes)
+router.use('/subjects', subjectRoutes)
 
 export { router as v1 }
