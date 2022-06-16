@@ -1,20 +1,26 @@
 import { prisma } from '../../services/Prisma.js'
+import { getAvgMarks } from './helpers.js'
 
 const { user, userGroup, userTest } = prisma
 
 export const getAllUsers = async () => {
   try {
-    let users = await user.findMany({
-      include: {
-        role: true,
-      },
+    return prisma.$transaction(async (prisma) => {
+      const avgMarks = await getAvgMarks(prisma)
+      let users = await prisma.user.findMany({
+        include: {
+          role: true,
+        },
+      })
+      users = users.map((user) => {
+        //eslint-disable-next-line
+        const { password, refreshToken, ...userData } = user
+        userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
+        return userData
+      })
+
+      return users
     })
-    users = users.map((user) => {
-      //eslint-disable-next-line
-      const { password, refreshToken, ...userData } = user
-      return userData
-    })
-    return users
   } catch (error) {
     return error
   }
@@ -22,14 +28,23 @@ export const getAllUsers = async () => {
 
 export const getUser = async (data) => {
   try {
-    const foundUser = await user.findUnique({
-      where: data,
-      include: {
-        role: true,
-        userTest: true,
-      },
+    return prisma.$transaction(async (prisma) => {
+      const foundUser = await prisma.user.findUnique({
+        where: data,
+        include: {
+          role: true,
+          userTest: true,
+          userGroup: {
+            select: { group: true },
+          },
+        },
+      })
+      if (foundUser) {
+        const avgMarks = await getAvgMarks(prisma, foundUser.id)
+        foundUser['avgMark'] = avgMarks[0]?._avg?.mark
+      }
+      return foundUser
     })
-    return foundUser
   } catch (error) {
     return error
   }
