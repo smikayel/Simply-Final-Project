@@ -75,7 +75,7 @@ export const handleDeleteTest = async (req, res) => {
 
 export const handleGetAllTestsForUser = async (req, res) => {
   try {
-    const userTests = await getAllUserTests(req.body.userId)
+    const userTests = await getAllUserTests(req.id)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
     return res.status(401).json(badRequestErrorCreator(err.message))
