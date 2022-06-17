@@ -8,6 +8,7 @@ import {
   getUser,
   addMark,
   updateUserTest,
+  calculateUserTestMark,
 } from './db.js'
 import bcrypt from 'bcrypt'
 
@@ -90,5 +91,17 @@ export const handleUpdateUserTest = async (req, res) => {
     res.status(200).json(responseDataCreator(userTest))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
+  }
+}
+
+export const handleUserTestSubmit = async (req, res) => {
+  try {
+    const mark = await calculateUserTestMark(req.body)
+    const testId = +req.params.testId
+    await addMark('dummy', { studentId: req.id, testId, mark }, true)
+    res.status(200).json(responseDataCreator({ mark }))
+  } catch (err) {
+    console.log(err)
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

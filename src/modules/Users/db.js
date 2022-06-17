@@ -1,7 +1,7 @@
 import { prisma } from '../../services/Prisma.js'
 import { getAvgMarks } from './helpers.js'
 
-const { user, userGroup, userTest } = prisma
+const { user, userGroup, userTest, answer } = prisma
 
 export const getAllUsers = async () => {
   try {
@@ -106,38 +106,44 @@ export const getUserTests = async (email) => {
   }
 }
 
-export const addMark = async (teacherEmail, { studentId: userId, testId, mark }) => {
-  let { userGroup: teacherGroups } = await user.findUnique({
-    select: {
-      userGroup: {
-        select: { groupId: true },
-      },
-    },
-    where: {
-      email: teacherEmail,
-    },
-  })
-
-  teacherGroups = teacherGroups.map((elem) => elem.groupId)
-
-  if (teacherGroups.length === 0) {
-    throw new Error('You cant add mark for this test')
-  }
-  const foundUser = await userGroup.findFirst({
-    where: {
-      userId,
-      groupId: {
-        in: teacherGroups,
-      },
-      user: {
-        role: {
-          name: 'Student',
+export const addMark = async (
+  teacherEmail,
+  { studentId: userId, testId, mark },
+  secure = false
+) => {
+  if (!secure) {
+    let { userGroup: teacherGroups } = await user.findUnique({
+      select: {
+        userGroup: {
+          select: { groupId: true },
         },
       },
-    },
-  })
-  if (!foundUser) {
-    throw new Error('You cant add mark for this student')
+      where: {
+        email: teacherEmail,
+      },
+    })
+
+    teacherGroups = teacherGroups.map((elem) => elem.groupId)
+
+    if (teacherGroups.length === 0) {
+      throw new Error('You cant add mark for this test')
+    }
+    const foundUser = await userGroup.findFirst({
+      where: {
+        userId,
+        groupId: {
+          in: teacherGroups,
+        },
+        user: {
+          role: {
+            name: 'Student',
+          },
+        },
+      },
+    })
+    if (!foundUser) {
+      throw new Error('You cant add mark for this student')
+    }
   }
   const updatedUserTest = await userTest.update({
     where: {
@@ -148,6 +154,7 @@ export const addMark = async (teacherEmail, { studentId: userId, testId, mark })
     },
     data: {
       mark,
+      isComplete: true,
     },
   })
   return updatedUserTest
@@ -176,4 +183,29 @@ export const updateUserTest = async (userId, { testId, ...data }) => {
     },
   })
   return updatedUserTest
+}
+
+export const calculateUserTestMark = async ({ answersIds, optionsCount }) => {
+  const score = await answer.groupBy({
+    by: ['questionId'],
+    _count: {
+      id: true,
+    },
+    where: {
+      isCorrect: true,
+      id: {
+        in: answersIds,
+      },
+    },
+  })
+  if (!optionsCount) {
+    return score.reduce((acc, elem) => acc + elem._count.id, 0)
+  }
+
+  const mark = score.reduce((acc, curr) => {
+    const count = optionsCount.find((elem) => elem.questionId === curr.questionId)?.count || 1
+    return acc + curr._count.id / count
+  }, 0)
+
+  return mark
 }
