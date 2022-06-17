@@ -98,7 +98,7 @@ model UserTest {
   id              Int               @id @default(autoincrement())
   userId          Int
   testId          Int
-  mark            Int               @default(-1)
+  mark            Float             @default(-1) @db.Double
   isComplete      Boolean           @default(false)
   user            User              @relation(fields: [userId], references: [id])
   test            Test              @relation(fields: [testId], references: [id], onDelete: Cascade)

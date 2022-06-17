@@ -7,6 +7,7 @@ import {
   handleUpdateUser,
   handleSetUserMark,
   handleUpdateUserTest,
+  handleUserTestSubmit,
 } from './service.js'
 import validations from './validation.js'
 
@@ -16,6 +17,7 @@ const {
   setTestFinishSchema,
   setUserMarkSchema,
   changePasswordSchema,
+  submitTestSchema,
 } = validations
 
 const router = Router()
@@ -27,6 +29,12 @@ router.put(
   verifyRoles(['Admin', 'Student', 'Teacher']),
   validateSchema(changePasswordSchema),
   handleUpdateUser
+)
+router.post(
+  '/submitTest/:testId',
+  verifyRoles(['Student']),
+  validateSchema(submitTestSchema),
+  handleUserTestSubmit
 )
 router.put(
   '/setMark',
