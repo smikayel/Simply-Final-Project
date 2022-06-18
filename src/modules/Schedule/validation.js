@@ -27,13 +27,17 @@ export default {
 
   createScheduleSchema: {
     body: Joi.object({
-      day: Joi.number().integer().greater(0).less(8).required(),
       groupId: Joi.number().required(),
-      scheduleSubject: Joi.array()
+      schedule: Joi.array()
         .items(
           Joi.object({
-            subjectId: Joi.number().required(),
-            time: Joi.string().required(),
+            day: Joi.number().integer().greater(0).less(8).required(),
+            scheduleSubject: Joi.array()
+              .items(
+                Joi.object({ subjectId: Joi.number().required(), time: Joi.string().required() })
+              )
+              .required(),
+
             // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
           })
         )

@@ -226,23 +226,20 @@ export const calculateUserTestMark = async (prisma, { answersIds }, userId, test
 
   const questionMarks = {}
   let mark = 0
-  let correctQuestionsCount = 0
   for (const key in count) {
     questionMarks[key] = 0 // if student chose all answers of question give 0
     if (!(count[key] + wrongCount[key] === questionAnswerCount[key]['all'])) {
       questionMarks[key] =
         questionMaxMark * ((count[key] - wrongCount[key]) / questionAnswerCount[key]['correct'])
-      if (questionMarks[key] === questionMaxMark) correctQuestionsCount++
       questionMarks[key] = questionMarks[key] < 0 ? 0 : questionMarks[key] // give 0 if more answers are wrong than correct
       questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
     } else if (questionAnswerCount[key]['all'] === questionAnswerCount[key]['correct']) {
       questionMarks[key] = questionMaxMark
-      correctQuestionsCount++
     }
     mark += questionMarks[key]
   }
   // if student answered all questions correct give highest score to avoid round errors
-  if (correctQuestionsCount === _count.questions) mark = highestScore
+  if (mark > highestScore) mark = highestScore
   mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
   // set non answered question marks equal to 0
   testQuestions.forEach(({ id }) => (questionMarks[id] = questionMarks[id] || 0))

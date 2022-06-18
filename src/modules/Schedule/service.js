@@ -6,6 +6,7 @@ import {
   createSchedule,
   deleteSchedule,
   updateSchedule,
+  createSchedules,
 } from './db.js'
 
 export const handleGetScheduleById = async (req, res) => {
@@ -33,7 +34,11 @@ export const handleGetScheduleByGroup = async (req, res) => {
 export const handleCreateSchedule = async (req, res) => {
   try {
     const body = req.body
-    const schedules = await createSchedule(body)
+    const data = body.schedule.map((elem) => {
+      elem.groupId = body.groupId
+      return elem
+    })
+    const schedules = await createSchedules(data)
     res.status(200).json(responseDataCreator(schedules))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
