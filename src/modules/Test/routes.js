@@ -14,7 +14,7 @@ const { createTestSchema } = validations
 const router = Router()
 
 router.get('/', verifyRoles(['Admin']), handleGetAllTests)
-router.get('/usersAll', verifyRoles(['Admin']), handleGetAllTestsForUser)
+router.get('/usersAll', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetAllTestsForUser)
 router.get('/:id', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetTest)
 router.post(
   '/',
