@@ -34,22 +34,29 @@ export const getScheduleByGroupId = async (groupId, day) => {
   }
 }
 
-export const createSchedule = async ({ scheduleSubject, ...data }) => {
-  try {
-    const schedules = await schedule.create({
-      data: {
-        ...data,
-        scheduleSubject: {
-          createMany: {
-            data: scheduleSubject,
-          },
+export const createSchedules = (schedules) => {
+  return prisma.$transaction(async (prisma) => {
+    const createdSchedules = []
+    for (const schedule of schedules) {
+      const s = await createSchedule(prisma, schedule)
+      createdSchedules.push(s)
+    }
+    return createdSchedules
+  })
+}
+
+export const createSchedule = async (prisma, { scheduleSubject, ...data }) => {
+  const schedules = await schedule.create({
+    data: {
+      ...data,
+      scheduleSubject: {
+        createMany: {
+          data: scheduleSubject,
         },
       },
-    })
-    return schedules
-  } catch (err) {
-    throw err.message
-  }
+    },
+  })
+  return schedules
 }
 
 export const deleteSchedule = async (id) => {
