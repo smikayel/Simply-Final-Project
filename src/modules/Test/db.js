@@ -18,12 +18,13 @@ export const getTest = async (id) => {
 }
 
 export function createTests(testData) {
+  console.log(JSON.stringify(testData))
   return prisma.$transaction(async (prisma) => {
     const newTest = await prisma.Test.create({
       data: {
         name: testData.name,
         subjectId: testData.subjectId,
-        start: testData.start,
+        start: testData.start, //'2022-06-11T21:38:26.832Z'
         length: testData.length,
         highestScore: testData.highestScore,
         questions: {
@@ -45,6 +46,23 @@ export function createTests(testData) {
     })
     await prisma.UserTest.create({
       data: { userId: testData.userId, testId: newTest.id },
+    })
+    await prisma.GroupTest.create({
+      data: { groupId: testData.group, testId: newTest.id },
+    })
+    const groupUsers = await prisma.userGroup.findMany({
+      where: { groupId: testData.group },
+    })
+    const groupUsersIds = groupUsers.map((userGroupElement) => {
+      if (testData.userId !== userGroupElement.userId)
+        return { userId: userGroupElement.userId, testId: newTest.id }
+    })
+
+    const groupUsersIdsFilterd = groupUsersIds.filter((element) => {
+      return element !== undefined
+    })
+    await prisma.UserTest.createMany({
+      data: groupUsersIdsFilterd,
     })
     return newTest
   })

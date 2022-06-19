@@ -18,7 +18,7 @@ router.get('/usersAll', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetA
 router.get('/:id', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetTest)
 router.post(
   '/',
-  validateSchema(createTestSchema),
+  // validateSchema(createTestSchema),
   verifyRoles(['Admin', 'Teacher']),
   handleCreateTest
 )

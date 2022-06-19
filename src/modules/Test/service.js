@@ -60,6 +60,7 @@ export const handleCreateTest = async (req, res) => {
     const createdTest = await createTests(req.body)
     res.status(200).json(responseDataCreator(createdTest))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
