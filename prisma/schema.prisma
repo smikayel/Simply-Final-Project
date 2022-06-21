@@ -46,6 +46,7 @@ model Group {
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
   userGroup UserGroup[]
+  GroupTest GroupTest[]
 }
 
 model Schedule {
@@ -81,17 +82,26 @@ model Subject {
 }
 
 model Test {
-  id           Int        @id @default(autoincrement())
-  name         String     @unique
+  id           Int         @id @default(autoincrement())
+  name         String      @unique
   subjectId    Int
-  start        DateTime   @db.Timestamp()
+  start        DateTime    @db.Timestamp()
   length       Int
   highestScore Int
-  subject      Subject    @relation(fields: [subjectId], references: [id])
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
+  subject      Subject     @relation(fields: [subjectId], references: [id])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
   questions    Question[]
   userTest     UserTest[]
+  GroupTest    GroupTest[]
+}
+
+model GroupTest {
+  id      Int   @id @default(autoincrement())
+  testId  Int
+  groupId Int
+  test    Test  @relation(fields: [testId], references: [id])
+  group   Group @relation(fields: [groupId], references: [id])
 }
 
 model UserTest {
