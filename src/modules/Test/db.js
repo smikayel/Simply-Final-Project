@@ -88,8 +88,10 @@ export const getAllUserTests = async (userId) => {
   })
   const allTests = userTests.map((userTest) => {
     const test = userTest.test
-    test.push(userTest.mark, userTest.isComplete)
+    test.mark = userTest.mark
+    test.isComplete = userTest.isComplete
     return test
   })
+  console.log(userTests)
   return allTests
 }
