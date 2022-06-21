@@ -86,6 +86,10 @@ export const getAllUserTests = async (userId) => {
       test: { include: { questions: { include: { answers: true } } } },
     },
   })
-  const allTests = userTests.map((userTest) => userTest.test)
+  const allTests = userTests.map((userTest) => {
+    const test = userTest.test
+    test.push(userTest.mark, userTest.isComplete)
+    return test
+  })
   return allTests
 }

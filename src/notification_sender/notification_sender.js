@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
+import hbs from 'nodemailer-express-handlebars'
 dotenv.config()
 
 export const send_email = async (mail_to) => {
@@ -14,11 +15,25 @@ export const send_email = async (mail_to) => {
     },
   })
 
+  const handlebarOptions = {
+    viewEngine: {
+      partialsDir: './src/notification_sender/',
+      defaultLayout: false,
+    },
+    extName: '.html',
+    viewPath: './src/notification_sender/',
+  }
+  transporter.use('compile', hbs(handlebarOptions))
+
   let mailOptions = {
     from: mail,
     to: mail_to,
     subject: 'asd',
-    text: 'University works',
+    template: 'message',
+    context: {
+      name: 'Adebola', // replace {{name}} with Adebola
+      company: 'My Company', // replace {{company}} with My Company
+    },
   }
 
   transporter.sendMail(mailOptions, (err) => {

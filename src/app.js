@@ -3,8 +3,9 @@ import logger from 'morgan'
 import fs from 'fs'
 import path from 'path'
 import cors from 'cors'
-import corsOptions from "../config/corsOptions.js";
+import corsOptions from '../config/corsOptions.js'
 import cookieParser from 'cookie-parser'
+import hbs from 'nodemailer-express-handlebars'
 
 const app = express()
 

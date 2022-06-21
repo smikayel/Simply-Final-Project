@@ -40,14 +40,15 @@ export const verifyJWT = (req, res, next) => {
 export const verifyRoles = (allowedRoles) => {
   return (req, res, next) => {
     const authHeader = req.headers.authorization || req.headers.Authorization
+    if (!authHeader) return res.sendStatus(404)
     const token = authHeader.split(' ')[1]
     const { UserInfo } = jwt.decode(token)
     const { name } = UserInfo.role
-    if (!UserInfo.role) return res.json(unauthorizedErrorCreator('Role not found!'))
+    if (!UserInfo.role) return res.status(404).json(unauthorizedErrorCreator('Role not found!'))
 
     const result = allowedRoles.some((allowedRole) => allowedRole === name)
 
-    if (!result) return res.json(unauthorizedErrorCreator('Role not allowed!'))
+    if (!result) return res.status(402).json(unauthorizedErrorCreator('Role not allowed!'))
 
     next()
   }
