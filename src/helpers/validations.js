@@ -48,7 +48,7 @@ export const verifyRoles = (allowedRoles) => {
 
     const result = allowedRoles.some((allowedRole) => allowedRole === name)
 
-    if (!result) return res.status(402).json(unauthorizedErrorCreator('Role not allowed!'))
+    if (!result) return res.json(unauthorizedErrorCreator('Role not allowed!'))
 
     next()
   }

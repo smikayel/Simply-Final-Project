@@ -7,6 +7,6 @@ const { createSubjectSchema } = validations
 
 const router = Router()
 
-router.get('/', verifyRoles(['Admin', 'Teacher']), handleGetSubjects)
+router.get('/', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetSubjects)
 router.post('/', validateSchema(createSubjectSchema), verifyRoles(['Admin']), handleCreateSubjects)
 export { router as subjectRoutes }
