@@ -32,7 +32,7 @@ router.put(
 )
 router.post(
   '/submitTest/:testId',
-  verifyRoles(['Student']),
+  verifyRoles(['Student', 'Admin']),
   validateSchema(submitTestSchema),
   handleUserTestSubmit
 )

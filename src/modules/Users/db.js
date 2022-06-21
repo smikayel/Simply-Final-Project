@@ -192,7 +192,7 @@ export const updateUserTest = async (userId, { testId, ...data }) => {
   return updatedUserTest
 }
 
-export const calculateUserTestMark = async (prisma, { answersIds }, userId, testId) => {
+export const calculateUserTestMark = async (prisma, { answersIds, testId }, userId) => {
   const answerData = await getUsersAnsweredQuestions(prisma, answersIds)
 
   const {
@@ -211,6 +211,7 @@ export const calculateUserTestMark = async (prisma, { answersIds }, userId, test
   const wrongAnswerIds = []
   const count = {}
   const wrongCount = {}
+  console.log(answerData)
   answerData.forEach((elem) => {
     questionAnswers.push({ questionId: elem.questionId, answerId: elem.id, userId, testId })
     count[elem.questionId] = count[elem.questionId] || 0
@@ -249,8 +250,8 @@ export const calculateUserTestMark = async (prisma, { answersIds }, userId, test
 export const submitTest = async (body, userId, testId) => {
   return prisma.$transaction(async (prisma) => {
     const data = await calculateUserTestMark(prisma, body, userId, testId)
-    await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
-    await storeUsersTest(prisma, data.questionAnswers, userId, testId)
+    // await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
+    // await storeUsersTest(prisma, data.questionAnswers, userId, testId)
     return data
   })
 }
