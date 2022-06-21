@@ -18,7 +18,6 @@ export const getTest = async (id) => {
 }
 
 export function createTests(testData) {
-  console.log(JSON.stringify(testData))
   return prisma.$transaction(async (prisma) => {
     const newTest = await prisma.Test.create({
       data: {

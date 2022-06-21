@@ -7,7 +7,6 @@ export const validateSchema = (schema) => {
   return async (req, res, next) => {
     const { params, body, query } = req
     try {
-      console.log(req.params.id)
       schema.params && (await schema.params.validateAsync(params))
       schema.body && (await schema.body.validateAsync(body))
       schema.query && (await schema.query.validateAsync(query))

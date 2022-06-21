@@ -102,7 +102,6 @@ export const handleUpdateUserTest = async (req, res) => {
 export const handleUserTestSubmit = async (req, res) => {
   try {
     const testId = +req.params.testId
-    console.log(req.body)
     const { mark, correctAnswerIds, wrongAnswerIds, questionMarks } = await submitTest(
       req.body,
       req.id
