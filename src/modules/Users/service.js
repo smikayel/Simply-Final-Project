@@ -38,7 +38,7 @@ export const handleCreateUsers = async (req, res) => {
     for (const user of users) {
       user.password = await bcrypt.hash(user.password, 10)
     }
-    // const createdUser = await createUsers(req.body)
+    const createdUser = await createUsers(req.body)
     users.map((user) => {
       send_email(user.email)
     })
