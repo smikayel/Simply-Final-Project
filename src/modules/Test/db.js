@@ -92,6 +92,5 @@ export const getAllUserTests = async (userId) => {
     test.isComplete = userTest.isComplete
     return test
   })
-  console.log(userTests)
   return allTests
 }
