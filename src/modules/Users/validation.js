@@ -45,18 +45,9 @@ export default {
   },
 
   submitTestSchema: {
-    params: Joi.object({
-      testId: Joi.number().integer().min(1).required(),
-    }),
     body: Joi.object({
-      questionIds: Joi.array().items(Joi.number().strict().integer().min(1)),
       answersIds: Joi.array().items(Joi.number().strict().integer().min(1).required()),
-      optionsCount: Joi.array().items(
-        Joi.object({
-          questionId: Joi.number().strict().integer().min(1).required(),
-          count: Joi.number().strict().integer().min(1).required(),
-        })
-      ),
+      testId: Joi.number().integer().strict().min(1).required(),
     }),
   },
 }
