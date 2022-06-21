@@ -31,7 +31,7 @@ router.put(
   handleUpdateUser
 )
 router.post(
-  '/submitTest/:testId',
+  '/submitTest/',
   verifyRoles(['Student', 'Admin']),
   validateSchema(submitTestSchema),
   handleUserTestSubmit
