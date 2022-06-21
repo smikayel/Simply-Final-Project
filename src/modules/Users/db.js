@@ -192,7 +192,7 @@ export const updateUserTest = async (userId, { testId, ...data }) => {
   return updatedUserTest
 }
 
-export const calculateUserTestMark = async (prisma, { answersIds, testId }, userId) => {
+export const calculateUserTestMark = async (prisma, answersIds, userId, testId) => {
   const answerData = await getUsersAnsweredQuestions(prisma, answersIds)
 
   const {
@@ -247,11 +247,12 @@ export const calculateUserTestMark = async (prisma, { answersIds, testId }, user
   return { mark, correctAnswerIds, wrongAnswerIds, questionAnswers, questionMarks }
 }
 
-export const submitTest = async (body, userId, testId) => {
+export const submitTest = async (body, userId) => {
   return prisma.$transaction(async (prisma) => {
-    const data = await calculateUserTestMark(prisma, body, userId, testId)
-    // await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
-    // await storeUsersTest(prisma, data.questionAnswers, userId, testId)
+    const { testId, answersIds } = body
+    const data = await calculateUserTestMark(prisma, answersIds, userId, testId)
+    await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
+    await storeUsersTest(prisma, data.questionAnswers, userId, testId)
     return data
   })
 }
