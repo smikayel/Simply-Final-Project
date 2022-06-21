@@ -11,6 +11,7 @@ import {
   submitTest,
 } from './db.js'
 import bcrypt from 'bcrypt'
+import { send_email } from '../../notification_sender/notification_sender.js'
 
 export const handleGetUser = async (req, res) => {
   try {
@@ -33,10 +34,14 @@ export const handleGetAllUsers = async (req, res) => {
 
 export const handleCreateUsers = async (req, res) => {
   try {
-    for (const user of req.body) {
+    const users = req.body
+    for (const user of users) {
       user.password = await bcrypt.hash(user.password, 10)
     }
     const createdUser = await createUsers(req.body)
+    users.map((user) => {
+      send_email(user.email)
+    })
     res.status(200).json(responseDataCreator({ createdUser }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
