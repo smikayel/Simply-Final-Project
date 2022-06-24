@@ -5,9 +5,10 @@ import {
   getQuestionsAnswersCount,
   getTestHighestScore,
   getUsersAnsweredQuestions,
+  getQuestionMarks,
 } from './helpers.js'
 
-const { user, userTest } = prisma
+const { user, userTest, userTestAnswers } = prisma
 
 export const getAllUsers = async () => {
   try {
@@ -195,64 +196,101 @@ export const updateUserTest = async (userId, { testId, ...data }) => {
 export const calculateUserTestMark = async (prisma, answersIds, userId, testId) => {
   const answerData = await getUsersAnsweredQuestions(prisma, answersIds)
 
-  const {
-    highestScore,
-    _count,
-    questions: testQuestions,
-  } = await getTestHighestScore(prisma, testId)
+  const { highestScore, _count, questions } = await getTestHighestScore(prisma, testId)
+  const testQuestions = questions.map((elem) => elem.id)
   const questionMaxMark = highestScore / _count.questions
 
-  let questionIds = new Set(answerData.map((elem) => elem.questionId))
-  questionIds = [...questionIds]
-  const questionAnswerCount = await getQuestionsAnswersCount(prisma, questionIds)
+  const questionAnswerCount = await getQuestionsAnswersCount(prisma, testQuestions)
 
-  const correctAnswerIds = []
+  const answerCounts = { wrong: {}, correct: {} }
+  const answerResult = { wrong: [], correct: [] }
   const questionAnswers = []
-  const wrongAnswerIds = []
-  const count = {}
-  const wrongCount = {}
-  console.log(answerData)
-  answerData.forEach((elem) => {
-    questionAnswers.push({ questionId: elem.questionId, answerId: elem.id, userId, testId })
-    count[elem.questionId] = count[elem.questionId] || 0
-    wrongCount[elem.questionId] = wrongCount[elem.questionId] || 0
-    if (elem.isCorrect) {
-      correctAnswerIds.push(elem.id)
-      count[elem.questionId]++
+
+  answerData.forEach((answer) => {
+    questionAnswers.push({ questionId: answer.questionId, answerId: answer.id, userId, testId })
+    answerCounts['wrong'][answer.questionId] = 0
+    answerCounts['correct'][answer.questionId] = 0
+    if (answer.isCorrect) {
+      answerCounts['correct'][answer.questionId]++
+      answerResult['correct'].push(answer.id)
       return
     }
-    wrongAnswerIds.push(elem.id)
-    wrongCount[elem.questionId]++
+    answerCounts['wrong'][answer.questionId]++
+    answerResult['wrong'].push(answer.id)
   })
+  const { mark, questionMarks } = await getQuestionMarks(
+    testQuestions,
+    answerCounts,
+    questionAnswerCount,
+    questionMaxMark,
+    highestScore
+  )
 
-  const questionMarks = {}
-  let mark = 0
-  for (const key in count) {
-    questionMarks[key] = 0 // if student chose all answers of question give 0
-    if (!(count[key] + wrongCount[key] === questionAnswerCount[key]['all'])) {
-      questionMarks[key] =
-        questionMaxMark * ((count[key] - wrongCount[key]) / questionAnswerCount[key]['correct'])
-      questionMarks[key] = questionMarks[key] < 0 ? 0 : questionMarks[key] // give 0 if more answers are wrong than correct
-      questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
-    } else if (questionAnswerCount[key]['all'] === questionAnswerCount[key]['correct']) {
-      questionMarks[key] = questionMaxMark
-    }
-    mark += questionMarks[key]
+  return {
+    mark,
+    correctAnswerIds: answerResult['correct'],
+    wrongAnswerIds: answerResult['wrong'],
+    questionAnswers,
+    questionMarks,
   }
-  // if student answered all questions correct give highest score to avoid round errors
-  if (mark > highestScore) mark = highestScore
-  mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
-  // set non answered question marks equal to 0
-  testQuestions.forEach(({ id }) => (questionMarks[id] = questionMarks[id] || 0))
-  return { mark, correctAnswerIds, wrongAnswerIds, questionAnswers, questionMarks }
 }
 
 export const submitTest = async (body, userId) => {
   return prisma.$transaction(async (prisma) => {
     const { testId, answersIds } = body
+    if (answersIds.length === 0) {
+      await addMark('dummy', { studentId: userId, testId, mark: 0 }, true, prisma)
+      return { mark: 0 }
+    }
     const data = await calculateUserTestMark(prisma, answersIds, userId, testId)
     await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
     await storeUsersTest(prisma, data.questionAnswers, userId, testId)
     return data
   })
+}
+
+export const getUserTestResults = async (userId, testId) => {
+  const { highestScore, _count, questions } = (await getTestHighestScore(prisma, testId)) || {}
+  if (!highestScore || !_count || !questions) throw 'Test Not Found'
+  const questionMaxMark = highestScore / _count.questions
+  const testQuestions = questions.map((elem) => elem.id)
+  const questionAnswerCount = await getQuestionsAnswersCount(prisma, testQuestions)
+
+  const usersAnswers = await userTestAnswers.findMany({
+    where: {
+      testId,
+      userId,
+    },
+    select: {
+      answer: true,
+    },
+  })
+
+  const answerCounts = { wrong: {}, correct: {} }
+  const answerResult = { wrong: [], correct: [] }
+  usersAnswers.forEach(({ answer }) => {
+    answerCounts['wrong'][answer.questionId] = 0
+    answerCounts['correct'][answer.questionId] = 0
+    if (answer.isCorrect) {
+      answerCounts['correct'][answer.questionId]++
+      answerResult['correct'].push(answer.id)
+      return
+    }
+    answerCounts['wrong'][answer.questionId]++
+    answerResult['wrong'].push(answer.id)
+  })
+
+  const { mark, questionMarks } = await getQuestionMarks(
+    testQuestions,
+    answerCounts,
+    questionAnswerCount,
+    questionMaxMark,
+    highestScore
+  )
+  return {
+    mark,
+    correctAnswerIds: answerResult['correct'],
+    wrongAnswerIds: answerResult['wrong'],
+    questionMarks,
+  }
 }

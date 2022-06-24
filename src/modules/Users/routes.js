@@ -8,6 +8,7 @@ import {
   handleSetUserMark,
   handleUpdateUserTest,
   handleUserTestSubmit,
+  handleGetUserTestResults,
 } from './service.js'
 import validations from './validation.js'
 
@@ -18,11 +19,17 @@ const {
   setUserMarkSchema,
   changePasswordSchema,
   submitTestSchema,
+  getTestResultsSchema,
 } = validations
 
 const router = Router()
 
 router.get('/', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetAllUsers)
+router.get(
+  '/testResults/:userId/:testId',
+  validateSchema(getTestResultsSchema),
+  handleGetUserTestResults
+)
 router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
   '/',

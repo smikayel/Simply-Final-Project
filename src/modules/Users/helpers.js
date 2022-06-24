@@ -1,3 +1,6 @@
+import { prisma } from '../../services/Prisma.js'
+const { userTest } = prisma
+
 export const getAvgMarks = async (prisma, userId) =>
   prisma.userTest.groupBy({
     by: ['userId'],
@@ -8,6 +11,7 @@ export const getAvgMarks = async (prisma, userId) =>
       mark: {
         gte: 0,
       },
+      isComplete: true,
       userId,
     },
     orderBy: {
@@ -77,3 +81,67 @@ export const getUsersAnsweredQuestions = async (prisma, answersIds) =>
       },
     },
   })
+
+export const getQuestionMarks = async (
+  testQuestions,
+  answerCounts,
+  questionAnswerCount,
+  questionMaxMark,
+  highestScore
+) => {
+  const questionMarks = {}
+  let mark = 0
+  for (const key of testQuestions) {
+    questionMarks[key] = 0 // if student chose all answers of question give 0
+    if (!questionAnswerCount[key] || (!answerCounts['correct'][key] && !answerCounts['wrong'][key]))
+      continue
+    if (questionAnswerCount[key]['all'] === questionAnswerCount[key]['correct']) {
+      questionMarks[key] = questionMaxMark
+      mark += questionMarks[key]
+      continue
+    }
+    if (
+      !(
+        answerCounts['correct'][key] + answerCounts['wrong'][key] ===
+        questionAnswerCount[key]['all']
+      )
+    ) {
+      questionMarks[key] =
+        questionMaxMark *
+        ((answerCounts['correct'][key] - answerCounts['wrong'][key]) /
+          questionAnswerCount[key]['correct'])
+      questionMarks[key] = questionMarks[key] < 0 ? 0 : questionMarks[key] // give 0 if more answers are wrong than correct
+      questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
+    }
+    mark += questionMarks[key]
+  }
+  // if student answered all questions correct give highest score to avoid round errors
+  if (mark > highestScore) mark = highestScore
+  mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
+
+  return { mark, questionMarks }
+}
+
+export const validateTestResultReq = async (userId, testId) => {
+  const findTest = await userTest.findUnique({
+    where: {
+      userId_testId: {
+        userId,
+        testId,
+      },
+    },
+  })
+  if (!findTest) throw new Error('You cant view this test results')
+}
+
+export const validateTestSubmit = async (userId, testId) => {
+  const findTest = await userTest.findUnique({
+    where: {
+      userId_testId: {
+        userId,
+        testId,
+      },
+    },
+  })
+  if (!findTest || findTest.isComplete) throw new Error("You can't submit this test")
+}

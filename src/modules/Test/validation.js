@@ -24,4 +24,12 @@ export default {
       ),
     }),
   },
+
+  getUsersTestsSchema: {
+    query: Joi.object({
+      isComplete: Joi.boolean(),
+      take: Joi.number().integer(),
+      skip: Joi.number().integer(),
+    }).unknown(true),
+  },
 }

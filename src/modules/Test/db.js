@@ -76,14 +76,17 @@ export async function deleteTest(testData) {
   return deletedTest
 }
 
-export const getAllUserTests = async (userId) => {
+export const getAllUserTests = async (userId, isCompleteVal, take, skip) => {
   const userTests = await prisma.UserTest.findMany({
     where: {
       userId,
+      isComplete: isCompleteVal,
     },
     include: {
       test: { include: { questions: { include: { answers: true } } } },
     },
+    take,
+    skip,
   })
   const allTests = userTests.map((userTest) => {
     const test = userTest.test

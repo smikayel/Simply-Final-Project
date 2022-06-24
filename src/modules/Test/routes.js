@@ -9,12 +9,17 @@ import {
 } from './service.js'
 import validations from './validation.js'
 
-const { createTestSchema } = validations
+const { createTestSchema, getUsersTestsSchema } = validations
 
 const router = Router()
 
 router.get('/', verifyRoles(['Admin']), handleGetAllTests)
-router.get('/usersAll', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetAllTestsForUser)
+router.get(
+  '/usersAll',
+  verifyRoles(['Admin', 'Student', 'Teacher']),
+  validateSchema(getUsersTestsSchema),
+  handleGetAllTestsForUser
+)
 router.get('/:id', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetTest)
 router.post(
   '/',

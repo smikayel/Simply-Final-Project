@@ -46,8 +46,15 @@ export default {
 
   submitTestSchema: {
     body: Joi.object({
-      answersIds: Joi.array().items(Joi.number().strict().integer().min(1).required()),
+      answersIds: Joi.array().items(Joi.number().strict().integer().min(1)).required(),
       testId: Joi.number().integer().strict().min(1).required(),
+    }),
+  },
+
+  getTestResultsSchema: {
+    params: Joi.object({
+      userId: Joi.number().integer().min(1),
+      testId: Joi.number().integer().min(1),
     }),
   },
 }

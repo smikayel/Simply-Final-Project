@@ -76,9 +76,13 @@ export const handleDeleteTest = async (req, res) => {
 
 export const handleGetAllTestsForUser = async (req, res) => {
   try {
-    const userTests = await getAllUserTests(req.id)
+    let { isComplete, take, skip } = req.query
+    take = +take || take
+    skip = +skip || skip
+    const userTests = await getAllUserTests(req.id, isComplete, take, skip)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
+    console.log(err)
     return res.status(401).json(badRequestErrorCreator(err.message))
   }
 }

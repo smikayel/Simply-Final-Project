@@ -6,6 +6,7 @@ import cors from 'cors'
 import corsOptions from '../config/corsOptions.js'
 import cookieParser from 'cookie-parser'
 import hbs from 'nodemailer-express-handlebars'
+import boolParser from 'express-query-boolean'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use(cors(corsOptions))
 
 app.use(express.json())
 app.use(cookieParser())
+app.use(boolParser()) // parse query boolean values
 app.use(logger('dev' /*, { skip: (req, res) => res.statusCode < 400 }*/))
 
 app.set('port', process.env.PORT)

@@ -9,7 +9,9 @@ import {
   addMark,
   updateUserTest,
   submitTest,
+  getUserTestResults,
 } from './db.js'
+import { validateTestResultReq, validateTestSubmit } from './helpers.js'
 import bcrypt from 'bcrypt'
 import { send_email } from '../../notification_sender/notification_sender.js'
 
@@ -102,6 +104,7 @@ export const handleUpdateUserTest = async (req, res) => {
 export const handleUserTestSubmit = async (req, res) => {
   try {
     const testId = +req.params.testId
+    if (req.role.name === 'Student') await validateTestSubmit(req.id, req.body.testId)
     const { mark, correctAnswerIds, wrongAnswerIds, questionMarks } = await submitTest(
       req.body,
       req.id
@@ -110,7 +113,25 @@ export const handleUserTestSubmit = async (req, res) => {
       .status(200)
       .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))
   } catch (err) {
-    console.log(err)
+    return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleGetUserTestResults = async (req, res) => {
+  try {
+    const testId = +req.params.testId
+    const userId = +req.params.userId
+    if (req.role.name === 'Student' && req.id !== userId)
+      await validateTestResultReq(userId, testId)
+
+    const { mark, correctAnswerIds, wrongAnswerIds, questionMarks } = await getUserTestResults(
+      userId,
+      testId
+    )
+    res
+      .status(200)
+      .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))
+  } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
