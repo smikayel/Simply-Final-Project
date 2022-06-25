@@ -9,6 +9,7 @@ export default {
       start: Joi.string().required(),
       length: Joi.number().strict().required(),
       highestScore: Joi.number().strict().required(),
+      group: Joi.number().strict().required(),
       questions: Joi.array().items(
         Joi.object({
           name: Joi.string().max(160).required(),

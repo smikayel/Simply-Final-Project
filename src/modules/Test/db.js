@@ -88,11 +88,18 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip) => {
     take,
     skip,
   })
+  const userTestsCount = await prisma.UserTest.aggregate({
+    where: {
+      userId,
+      isComplete: isCompleteVal,
+    },
+    _count: true,
+  })
   const allTests = userTests.map((userTest) => {
     const test = userTest.test
     test.mark = userTest.mark
     test.isComplete = userTest.isComplete
     return test
   })
-  return allTests
+  return { allTests, count: userTestsCount }
 }
