@@ -2,6 +2,7 @@ import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests, getAllUserTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
+import { roleAdminName, roleTeacherName } from '../constants.js'
 
 export const handleGetAllTests = async (req, res) => {
   try {
@@ -30,10 +31,10 @@ export const handleGetTest = async (req, res) => {
       return
     }
     const { id: testId } = req.params
-    if (req.role !== 'Admin') {
+    if (req.role.name !== roleAdminName) {
       const tests = await getUserTests(req.email)
       const match = tests.some(({ test }) => {
-        if (req.role !== 'Teacher') {
+        if (req.role.name !== roleTeacherName) {
           const tmp = new Date()
           const endDate = new Date()
           endDate.setTime(test.start.getTime() + test.length * 60 * 1000)
@@ -70,6 +71,7 @@ export const handleDeleteTest = async (req, res) => {
     const deletedTest = await deleteTest(req.body)
     res.status(200).json(responseDataCreator(deletedTest))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
@@ -77,12 +79,12 @@ export const handleDeleteTest = async (req, res) => {
 export const handleGetAllTestsForUser = async (req, res) => {
   try {
     let { isComplete, take, skip } = req.query
-    take = +take || take
-    skip = +skip || skip
+    if (take !== undefined) take = +take
+    if (skip !== undefined) skip = +skip
     const userTests = await getAllUserTests(req.id, isComplete, take, skip)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
     console.log(err)
-    return res.status(401).json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

@@ -4,6 +4,7 @@ import { unauthorizedErrorCreator } from '../../helpers/errors.js'
 import { getUser, updateUserbyId } from '../Users/db.js'
 import dotenv from 'dotenv'
 import { responseDataCreator } from '../../helpers/common.js'
+import { accessToketExpireTime, refreshToketExpireTime } from '../constants.js'
 dotenv.config()
 
 export const handleLogin = async (req, res) => {
@@ -27,10 +28,10 @@ export const handleLogin = async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '300s' }
+      { expiresIn: accessToketExpireTime }
     )
     const refreshToken = jwt.sign({ email: foundUser.email }, process.env.REFRESH_TOKEN_SECRET, {
-      expiresIn: '1d',
+      expiresIn: refreshToketExpireTime,
     })
 
     // Creates Secure Cookie with refresh token            /// secure: true,
@@ -81,7 +82,7 @@ export const handleRefreshToken = async (req, res) => {
         },
       },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: '300s' }
+      { expiresIn: accessToketExpireTime }
     )
     res.status(200).json(
       responseDataCreator({

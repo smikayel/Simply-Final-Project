@@ -33,4 +33,12 @@ export default {
       skip: Joi.number().integer(),
     }).unknown(true),
   },
+
+  getTestSchema: {
+    params: Joi.object({ id: Joi.number().required() }),
+  },
+
+  deleteTestSchema: {
+    body: Joi.object({ id: Joi.number().strict().required() }),
+  },
 }

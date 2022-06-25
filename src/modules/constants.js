@@ -1,0 +1,5 @@
+export const accessToketExpireTime = '300s'
+export const refreshToketExpireTime = '1d'
+export const roleStudentName = 'Student'
+export const roleTeacherName = 'Teacher'
+export const roleAdminName = 'Admin'

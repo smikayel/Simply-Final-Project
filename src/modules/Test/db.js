@@ -2,6 +2,8 @@ import { prisma } from '../../services/Prisma.js'
 import { changeStructureForAnswers } from './helpers.js'
 import includes from './includes.js'
 
+const { userTest } = prisma
+
 export const getAllTests = async () => {
   const allTests = await prisma.test.findMany({
     include: includes,
@@ -19,12 +21,13 @@ export const getTest = async (id) => {
 
 export function createTests(testData) {
   return prisma.$transaction(async (prisma) => {
+    const startDate = new Date(testData.start)
     const newTest = await prisma.Test.create({
       data: {
         name: testData.name,
         subjectId: testData.subjectId,
         start: testData.start, //'2022-06-11T21:38:26.832Z'
-        length: testData.length,
+        length: testData.length, // in minutes
         highestScore: testData.highestScore,
         questions: {
           create: testData.questions,
@@ -63,6 +66,17 @@ export function createTests(testData) {
     await prisma.UserTest.createMany({
       data: groupUsersIdsFilterd,
     })
+
+    setTimeout(async () => {
+      await userTest.updateMany({
+        where: {
+          testId: newTest.id,
+          isComplete: false,
+        },
+        data: { isComplete: true, mark: 0 },
+      })
+    }, startDate - Date.now() + testData.length * 60 * 1000)
+
     return newTest
   })
 }

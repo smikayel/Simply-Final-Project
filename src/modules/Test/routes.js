@@ -9,7 +9,7 @@ import {
 } from './service.js'
 import validations from './validation.js'
 
-const { createTestSchema, getUsersTestsSchema } = validations
+const { createTestSchema, getUsersTestsSchema, deleteTestSchema, getTestSchema } = validations
 
 const router = Router()
 
@@ -20,13 +20,23 @@ router.get(
   validateSchema(getUsersTestsSchema),
   handleGetAllTestsForUser
 )
-router.get('/:id', verifyRoles(['Admin', 'Student', 'Teacher']), handleGetTest)
+router.get(
+  '/:id',
+  validateSchema(getTestSchema),
+  verifyRoles(['Admin', 'Student', 'Teacher']),
+  handleGetTest
+)
 router.post(
   '/',
   validateSchema(createTestSchema),
   verifyRoles(['Admin', 'Teacher']),
   handleCreateTest
 )
-router.delete('/', verifyRoles(['Admin', 'Teacher']), handleDeleteTest)
+router.delete(
+  '/',
+  validateSchema(deleteTestSchema),
+  verifyRoles(['Admin', 'Teacher']),
+  handleDeleteTest
+)
 
 export { router as testsRoutes }

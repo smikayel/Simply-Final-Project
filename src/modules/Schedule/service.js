@@ -3,7 +3,6 @@ import { badRequestErrorCreator } from '../../helpers/errors.js'
 import {
   getScheduleByGroupId,
   getScheduleById,
-  createSchedule,
   deleteSchedule,
   updateSchedule,
   createSchedules,

@@ -102,7 +102,7 @@ model GroupTest {
   id      Int   @id @default(autoincrement())
   testId  Int
   groupId Int
-  test    Test  @relation(fields: [testId], references: [id])
+  test    Test  @relation(fields: [testId], references: [id], onDelete: Cascade)
   group   Group @relation(fields: [groupId], references: [id])
 }
 

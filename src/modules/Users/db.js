@@ -7,6 +7,7 @@ import {
   getUsersAnsweredQuestions,
   getQuestionMarks,
 } from './helpers.js'
+import { roleStudentName } from '../constants.js'
 
 const { user, userTest, userTestAnswers } = prisma
 
@@ -144,7 +145,7 @@ export const addMark = async (
         },
         user: {
           role: {
-            name: 'Student',
+            name: roleStudentName,
           },
         },
       },
