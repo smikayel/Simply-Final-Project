@@ -31,6 +31,7 @@ export default {
       isComplete: Joi.boolean(),
       take: Joi.number().integer(),
       skip: Joi.number().integer(),
+      subjectId: Joi.number().integer(),
     }).unknown(true),
   },
 

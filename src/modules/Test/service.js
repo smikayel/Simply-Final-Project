@@ -78,10 +78,11 @@ export const handleDeleteTest = async (req, res) => {
 
 export const handleGetAllTestsForUser = async (req, res) => {
   try {
-    let { isComplete, take, skip } = req.query
+    let { isComplete, take, skip, subjectId } = req.query
     if (take !== undefined) take = +take
     if (skip !== undefined) skip = +skip
-    const userTests = await getAllUserTests(req.id, isComplete, take, skip)
+    if (subjectId !== undefined) subjectId = +subjectId
+    const userTests = await getAllUserTests(req.id, isComplete, take, skip, subjectId)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
     console.log(err)
