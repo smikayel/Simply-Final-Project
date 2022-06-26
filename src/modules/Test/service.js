@@ -1,5 +1,5 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
+import { badRequestErrorCreator, forbiddenErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests, getAllUserTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
 import { roleAdminName, roleTeacherName } from '../constants.js'
@@ -36,14 +36,13 @@ export const handleGetTest = async (req, res) => {
       const match = tests.some(({ test }) => {
         if (req.role.name !== roleTeacherName) {
           const tmp = new Date()
-          const endDate = new Date()
-          endDate.setTime(test.start.getTime() + test.length * 60 * 1000)
-          return +test.id === +testId && test.start <= tmp && endDate > tmp
+
+          return +test.id === +testId && test.start <= tmp
         }
         return +test.id === +testId
       })
       if (!match) {
-        res.status(401).json(unauthorizedErrorCreator('You cant access this test'))
+        res.status(403).json(forbiddenErrorCreator('You cant access this test'))
         return
       }
     }

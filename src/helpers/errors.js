@@ -29,3 +29,11 @@ export const unauthorizedErrorCreator = (message) => {
 
   return error
 }
+
+export const forbiddenErrorCreator = (message) => {
+  const error = new Error()
+  error.message = message
+  error.status = 403
+
+  return error
+}
