@@ -268,17 +268,21 @@ export const getUserTestResults = async (userId, testId) => {
   })
 
   const answerCounts = { wrong: {}, correct: {} }
-  const answerResult = { wrong: [], correct: [] }
+  // const answerResult = { wrong: [], correct: [] }
+  const answerResult = {}
   usersAnswers.forEach(({ answer }) => {
     answerCounts['wrong'][answer.questionId] = 0
     answerCounts['correct'][answer.questionId] = 0
+    answerResult[answer.questionId] = answerResult[answer.questionId] || []
     if (answer.isCorrect) {
       answerCounts['correct'][answer.questionId]++
-      answerResult['correct'].push(answer.id)
+      // answerResult['correct'].push(answer.id)
+      answerResult[answer.questionId].push({ [answer.id]: true })
       return
     }
     answerCounts['wrong'][answer.questionId]++
-    answerResult['wrong'].push(answer.id)
+    // answerResult['wrong'].push(answer.id)
+    answerResult[answer.questionId].push({ [answer.id]: false })
   })
 
   const { mark, questionMarks } = await getQuestionMarks(
@@ -290,8 +294,9 @@ export const getUserTestResults = async (userId, testId) => {
   )
   return {
     mark,
-    correctAnswerIds: answerResult['correct'],
-    wrongAnswerIds: answerResult['wrong'],
+    // correctAnswerIds: answerResult['correct'],
+    // wrongAnswerIds: answerResult['wrong'],
+    answerResult,
     questionMarks,
   }
 }
