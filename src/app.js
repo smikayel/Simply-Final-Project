@@ -6,18 +6,8 @@ import cors from 'cors'
 import corsOptions from '../config/corsOptions.js'
 import cookieParser from 'cookie-parser'
 import boolParser from 'express-query-boolean'
-import http from 'http'
-import { Server } from 'socket.io'
 
 const app = express()
-const server = http.createServer(app)
-
-export const io = new Server(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST'],
-  },
-})
 
 const env = process.env.NODE_ENV || 'development'
 
@@ -34,7 +24,5 @@ app.use(logger('dev' /*, { skip: (req, res) => res.statusCode < 400 }*/))
 app.set('port', process.env.PORT)
 app.set('env', env)
 app.set('config', config)
-
-server.listen(5001)
 
 export default app

@@ -1,6 +1,7 @@
 import app from './app.js'
 import * as routes from './api/index.js'
 import { internalServerErrorCreator, notFoundErrorCreator } from './helpers/errors.js'
+import { server } from './modules/Chat/service.js'
 
 const PORT = app.get('port')
 const { API_VERSIONS } = app.get('config')
@@ -23,6 +24,10 @@ app.use((err, req, res, next) => {
   res.status(status).json(error)
 })
 
-app.listen(PORT, function () {
+server.listen(PORT, function () {
   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
 })
+
+// app.listen(PORT, function () {
+//   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
+// })
