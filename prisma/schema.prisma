@@ -23,6 +23,7 @@ model User {
   userTest        UserTest[]
   UserTestAnswers UserTestAnswers[]
   Chat            Chat[]
+  userMessage     userMessage[]
 }
 
 model UserGroup {
@@ -161,12 +162,40 @@ model Answer {
   userTestAnswers UserTestAnswers[]
 }
 
-model Chat {
+// model Chat {
+//   id       Int   @id @default(autoincrement())
+//   groupId  Int
+//   group    Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+//   senderId Int
+//   sender   User  @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+//   createdAt DateTime  @default(now())
+//   message   Message[]
+
+//   @@unique([groupId, senderId])
+// }
+
+model Message {
+  id          Int           @id @default(autoincrement())
+  groupId     Int
+  senderId    Int
+  sender      User          @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  // chatId      Int
+  // chat        Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  text        String        @db.VarChar(160)
+  createdAt   DateTime      @default(now())
+  userMessage userMessage[]
+}
+
+model userMessage {
   id        Int      @id @default(autoincrement())
-  groupId   Int
-  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  senderId  Int
-  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  message   String   @db.VarChar(160)
-  createdAt DateTime @default(now())
+  messageId Int
+  userId    Int
+  seen      Boolean  @default(false)
+  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  readAt    DateTime @default(now())
+
+  @@unique([userId, messageId])
 }

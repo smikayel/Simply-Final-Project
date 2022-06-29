@@ -18,6 +18,16 @@ export const validateSchema = (schema) => {
   }
 }
 
+export const validateSocketShcema = async (schema, data) => {
+  try {
+    await schema.body.validateAsync(data)
+    return 0
+  } catch (error) {
+    console.log(error.details)
+    return badRequestErrorCreator(error.details)
+  }
+}
+
 export const verifyJWT = (req, res, next) => {
   const authHeader = req.headers.authorization || req.headers.Authorization
   if (!authHeader?.startsWith('Bearer '))
