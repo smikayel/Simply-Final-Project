@@ -20,33 +20,38 @@ io.on('connection', (socket) => {
   console.log('connected')
 
   socket.on('join_chat', (data) => {
-    socket.join(`${data} joined`)
+    console.log(`groupId:${data.groupId}`, 'join')
+    socket.join(`groupId:${data.groupId}`)
   })
 
-  socket.on('get_group_message', async (data) => {
-    try {
-      if (validateSocketShcema(getGroupMessagesSchema, data) !== 0) {
-        socket.emit('cant_fetch_group_messages', data)
-        //todo: send error to client
-        return
-      }
-      const msgs = await getGroupMessages(data)
-      socket.emit('group_messages', msgs)
-    } catch (err) {
-      socket.emit('cant_fetch_group_messages', err)
-    }
-  })
+  // socket.on('get_group_message', async (data) => {
+  //   try {
+  //     if (validateSocketShcema(getGroupMessagesSchema, data) !== 0) {
+  //       socket.emit('cant_fetch_group_messages', data)
+  //       //todo: send error to client
+  //       return
+  //     }
+  //     const msgs = await getGroupMessages(data)
+  //     socket.emit('group_messages', msgs)
+  //   } catch (err) {
+  //     socket.emit('cant_fetch_group_messages', err)
+  //   }
+  // })
 
   socket.on('send_message', async (data) => {
     try {
-      if (validateSocketShcema(createMessageSchema, data) !== 0) {
+      const valid = await validateSocketShcema(createMessageSchema, data)
+      if (valid !== 0) {
+        console.log(data)
         socket.emit('message_not_sent', data)
         //todo: send error to client
         return
       }
-      const msg = await createMessage(data)
-      socket.emit('message_sent', msg)
-      socket.to(data.chat).emit('receive_message', data)
+      // const msg = await createMessage(data)
+      console.log(`groupId:${data.groupId}`, 'sent')
+      // socket.emit('message_sent', data)
+      console.log(data)
+      socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', data)
     } catch (err) {
       socket.emit('message_not_sent', err)
     }

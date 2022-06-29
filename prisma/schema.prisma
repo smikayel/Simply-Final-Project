@@ -178,8 +178,8 @@ model Answer {
 model Message {
   id          Int           @id @default(autoincrement())
   groupId     Int
-  senderId    Int
-  sender      User          @relation(fields: [senderId], references: [id], onDelete: SetNull)
+  senderId    Int?
+  sender      User?         @relation(fields: [senderId], references: [id], onDelete: SetNull)
   group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
   // chatId      Int
   // chat        Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
