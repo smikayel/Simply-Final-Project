@@ -32,11 +32,9 @@ export default {
         .items(
           Joi.object({
             day: Joi.number().integer().greater(0).less(8).required(),
-            scheduleSubject: Joi.array()
-              .items(
-                Joi.object({ subjectId: Joi.number().required(), time: Joi.string().required() })
-              )
-              .required(),
+            scheduleSubject: Joi.array().items(
+              Joi.object({ subjectId: Joi.number(), time: Joi.string().required() })
+            ),
 
             // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
           })

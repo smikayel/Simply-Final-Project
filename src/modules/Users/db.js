@@ -72,17 +72,15 @@ export const updateUserbyId = async (id, data) => {
   }
 }
 
-export const deleteUserById = async (id) => {
-  try {
-    const deletedUser = await user.delete({
-      where: {
-        id,
+export const deleteUserByIds = async (ids) => {
+  const deletedUsers = await user.deleteMany({
+    where: {
+      id: {
+        in: ids,
       },
-    })
-    return deletedUser
-  } catch (error) {
-    return error
-  }
+    },
+  })
+  return deletedUsers
 }
 
 export const createUsers = async (data) => {

@@ -17,7 +17,7 @@ export default {
   },
   deleteUserSchema: {
     body: Joi.object({
-      id: Joi.number().strict().required(),
+      ids: Joi.array().items(Joi.number().strict().required()),
     }),
   },
 

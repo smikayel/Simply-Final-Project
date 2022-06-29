@@ -3,14 +3,11 @@ import { prisma } from '../../services/Prisma.js'
 const { group } = prisma
 
 export const createGroup = async (data) => {
-  try {
-    const createdGroup = await group.create({
-      data,
-    })
-    return createdGroup
-  } catch (error) {
-    return error
-  }
+  console.log()
+  const createdGroup = await group.create({
+    data,
+  })
+  return createdGroup
 }
 
 export const getGroupById = async (id) => {

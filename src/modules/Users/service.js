@@ -3,13 +3,13 @@ import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/
 import {
   getAllUsers,
   createUsers,
-  deleteUserById,
   updateUserbyId,
   getUser,
   addMark,
   updateUserTest,
   submitTest,
   getUserTestResults,
+  deleteUserByIds,
 } from './db.js'
 import { validateTestResultReq, validateTestSubmit } from './helpers.js'
 import bcrypt from 'bcrypt'
@@ -50,9 +50,10 @@ export const handleCreateUsers = async (req, res) => {
   }
 }
 
-export const handleDeleteUser = async (req, res) => {
+export const handleDeleteUsers = async (req, res) => {
   try {
-    const deletedUser = await deleteUserById(parseInt(req.body.id))
+    const deletedUser = await deleteUserByIds(req.body.ids)
+    console.log(deletedUser)
     res.status(200).json(responseDataCreator({ deletedUser }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
@@ -71,10 +72,8 @@ export const handleUpdateUser = async (req, res) => {
         password: pwHashed,
       })
       /* eslint-disable no-unused-vars */
-      res.status(200).json(responseDataCreator({ updatedUser }))
-      return
+      return res.status(200).json(responseDataCreator({ updatedUser }))
     }
-    throw new Error('Password is incorrect')
   } catch (err) {
     return res.status(401).json(unauthorizedErrorCreator(err.message))
   }

@@ -3,12 +3,12 @@ import { validateSchema, verifyRoles } from '../../helpers/validations.js'
 import {
   handleGetAllUsers,
   handleCreateUsers,
-  handleDeleteUser,
   handleUpdateUser,
   handleSetUserMark,
   handleUpdateUserTest,
   handleUserTestSubmit,
   handleGetUserTestResults,
+  handleDeleteUsers,
 } from './service.js'
 import validations from './validation.js'
 
@@ -55,6 +55,6 @@ router.put(
   validateSchema(setTestFinishSchema),
   handleUpdateUserTest
 )
-router.delete('/', validateSchema(deleteUserSchema), verifyRoles(['Admin']), handleDeleteUser)
+router.delete('/', validateSchema(deleteUserSchema), verifyRoles(['Admin']), handleDeleteUsers)
 
 export { router as usersRoutes }
