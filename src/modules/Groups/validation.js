@@ -16,4 +16,7 @@ export default {
       id: Joi.number().required(),
     }),
   },
+  getGroupUsersSchema: {
+    params: Joi.object({ id: Joi.number().required() }),
+  },
 }

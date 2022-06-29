@@ -51,3 +51,25 @@ export const deleteGroupById = async (id) => {
     return error
   }
 }
+
+export const getGroupUsers = async (id) => {
+  let group = await prisma.UserGroup.findMany({
+    where: {
+      groupId: id,
+    },
+    select: {
+      user: {
+        select: {
+          firstName: true,
+          lastName: true,
+          email: true,
+          roleId: true,
+        },
+      },
+    },
+  })
+
+  group = { id, users: group }
+
+  return group
+}
