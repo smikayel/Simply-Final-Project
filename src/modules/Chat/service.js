@@ -7,7 +7,7 @@ import validations from './validation.js'
 import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
 
-const { createMessageSchema, getGroupMessagesSchema } = validations
+const { createMessageSchema } = validations
 
 export const server = http.createServer(app)
 
