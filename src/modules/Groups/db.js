@@ -60,6 +60,7 @@ export const getGroupUsers = async (id) => {
     select: {
       user: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           email: true,
