@@ -6,6 +6,7 @@ import { verifyJWT } from '../helpers/validations.js'
 import { testsRoutes } from '../modules/Test/routes.js'
 import { scheduleRoutes } from '../modules/Schedule/routes.js'
 import { subjectRoutes } from '../modules/Subject/routes.js'
+import { chatsRoutes } from '../modules/Chat/routes.js'
 
 const router = Router()
 
@@ -18,5 +19,6 @@ router.use('/users', usersRoutes)
 router.use('/groups', groupsRoutes)
 router.use('/schedules', scheduleRoutes)
 router.use('/subjects', subjectRoutes)
+router.use('/chats', chatsRoutes)
 
 export { router as v1 }

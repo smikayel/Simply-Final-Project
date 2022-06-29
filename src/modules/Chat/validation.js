@@ -10,10 +10,12 @@ export default {
   },
 
   getGroupMessagesSchema: {
-    body: Joi.object({
-      groupId: Joi.number().strict().required(),
-      take: Joi.number().strict().required(),
-      skip: Joi.number().strict().required(),
+    params: Joi.object({
+      groupId: Joi.number().required(),
     }),
+    query: Joi.object({
+      take: Joi.number().required(),
+      skip: Joi.number().required(),
+    }).unknown(true),
   },
 }

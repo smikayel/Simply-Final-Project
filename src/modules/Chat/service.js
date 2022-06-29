@@ -4,6 +4,8 @@ import app from '../../app.js'
 import { validateSocketShcema } from '../../helpers/validations.js'
 import { createMessage, getGroupMessages } from './db.js'
 import validations from './validation.js'
+import { badRequestErrorCreator } from '../../helpers/errors.js'
+import { responseDataCreator } from '../../helpers/common.js'
 
 const { createMessageSchema, getGroupMessagesSchema } = validations
 
@@ -24,20 +26,6 @@ io.on('connection', (socket) => {
     socket.join(`groupId:${data.groupId}`)
   })
 
-  // socket.on('get_group_message', async (data) => {
-  //   try {
-  //     if (validateSocketShcema(getGroupMessagesSchema, data) !== 0) {
-  //       socket.emit('cant_fetch_group_messages', data)
-  //       //todo: send error to client
-  //       return
-  //     }
-  //     const msgs = await getGroupMessages(data)
-  //     socket.emit('group_messages', msgs)
-  //   } catch (err) {
-  //     socket.emit('cant_fetch_group_messages', err)
-  //   }
-  // })
-
   socket.on('send_message', async (data) => {
     try {
       const valid = await validateSocketShcema(createMessageSchema, data)
@@ -47,13 +35,24 @@ io.on('connection', (socket) => {
         //todo: send error to client
         return
       }
-      // const msg = await createMessage(data)
+      const msg = await createMessage(data)
       console.log(`groupId:${data.groupId}`, 'sent')
-      // socket.emit('message_sent', data)
-      console.log(data)
-      socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', data)
+      socket.emit('message_sent', msg)
+      socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', msg)
     } catch (err) {
+      console.log(err)
       socket.emit('message_not_sent', err)
     }
   })
 })
+
+export const handleGetGroupMessages = async (req, res) => {
+  const { groupId } = req.params
+  const { take, skip } = req.query
+  try {
+    const msgs = await getGroupMessages(+groupId, +take, +skip)
+    res.status(200).json(responseDataCreator(msgs))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator())
+  }
+}
