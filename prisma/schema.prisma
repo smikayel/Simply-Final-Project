@@ -22,8 +22,8 @@ model User {
   userGroup       UserGroup[]
   userTest        UserTest[]
   UserTestAnswers UserTestAnswers[]
-  Chat            Chat[]
   userMessage     userMessage[]
+  Message         Message[]
 }
 
 model UserGroup {
@@ -50,7 +50,7 @@ model Group {
   updatedAt DateTime    @updatedAt
   userGroup UserGroup[]
   GroupTest GroupTest[]
-  Chat      Chat[]
+  Message   Message[]
 }
 
 model Schedule {
