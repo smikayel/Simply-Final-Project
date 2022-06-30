@@ -16,7 +16,28 @@ export const createMessage = async ({ senderId, groupId, text }) => {
       },
     },
   })
-  return createdMessage
+  const msg = await message.findUnique({
+    where: {
+      id: createdMessage.id,
+    },
+    include: {
+      sender: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          roleId: true,
+          role: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+    },
+  })
+  return msg
 }
 
 export const getGroupMessages = async (groupId, take, skip) => {
@@ -34,8 +55,16 @@ export const getGroupMessages = async (groupId, take, skip) => {
           lastName: true,
           email: true,
           roleId: true,
+          role: {
+            select: {
+              name: true,
+            },
+          },
         },
       },
+    },
+    orderBy: {
+      createdAt: 'asc',
     },
   })
   return messages

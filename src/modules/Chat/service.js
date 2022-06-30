@@ -21,22 +21,36 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
   console.log('connected')
 
-  socket.on('join_chat', (data) => {
-    console.log(`groupId:${data.groupId}`, 'join')
-    socket.join(`groupId:${data.groupId}`)
+  socket.on('join_chat', async (data) => {
+    try {
+      console.log(`groupId:${data.groupId}`, 'join')
+      socket.join(`groupId:${data.groupId}`)
+      socket.emit('join_status', 'Joined group successfully')
+    } catch (err) {
+      console.log(err)
+    }
+  })
+
+  socket.on('get_group_messages', async (data) => {
+    const take = -15
+    const skip = +data.skip || 0
+    let groupMsgs = await getGroupMessages(data.groupId, take, skip)
+    groupMsgs = groupMsgs.map((msg) => {
+      const isSender = msg.sender.id === data.userId
+      return { data: msg, user: isSender }
+    })
+    if (groupMsgs.length) socket.emit('recieve_group_messages', groupMsgs)
   })
 
   socket.on('send_message', async (data) => {
     try {
       const valid = await validateSocketShcema(createMessageSchema, data)
       if (valid !== 0) {
-        console.log(data)
         socket.emit('message_not_sent', data)
         //todo: send error to client
         return
       }
       const msg = await createMessage(data)
-      console.log(`groupId:${data.groupId}`, 'sent')
       socket.emit('message_sent', msg)
       socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', msg)
     } catch (err) {
