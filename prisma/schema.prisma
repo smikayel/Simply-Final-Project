@@ -28,12 +28,14 @@ model User {
 
 model UserGroup {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  groupId   Int
-  user      User     @relation(fields: [userId], references: [id])
-  group     Group    @relation(fields: [groupId], references: [id])
+  userId    Int?
+  groupId   Int?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group     Group?   @relation(fields: [groupId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, groupId])
 }
 
 model Role {
@@ -102,22 +104,21 @@ model Test {
 }
 
 model GroupTest {
-  id      Int   @id @default(autoincrement())
-  testId  Int
-  groupId Int
-  test    Test  @relation(fields: [testId], references: [id], onDelete: Cascade)
-  group   Group @relation(fields: [groupId], references: [id])
+  id      Int    @id @default(autoincrement())
+  testId  Int?
+  groupId Int?
+  test    Test?  @relation(fields: [testId], references: [id], onDelete: Cascade)
+  group   Group? @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model UserTest {
   id         Int      @id @default(autoincrement())
-  userId     Int
-  testId     Int
+  userId     Int?
+  testId     Int?
   mark       Float    @default(-1) @db.Double
   isComplete Boolean  @default(false)
-  user       User     @relation(fields: [userId], references: [id])
-  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-  // UserTestAnswers UserTestAnswers[]
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  test       Test?    @relation(fields: [testId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -125,17 +126,15 @@ model UserTest {
 }
 
 model UserTestAnswers {
-  id         Int      @id @default(autoincrement())
-  // userTestId Int
-  userId     Int
-  testId     Int
-  // userTest   UserTest @relation(fields: [userTestId], references: [id], onDelete: Cascade)
-  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  questionId Int
-  answerId   Int
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  answer     Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  id         Int       @id @default(autoincrement())
+  userId     Int?
+  testId     Int?
+  test       Test?     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  user       User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId Int?
+  answerId   Int?
+  question   Question? @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answer     Answer?   @relation(fields: [answerId], references: [id], onDelete: Cascade)
 
   @@unique([userId, testId, questionId, answerId])
 }
@@ -145,8 +144,8 @@ model Question {
   name            String            @db.VarChar(160)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
-  test            Test              @relation(fields: [testId], references: [id], onDelete: Cascade)
-  testId          Int
+  test            Test?             @relation(fields: [testId], references: [id], onDelete: Cascade)
+  testId          Int?
   answers         Answer[]
   userTestAnswers UserTestAnswers[]
 }
@@ -162,27 +161,12 @@ model Answer {
   userTestAnswers UserTestAnswers[]
 }
 
-// model Chat {
-//   id       Int   @id @default(autoincrement())
-//   groupId  Int
-//   group    Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
-//   senderId Int
-//   sender   User  @relation(fields: [senderId], references: [id], onDelete: Cascade)
-
-//   createdAt DateTime  @default(now())
-//   message   Message[]
-
-//   @@unique([groupId, senderId])
-// }
-
 model Message {
   id          Int           @id @default(autoincrement())
-  groupId     Int
+  groupId     Int?
   senderId    Int?
   sender      User?         @relation(fields: [senderId], references: [id], onDelete: SetNull)
-  group       Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  // chatId      Int
-  // chat        Chat          @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  group       Group?        @relation(fields: [groupId], references: [id], onDelete: Cascade)
   text        String        @db.VarChar(160)
   createdAt   DateTime      @default(now())
   userMessage userMessage[]
@@ -190,11 +174,11 @@ model Message {
 
 model userMessage {
   id        Int      @id @default(autoincrement())
-  messageId Int
-  userId    Int
+  messageId Int?
+  userId    Int?
   seen      Boolean  @default(false)
-  message   Message  @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  message   Message? @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   readAt    DateTime @default(now())
 
   @@unique([userId, messageId])

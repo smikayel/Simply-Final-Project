@@ -56,7 +56,8 @@ export const handleDeleteUsers = async (req, res) => {
     console.log(deletedUser)
     res.status(200).json(responseDataCreator({ deletedUser }))
   } catch (err) {
-    return res.status(400).json(badRequestErrorCreator())
+    console.log(err)
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
 

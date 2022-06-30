@@ -6,6 +6,8 @@ import { createMessage, getGroupMessages } from './db.js'
 import validations from './validation.js'
 import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
+import { checkUserInGroup } from './db.js'
+import { roleAdminName } from '../constants.js'
 
 const { createMessageSchema } = validations
 
@@ -31,17 +33,6 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('get_group_messages', async (data) => {
-    const take = -15
-    const skip = +data.skip || 0
-    let groupMsgs = await getGroupMessages(data.groupId, take, skip)
-    groupMsgs = groupMsgs.map((msg) => {
-      const isSender = msg.sender.id === data.userId
-      return { data: msg, user: isSender }
-    })
-    if (groupMsgs.length) socket.emit('recieve_group_messages', groupMsgs)
-  })
-
   socket.on('send_message', async (data) => {
     try {
       const valid = await validateSocketShcema(createMessageSchema, data)
@@ -62,11 +53,23 @@ io.on('connection', (socket) => {
 
 export const handleGetGroupMessages = async (req, res) => {
   const { groupId } = req.params
-  const { take, skip } = req.query
+  let { take, skip } = req.query
+  skip = +skip || 0
   try {
-    const msgs = await getGroupMessages(+groupId, +take, +skip)
-    res.status(200).json(responseDataCreator(msgs))
+    if (req.role.name !== roleAdminName) {
+      const user = await checkUserInGroup(+groupId, req.id)
+      if (!user) {
+        res.status(403).json(badRequestErrorCreator('User is not in group'))
+        return
+      }
+    }
+    let groupMsgs = await getGroupMessages(+groupId, +take, +skip, req.id)
+    groupMsgs = groupMsgs.map((msg) => {
+      const isSender = msg.sender.id === req.id
+      return { data: msg, user: isSender }
+    })
+    res.status(200).json(responseDataCreator(groupMsgs))
   } catch (err) {
-    return res.status(400).json(badRequestErrorCreator())
+    return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

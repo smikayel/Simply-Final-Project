@@ -14,8 +14,8 @@ export default {
       groupId: Joi.number().required(),
     }),
     query: Joi.object({
-      take: Joi.number().required(),
-      skip: Joi.number().required(),
+      take: Joi.number(),
+      skip: Joi.number(),
     }).unknown(true),
   },
 }
