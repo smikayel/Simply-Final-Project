@@ -21,7 +21,12 @@ const router = Router()
 
 router.get('/:id', validateSchema(getScheduleSchema), handleGetScheduleById)
 router.get('/group/:groupId', validateSchema(getSchedulebyGroupSchema), handleGetScheduleByGroup)
-router.post('/', verifyRoles(['Admin']), validateSchema(createScheduleSchema), handleCreateSchedule)
+router.post(
+  '/',
+  verifyRoles(['Admin', 'Teacher']),
+  validateSchema(createScheduleSchema),
+  handleCreateSchedule
+)
 router.delete(
   '/:id',
   validateSchema(deleteScheduleSchema),
