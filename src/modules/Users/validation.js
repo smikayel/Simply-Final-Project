@@ -57,4 +57,10 @@ export default {
       testId: Joi.number().integer().min(1),
     }),
   },
+
+  getAllUsersSchema: {
+    query: Joi.object({
+      firstName: Joi.string().max(30),
+    }).unknown(true),
+  },
 }

@@ -27,7 +27,8 @@ export const handleGetUser = async (req, res) => {
 
 export const handleGetAllUsers = async (req, res) => {
   try {
-    const users = await getAllUsers()
+    const firstName = req.query.firstName
+    const users = await getAllUsers(firstName)
     res.status(200).json(responseDataCreator({ users }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())

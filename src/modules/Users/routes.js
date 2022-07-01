@@ -20,11 +20,17 @@ const {
   changePasswordSchema,
   submitTestSchema,
   getTestResultsSchema,
+  getAllUsersSchema,
 } = validations
 
 const router = Router()
 
-router.get('/', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetAllUsers)
+router.get(
+  '/',
+  verifyRoles(['Admin', 'Teacher', 'Student']),
+  validateSchema(getAllUsersSchema),
+  handleGetAllUsers
+)
 router.get(
   '/testResults/:userId/:testId',
   validateSchema(getTestResultsSchema),
