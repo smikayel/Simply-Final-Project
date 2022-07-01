@@ -46,6 +46,11 @@ export const createSchedules = (schedules) => {
 }
 
 export const createSchedule = async (prisma, { scheduleSubject, ...data }) => {
+  await schedule.delete({
+    where: {
+      day_groupId: data,
+    },
+  })
   const schedules = await schedule.create({
     data: {
       ...data,
