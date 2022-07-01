@@ -25,7 +25,7 @@ io.on('connection', (socket) => {
 
   socket.on('join_chat', async (data) => {
     try {
-      console.log(`groupId:${data.groupId}`, 'join')
+      // console.log(`groupId:${data.groupId}`, 'join')
       socket.join(`groupId:${data.groupId}`)
       socket.emit('join_status', 'Joined group successfully')
     } catch (err) {
@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
       socket.emit('message_sent', msg)
       socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', msg)
     } catch (err) {
-      console.log(err)
+      // console.log(err)
       socket.emit('message_not_sent', err)
     }
   })
@@ -57,7 +57,7 @@ export const handleGetGroupMessages = async (req, res) => {
   skip = +skip || 0
   try {
     if (req.role.name !== roleAdminName) {
-      const user = await checkUserInGroup(+groupId, req.id)
+      const user = await checkUserInGroup(req.id, +groupId)
       if (!user) {
         res.status(403).json(badRequestErrorCreator('User is not in group'))
         return
@@ -65,11 +65,12 @@ export const handleGetGroupMessages = async (req, res) => {
     }
     let groupMsgs = await getGroupMessages(+groupId, +take, +skip, req.id)
     groupMsgs = groupMsgs.map((msg) => {
-      const isSender = msg.sender.id === req.id
+      const isSender = msg.sender?.id === req.id
       return { data: msg, user: isSender }
     })
     res.status(200).json(responseDataCreator(groupMsgs))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

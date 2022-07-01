@@ -36,14 +36,16 @@ export const getAllGroups = async () => {
   }
 }
 
-export const deleteGroupById = async (id) => {
+export const deleteGroupsById = async (ids) => {
   try {
-    const deletedGroup = await group.delete({
+    const deletedGroups = await group.deleteMany({
       where: {
-        id,
+        id: {
+          in: ids,
+        },
       },
     })
-    return deletedGroup
+    return deletedGroups
   } catch (error) {
     return error
   }

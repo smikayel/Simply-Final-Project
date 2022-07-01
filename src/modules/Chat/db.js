@@ -71,6 +71,7 @@ export const getGroupMessages = async (groupId, take, skip) => {
 }
 
 export const checkUserInGroup = async (userId, groupId) => {
+  console.log(userId, groupId)
   const user = await prisma.userGroup.findUnique({
     where: {
       userId_groupId: {

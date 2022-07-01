@@ -123,19 +123,12 @@ export const handleGetUserTestResults = async (req, res) => {
     const userId = +req.params.userId
     if (req.role.name === 'Student' && req.id !== userId)
       await validateTestResultReq(userId, testId)
-
-    // const { mark, correctAnswerIds, wrongAnswerIds, questionMarks } = await getUserTestResults(
-    //   userId,
-    //   testId
-    // )
     const {
       mark,
       answerResult: questions,
       questionMarks,
     } = await getUserTestResults(userId, testId)
-    // res
-    //   .status(200)
-    //   .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))
+
     res.status(200).json(responseDataCreator({ mark, questions, questionMarks }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))

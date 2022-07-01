@@ -15,9 +15,9 @@ export default {
       })
     ),
   },
-  deleteUserSchema: {
+  deleteUsersSchema: {
     body: Joi.object({
-      ids: Joi.array().items(Joi.number().strict().required()),
+      ids: Joi.array().items(Joi.number().strict().required()).required(),
     }),
   },
 

@@ -11,9 +11,9 @@ export default {
       id: Joi.number().required(),
     }),
   },
-  deleteGroupSchema: {
+  deleteGroupsSchema: {
     body: Joi.object({
-      id: Joi.number().required(),
+      ids: Joi.array().items(Joi.number().integer().strict().required()).required(),
     }),
   },
   getGroupUsersSchema: {

@@ -3,7 +3,7 @@ import {
   createGroup,
   getAllGroups,
   getGroupById,
-  deleteGroupById,
+  deleteGroupsById,
   getGroupUsers,
 } from '../Groups/db.js'
 import { responseDataCreator } from '../../helpers/common.js'
@@ -38,9 +38,10 @@ export const handleGetGroupById = async (req, res) => {
   }
 }
 
-export const handleDeleteGroupById = async (req, res) => {
+export const handleDeleteGroupsById = async (req, res) => {
   try {
-    const deletedGroup = await deleteGroupById(parseInt(req.body.id))
+    const groupIds = req.body.ids
+    const deletedGroup = await deleteGroupsById(groupIds)
     res.status(200).json(responseDataCreator({ deletedGroup }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())

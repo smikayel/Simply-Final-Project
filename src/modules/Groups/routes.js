@@ -4,12 +4,12 @@ import {
   handleCreateGroup,
   handleGetAllGroups,
   handleGetGroupById,
-  handleDeleteGroupById,
+  handleDeleteGroupsById,
   handleGetGroupUsers,
 } from './service.js'
 import validations from './validation.js'
 
-const { createGroupSchema, getGroupByIdSchema, deleteGroupSchema, getGroupUsersSchema } =
+const { createGroupSchema, getGroupByIdSchema, deleteGroupsSchema, getGroupUsersSchema } =
   validations
 
 const router = Router()
@@ -22,7 +22,12 @@ router.get(
   handleGetGroupUsers
 )
 router.post('/', validateSchema(createGroupSchema), verifyRoles(['Admin']), handleCreateGroup)
-router.delete('/', validateSchema(deleteGroupSchema), verifyRoles(['Admin']), handleDeleteGroupById)
+router.delete(
+  '/',
+  validateSchema(deleteGroupsSchema),
+  verifyRoles(['Admin']),
+  handleDeleteGroupsById
+)
 router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(['Admin']), handleGetGroupById)
 
 export { router as groupsRoutes }

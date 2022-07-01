@@ -14,7 +14,7 @@ import validations from './validation.js'
 
 const {
   createUsersSchema,
-  deleteUserSchema,
+  deleteUsersSchema,
   setTestFinishSchema,
   setUserMarkSchema,
   changePasswordSchema,
@@ -55,6 +55,6 @@ router.put(
   validateSchema(setTestFinishSchema),
   handleUpdateUserTest
 )
-router.delete('/', validateSchema(deleteUserSchema), verifyRoles(['Admin']), handleDeleteUsers)
+router.delete('/', validateSchema(deleteUsersSchema), verifyRoles(['Admin']), handleDeleteUsers)
 
 export { router as usersRoutes }
