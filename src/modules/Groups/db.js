@@ -3,7 +3,6 @@ import { prisma } from '../../services/Prisma.js'
 const { group } = prisma
 
 export const createGroup = async (data) => {
-  console.log()
   const createdGroup = await group.create({
     data,
   })

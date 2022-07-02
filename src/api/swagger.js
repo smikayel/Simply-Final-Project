@@ -8,16 +8,26 @@ export const swaggerOptions = {
   swaggerDefinition: {
     info: {
       version: '1.0.0',
-      title: 'Customer API',
-      description: 'Customer API Information',
+      title: 'University API',
+      description: 'University managment API',
       contact: {
-        name: 'Amazing Developer',
+        name: 'Hov, Hayk, Davit, Sasha',
       },
       servers: ['http://localhost:5000'],
     },
+
+    securityDefinitions: {
+      bearerAuth: {
+        type: 'apiKey',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        in: 'header',
+        name: 'authorization',
+      },
+    },
   },
   // ['.routes/*.js']
-  apis: ['./src/modules/Auth/routes.js'],
+  apis: ['./src/modules/Auth/routes.js', './src/modules/Groups/routes.js'],
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
