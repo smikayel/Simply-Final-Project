@@ -8,8 +8,11 @@ import { scheduleRoutes } from '../modules/Schedule/routes.js'
 import { subjectRoutes } from '../modules/Subject/routes.js'
 import { chatsRoutes } from '../modules/Chat/routes.js'
 
+import { swaggerRoutes } from './swagger.js'
+
 const router = Router()
 
+router.use('/api-docs', swaggerRoutes)
 router.use('/auth', authRoutes)
 router.use(verifyJWT)
 
