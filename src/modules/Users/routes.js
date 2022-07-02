@@ -9,6 +9,7 @@ import {
   handleUserTestSubmit,
   handleGetUserTestResults,
   handleDeleteUsers,
+  handleGetTopUsers,
 } from './service.js'
 import validations from './validation.js'
 
@@ -36,6 +37,7 @@ router.get(
   validateSchema(getTestResultsSchema),
   handleGetUserTestResults
 )
+router.get('/topUsers', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetTopUsers)
 router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
   '/',

@@ -1,7 +1,7 @@
 import { prisma } from '../../services/Prisma.js'
 const { userTest } = prisma
 
-export const getAvgMarks = async (prisma, userId) =>
+export const getAvgMarks = async (prisma, userId, limit = undefined) =>
   prisma.userTest.groupBy({
     by: ['userId'],
     _avg: {
@@ -19,6 +19,7 @@ export const getAvgMarks = async (prisma, userId) =>
         mark: 'desc',
       },
     },
+    take: limit,
   })
 
 export const storeUsersTest = async (prisma, data) =>

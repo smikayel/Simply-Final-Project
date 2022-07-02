@@ -39,6 +39,30 @@ export const getAllUsers = async (firstName) => {
   }
 }
 
+export const getTopUsers = async () => {
+  const avgMarks = await getAvgMarks(prisma, undefined, 3)
+  const userIds = avgMarks.map((avg) => avg.userId)
+  let users = await prisma.user.findMany({
+    where: {
+      id: {
+        in: userIds,
+      },
+    },
+    include: {
+      role: true,
+    },
+  })
+  users = users.map((user) => {
+    //eslint-disable-next-line
+    const { password, refreshToken, ...userData } = user
+    userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
+    return userData
+  })
+  users.sort((a, b) => b.avgMark - a.avgMark)
+
+  return users
+}
+
 export const getUser = async (data) => {
   try {
     return prisma.$transaction(async (prisma) => {

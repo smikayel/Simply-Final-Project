@@ -10,6 +10,7 @@ import {
   submitTest,
   getUserTestResults,
   deleteUserByIds,
+  getTopUsers,
 } from './db.js'
 import { validateTestResultReq, validateTestSubmit } from './helpers.js'
 import bcrypt from 'bcrypt'
@@ -131,6 +132,15 @@ export const handleGetUserTestResults = async (req, res) => {
     } = await getUserTestResults(userId, testId)
 
     res.status(200).json(responseDataCreator({ mark, questions, questionMarks }))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleGetTopUsers = async (req, res) => {
+  try {
+    const topUsers = await getTopUsers()
+    res.status(200).json(responseDataCreator(topUsers))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
