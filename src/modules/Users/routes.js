@@ -10,6 +10,7 @@ import {
   handleGetUserTestResults,
   handleDeleteUsers,
   handleGetTopUsers,
+  handleGetUserById,
 } from './service.js'
 import validations from './validation.js'
 
@@ -22,6 +23,7 @@ const {
   submitTestSchema,
   getTestResultsSchema,
   getAllUsersSchema,
+  getUserByIdSchema,
 } = validations
 
 const router = Router()
@@ -31,6 +33,12 @@ router.get(
   verifyRoles(['Admin', 'Teacher', 'Student']),
   validateSchema(getAllUsersSchema),
   handleGetAllUsers
+)
+router.get(
+  '/:id',
+  verifyRoles(['Admin', 'Teacher', 'Student']),
+  validateSchema(getUserByIdSchema),
+  handleGetUserById
 )
 router.get(
   '/testResults/:userId/:testId',

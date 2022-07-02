@@ -11,6 +11,7 @@ import {
   getUserTestResults,
   deleteUserByIds,
   getTopUsers,
+  getUserById,
 } from './db.js'
 import { validateTestResultReq, validateTestSubmit } from './helpers.js'
 import bcrypt from 'bcrypt'
@@ -31,6 +32,16 @@ export const handleGetAllUsers = async (req, res) => {
     const firstName = req.query.firstName
     const users = await getAllUsers(firstName)
     res.status(200).json(responseDataCreator({ users }))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator())
+  }
+}
+
+export const handleGetUserById = async (req, res) => {
+  try {
+    const id = req.params.id
+    const user = await getUserById(id)
+    res.status(200).json(responseDataCreator({ user }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
   }
