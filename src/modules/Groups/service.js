@@ -14,7 +14,7 @@ dotenv.config()
 export const handleCreateGroup = async (req, res) => {
   try {
     const createdGroup = await createGroup(req.body)
-    res.status(200).json(responseDataCreator({ createdGroup }))
+    res.status(201).json(responseDataCreator({ createdGroup }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
   }

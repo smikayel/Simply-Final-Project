@@ -46,7 +46,7 @@ export const handleCreateUsers = async (req, res) => {
     users.map((user) => {
       send_email(user.email)
     })
-    res.status(200).json(responseDataCreator({ createdUser }))
+    res.status(201).json(responseDataCreator({ createdUser }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
   }
@@ -55,7 +55,6 @@ export const handleCreateUsers = async (req, res) => {
 export const handleDeleteUsers = async (req, res) => {
   try {
     const deletedUser = await deleteUserByIds(req.body.ids)
-    console.log(deletedUser)
     res.status(200).json(responseDataCreator({ deletedUser }))
   } catch (err) {
     console.log(err)
@@ -112,7 +111,7 @@ export const handleUserTestSubmit = async (req, res) => {
       req.id
     )
     res
-      .status(200)
+      .status(201)
       .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))

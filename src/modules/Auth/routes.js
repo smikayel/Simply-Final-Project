@@ -47,7 +47,7 @@ router.get('/refresh', handleRefreshToken)
  *       required: true
  *     responses:
  *      '200':
- *        description: Successfully login user
+ *        description: Successfully login user. Get user tests groups roles and access token
  *      '400':
  *        description: Bad request
  */

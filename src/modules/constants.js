@@ -1,4 +1,4 @@
-export const accessToketExpireTime = '300s'
+export const accessToketExpireTime = '30000s'
 export const refreshToketExpireTime = '1d'
 export const roleStudentName = 'Student'
 export const roleTeacherName = 'Teacher'

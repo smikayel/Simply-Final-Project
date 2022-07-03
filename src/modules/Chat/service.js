@@ -55,6 +55,7 @@ export const handleGetGroupMessages = async (req, res) => {
   const { groupId } = req.params
   let { take, skip } = req.query
   skip = +skip || 0
+  take = +take || take
   try {
     if (req.role.name !== roleAdminName) {
       const user = await checkUserInGroup(req.id, +groupId)
@@ -63,7 +64,7 @@ export const handleGetGroupMessages = async (req, res) => {
         return
       }
     }
-    let groupMsgs = await getGroupMessages(+groupId, +take, +skip, req.id)
+    let groupMsgs = await getGroupMessages(+groupId, take, skip, req.id)
     groupMsgs = groupMsgs.map((msg) => {
       const isSender = msg.sender?.id === req.id
       return { data: msg, user: isSender }

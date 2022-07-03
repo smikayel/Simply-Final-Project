@@ -32,6 +32,13 @@ router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(['Admin']), h
 
 /**
  * @swagger
+ * tags:
+ *   name: group
+ *   description: The group managing API
+ */
+
+/**
+ * @swagger
  * /api/v1/groups/:
  *    get:
  *     description: Use to get all groups only admin
@@ -59,7 +66,7 @@ router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(['Admin']), h
  *      - in: path
  *        name: id
  *        schema:
- *         type: number
+ *         type: integer
  *         example: 1
  *        required: true
  *     security:
@@ -97,7 +104,7 @@ router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(['Admin']), h
  *     security:
  *      - bearerAuth: []
  *     responses:
- *      '200':
+ *      '201':
  *        description: Successfully created new group
  *      '400':
  *        description: Bad request

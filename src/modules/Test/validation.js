@@ -12,13 +12,13 @@ export default {
       group: Joi.number().strict().required(),
       questions: Joi.array().items(
         Joi.object({
-          name: Joi.string().max(160).required(),
+          name: Joi.string().min(3).max(160).required(),
         })
       ),
       answers: Joi.array().items(
         Joi.array().items(
           Joi.object({
-            name: Joi.string().max(160).required(),
+            name: Joi.string().min(3).max(160).required(),
             isCorrect: Joi.boolean().required(),
           })
         )

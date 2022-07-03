@@ -27,7 +27,15 @@ export const swaggerOptions = {
     },
   },
   // ['.routes/*.js']
-  apis: ['./src/modules/Auth/routes.js', './src/modules/Groups/routes.js'],
+  apis: [
+    './src/modules/Auth/routes.js',
+    './src/modules/Groups/routes.js',
+    './src/modules/Schedule/routes.js',
+    './src/modules/Subject/routes.js',
+    './src/modules/Test/routes.js',
+    './src/modules/Users/routes.js',
+    './src/modules/Chat/routes.js',
+  ],
 }
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)

@@ -14,7 +14,7 @@ export const handleGetSubjects = async (req, res) => {
 export const handleCreateSubjects = async (req, res) => {
   try {
     const createdSubjects = await createSubjects(req.body)
-    res.status(200).json(responseDataCreator(createdSubjects))
+    res.status(201).json(responseDataCreator(createdSubjects))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
