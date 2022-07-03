@@ -63,4 +63,10 @@ export default {
       firstName: Joi.string().allow('').max(30),
     }).unknown(true),
   },
+
+  getUserByIdSchema: {
+    params: Joi.object({
+      id: Joi.number().integer().min(1),
+    }),
+  },
 }

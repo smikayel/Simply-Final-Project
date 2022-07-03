@@ -39,6 +39,15 @@ export const getAllUsers = async (firstName) => {
   }
 }
 
+export const getUserById = async (id) => {
+  const userProfile = await user.findUnique({
+    where: {
+      id: +id,
+    },
+  })
+  return userProfile
+}
+
 export const getTopUsers = async () => {
   const avgMarks = await getAvgMarks(prisma, undefined, 3)
   const userIds = avgMarks.map((avg) => avg.userId)
