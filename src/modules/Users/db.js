@@ -8,9 +8,7 @@ import {
   getQuestionMarks,
 } from './helpers.js'
 import { roleStudentName } from '../constants.js'
-
 const { user, userTest, userTestAnswers } = prisma
-
 export const getAllUsers = async (firstName) => {
   try {
     return prisma.$transaction(async (prisma) => {
@@ -31,23 +29,29 @@ export const getAllUsers = async (firstName) => {
         userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
         return userData
       })
-
       return users
     })
   } catch (error) {
     return error
   }
 }
-
 export const getUserById = async (id) => {
   const userProfile = await user.findUnique({
     where: {
       id: +id,
     },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      roleId: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   })
   return userProfile
 }
-
 export const getTopUsers = async () => {
   const avgMarks = await getAvgMarks(prisma, undefined, 3)
   const userIds = avgMarks.map((avg) => avg.userId)
@@ -68,10 +72,8 @@ export const getTopUsers = async () => {
     return userData
   })
   users.sort((a, b) => b.avgMark - a.avgMark)
-
   return users
 }
-
 export const getUser = async (data) => {
   try {
     return prisma.$transaction(async (prisma) => {
@@ -95,7 +97,6 @@ export const getUser = async (data) => {
     return error
   }
 }
-
 export const updateUserbyId = async (id, data) => {
   try {
     const updatedUser = await user.update({
@@ -109,7 +110,6 @@ export const updateUserbyId = async (id, data) => {
     return error
   }
 }
-
 export const deleteUserByIds = async (ids) => {
   const deletedUsers = await user.deleteMany({
     where: {
@@ -120,7 +120,6 @@ export const deleteUserByIds = async (ids) => {
   })
   return deletedUsers
 }
-
 export const createUsers = async (data) => {
   try {
     const createdUsers = await user.createMany({
@@ -131,7 +130,6 @@ export const createUsers = async (data) => {
     return error
   }
 }
-
 export const getUserTests = async (email) => {
   try {
     const foundedTests = await user.findUnique({
@@ -149,7 +147,6 @@ export const getUserTests = async (email) => {
     return error
   }
 }
-
 export const addMark = async (
   teacherEmail,
   { studentId: userId, testId, mark },
@@ -167,9 +164,7 @@ export const addMark = async (
         email: teacherEmail,
       },
     })
-
     teacherGroups = teacherGroups.map((elem) => elem.groupId)
-
     if (teacherGroups.length === 0) {
       throw new Error('You cant add mark for this test')
     }
@@ -204,7 +199,6 @@ export const addMark = async (
   })
   return updatedUserTest
 }
-
 export const getMarks = async (userId) => {
   const testsMarks = prisma.userTest.findMany({
     where: {
@@ -216,7 +210,6 @@ export const getMarks = async (userId) => {
   })
   return testsMarks
 }
-
 export const updateUserTest = async (userId, { testId, ...data }) => {
   const updatedUserTest = await userTest.update({
     data,
@@ -229,20 +222,15 @@ export const updateUserTest = async (userId, { testId, ...data }) => {
   })
   return updatedUserTest
 }
-
 export const calculateUserTestMark = async (prisma, answersIds, userId, testId) => {
   const answerData = await getUsersAnsweredQuestions(prisma, answersIds)
-
   const { highestScore, _count, questions } = await getTestHighestScore(prisma, testId)
   const testQuestions = questions.map((elem) => elem.id)
   const questionMaxMark = highestScore / _count.questions
-
   const questionAnswerCount = await getQuestionsAnswersCount(prisma, testQuestions)
-
   const answerCounts = { wrong: {}, correct: {} }
   const answerResult = { wrong: [], correct: [] }
   const questionAnswers = []
-
   answerData.forEach((answer) => {
     questionAnswers.push({ questionId: answer.questionId, answerId: answer.id, userId, testId })
     answerCounts['wrong'][answer.questionId] = 0
@@ -262,7 +250,6 @@ export const calculateUserTestMark = async (prisma, answersIds, userId, testId) 
     questionMaxMark,
     highestScore
   )
-
   return {
     mark,
     correctAnswerIds: answerResult['correct'],
@@ -271,7 +258,6 @@ export const calculateUserTestMark = async (prisma, answersIds, userId, testId) 
     questionMarks,
   }
 }
-
 export const submitTest = async (body, userId) => {
   return prisma.$transaction(async (prisma) => {
     const { testId, answersIds } = body
@@ -285,14 +271,12 @@ export const submitTest = async (body, userId) => {
     return data
   })
 }
-
 export const getUserTestResults = async (userId, testId) => {
   const { highestScore, _count, questions } = (await getTestHighestScore(prisma, testId)) || {}
   if (!highestScore || !_count || !questions) throw 'Test Not Found'
   const questionMaxMark = highestScore / _count.questions
   const testQuestions = questions.map((elem) => elem.id)
   const questionAnswerCount = await getQuestionsAnswersCount(prisma, testQuestions)
-
   const usersAnswers = await userTestAnswers.findMany({
     where: {
       testId,
@@ -302,9 +286,7 @@ export const getUserTestResults = async (userId, testId) => {
       answer: true,
     },
   })
-
   const answerCounts = { wrong: {}, correct: {} }
-  // const answerResult = { wrong: [], correct: [] }
   const answerResult = {}
   usersAnswers.forEach(({ answer }) => {
     answerCounts['wrong'][answer.questionId] = 0
@@ -312,15 +294,12 @@ export const getUserTestResults = async (userId, testId) => {
     answerResult[answer.questionId] = answerResult[answer.questionId] || []
     if (answer.isCorrect) {
       answerCounts['correct'][answer.questionId]++
-      // answerResult['correct'].push(answer.id)
       answerResult[answer.questionId].push({ [answer.id]: true })
       return
     }
     answerCounts['wrong'][answer.questionId]++
-    // answerResult['wrong'].push(answer.id)
     answerResult[answer.questionId].push({ [answer.id]: false })
   })
-
   const { mark, questionMarks } = await getQuestionMarks(
     testQuestions,
     answerCounts,
@@ -330,8 +309,6 @@ export const getUserTestResults = async (userId, testId) => {
   )
   return {
     mark,
-    // correctAnswerIds: answerResult['correct'],
-    // wrongAnswerIds: answerResult['wrong'],
     answerResult,
     questionMarks,
   }

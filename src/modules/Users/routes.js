@@ -13,7 +13,6 @@ import {
   handleGetUserById,
 } from './service.js'
 import validations from './validation.js'
-
 const {
   createUsersSchema,
   deleteUsersSchema,
@@ -25,9 +24,7 @@ const {
   getAllUsersSchema,
   getUserByIdSchema,
 } = validations
-
 const router = Router()
-
 router.get(
   '/',
   verifyRoles(['Admin', 'Teacher', 'Student']),
@@ -35,17 +32,17 @@ router.get(
   handleGetAllUsers
 )
 router.get(
-  '/:id',
-  verifyRoles(['Admin', 'Teacher', 'Student']),
-  validateSchema(getUserByIdSchema),
-  handleGetUserById
-)
-router.get(
   '/testResults/:userId/:testId',
   validateSchema(getTestResultsSchema),
   handleGetUserTestResults
 )
 router.get('/topUsers', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetTopUsers)
+router.get(
+  '/:id',
+  verifyRoles(['Admin', 'Teacher', 'Student']),
+  validateSchema(getUserByIdSchema),
+  handleGetUserById
+)
 router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
   '/',
@@ -72,16 +69,13 @@ router.put(
   handleUpdateUserTest
 )
 router.delete('/', validateSchema(deleteUsersSchema), verifyRoles(['Admin']), handleDeleteUsers)
-
 export { router as usersRoutes }
-
 /**
  * @swagger
  * tags:
  *   name: user
  *   description: The user managing API
  */
-
 /**
  * @swagger
  * /api/v1/users/:
@@ -107,7 +101,6 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
-
 /**
  * @swagger
  * /api/v1/users/testsResults/{userId}/{testId}:
@@ -139,7 +132,6 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
-
 /**
  * @swagger
  * /api/v1/users/topUsers:
@@ -156,7 +148,30 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
-
+/**
+ * @swagger
+ * /api/v1/users/{id}:
+ *    get:
+ *     description: Use to get user by id
+ *     tags: [user]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        description: User id
+ *        required: true
+ *        schema:
+ *          type: integer
+ *          example: 1
+ *     consumes:
+ *      - application/json
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *      '200':
+ *        description: Successfully get user
+ *      '400':
+ *        description: Bad request
+ */
 /**
  * @swagger
  * /api/v1/users/:
@@ -207,7 +222,6 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
-
 /**
  * @swagger
  * /api/v1/users/:
@@ -248,7 +262,6 @@ export { router as usersRoutes }
  *      '401':
  *        description: Unauthorized
  */
-
 /**
  * @swagger
  * /api/v1/users/submitTest:
@@ -285,7 +298,6 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
-
 /**
  * @swagger
  * /api/v1/users/setMark:
@@ -326,7 +338,6 @@ export { router as usersRoutes }
  *      '401':
  *        description: Unauthorized
  */
-
 /**
  * @swagger
  * /api/v1/users/:
