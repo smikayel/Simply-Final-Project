@@ -13,10 +13,13 @@ In [http://localhost:5000](http://localhost:5000).
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.\
-For uninterrupted work you need to run install.\
+For uninterrupted work you need to install all\
 packages which are used in project.\
+
+### `npm install` 
+
 You can try to work with Api with Postman \
-or with other application.\
+or with other applications.\
 Or you can download and test it with\
 [Front Part](https://github.com/smikayel/Simply-Final-Project-Frontpart)
 
