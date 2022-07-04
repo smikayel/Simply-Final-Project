@@ -7,6 +7,7 @@ import { testsRoutes } from '../modules/Test/routes.js'
 import { scheduleRoutes } from '../modules/Schedule/routes.js'
 import { subjectRoutes } from '../modules/Subject/routes.js'
 import { chatsRoutes } from '../modules/Chat/routes.js'
+import { rolesRoutes } from '../modules/Role/routes.js'
 
 import { swaggerRoutes } from './swagger.js'
 
@@ -23,5 +24,6 @@ router.use('/groups', groupsRoutes)
 router.use('/schedules', scheduleRoutes)
 router.use('/subjects', subjectRoutes)
 router.use('/chats', chatsRoutes)
+router.use('/roles', rolesRoutes)
 
 export { router as v1 }

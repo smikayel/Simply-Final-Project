@@ -18,6 +18,14 @@ async function main() {
     select: { id: true },
   })
 
+  await prisma.subject.upsert({
+    where: {
+      name: 'Free Class',
+    },
+    update: {},
+    create: { name: 'Free Class' },
+  })
+
   await prisma.user.upsert({
     where: { email: 'admin@gmail.com' },
     update: {},
