@@ -25,7 +25,7 @@ Or you can download and test it with\
 
 ## You have questions ? 
 
-We will happy to help you.\
+We will be happy to help you.\
 Our git hub links. \
 [Sasha Mikayelyan](https://github.com/smikayel)
 [Davit Avakian](https://github.com/Davit-Avakian)
