@@ -27,8 +27,10 @@
 
 <body>
   <div class="welcom-container">
-    <h2 class="welcom-text">Hello dear {{name}} {{surname}}! </h2>
-    <p class="message-text">Your confirmation code is below — enter it in your open browser window and we'll help you get signed in. . </p>
+    <h2 class="welcom-text">Hello dear {{data.firstName}} {{data.lastName}}! </h2>
+    <p class="message-text"> Use this email and password to sign in</p>
+    <p class="message-text">email: {{data.email}}</p>
+    <p class="message-text">password: {{data.password}}</p>
     <div class="">
       
     </div>
