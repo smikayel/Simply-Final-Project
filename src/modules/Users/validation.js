@@ -69,4 +69,11 @@ export default {
       id: Joi.number().integer().min(1),
     }),
   },
+
+  resetPasswordSchema: {
+    params: Joi.object({
+      userId: Joi.number().integer().min(1).required(),
+      token: Joi.string().required(),
+    }),
+  },
 }

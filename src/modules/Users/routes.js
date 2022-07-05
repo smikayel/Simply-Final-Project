@@ -11,6 +11,8 @@ import {
   handleDeleteUsers,
   handleGetTopUsers,
   handleGetUserById,
+  handleForgotPassword,
+  handleResetPassword,
 } from './service.js'
 import validations from './validation.js'
 const {
@@ -23,6 +25,7 @@ const {
   getTestResultsSchema,
   getAllUsersSchema,
   getUserByIdSchema,
+  resetPasswordSchema,
 } = validations
 const router = Router()
 router.get(
@@ -37,12 +40,6 @@ router.get(
   handleGetUserTestResults
 )
 router.get('/topUsers', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetTopUsers)
-router.get(
-  '/:id',
-  verifyRoles(['Admin', 'Teacher', 'Student']),
-  validateSchema(getUserByIdSchema),
-  handleGetUserById
-)
 router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
   '/',
@@ -67,6 +64,18 @@ router.put(
   verifyRoles(['Student']),
   validateSchema(setTestFinishSchema),
   handleUpdateUserTest
+)
+router.get('/forgotPassword', handleForgotPassword)
+router.post(
+  '/resetPassword/:userId/:token',
+  validateSchema(resetPasswordSchema),
+  handleResetPassword
+)
+router.get(
+  '/:id',
+  verifyRoles(['Admin', 'Teacher', 'Student']),
+  validateSchema(getUserByIdSchema),
+  handleGetUserById
 )
 router.delete('/', validateSchema(deleteUsersSchema), verifyRoles(['Admin']), handleDeleteUsers)
 export { router as usersRoutes }

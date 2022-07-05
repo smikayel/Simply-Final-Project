@@ -1,5 +1,7 @@
 import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
+import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken'
 import {
   getAllUsers,
   createUsers,
@@ -13,9 +15,11 @@ import {
   getTopUsers,
   getUserById,
 } from './db.js'
+import { FRONT_BASE_URL, PASSWORD_RECOVERY_EXPIRE_TIME } from '../constants.js'
 import { validateTestResultReq, validateTestSubmit } from './helpers.js'
 import bcrypt from 'bcrypt'
 import { send_email } from '../../notification_sender/notification_sender.js'
+dotenv.config()
 
 export const handleGetUser = async (req, res) => {
   try {
@@ -50,15 +54,24 @@ export const handleGetUserById = async (req, res) => {
 export const handleCreateUsers = async (req, res) => {
   try {
     const users = req.body
+    const nonHashedPw = []
     for (const user of users) {
+      nonHashedPw.push(user.password)
       user.password = await bcrypt.hash(user.password, 10)
     }
+
     const createdUser = await createUsers(req.body)
-    users.map((user) => {
-      send_email(user.email)
+    users.map((user, i) => {
+      send_email(user.email, 'Welcome', 'createUser', {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: nonHashedPw[i],
+        email: user.email,
+      })
     })
     res.status(201).json(responseDataCreator({ createdUser }))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator())
   }
 }
@@ -151,6 +164,48 @@ export const handleGetTopUsers = async (req, res) => {
   try {
     const topUsers = await getTopUsers()
     res.status(200).json(responseDataCreator(topUsers))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleForgotPassword = async (req, res) => {
+  try {
+    const email = req.email
+    const user = await getUser({ email })
+    if (!user) {
+      return res.status(400).json(badRequestErrorCreator('User not found'))
+    }
+    const secret = process.env.FORGOT_PASSWORD_SECRET + email
+    const payload = { email, userId: user.id }
+    const token = jwt.sign(payload, secret, { expiresIn: PASSWORD_RECOVERY_EXPIRE_TIME })
+    const link = FRONT_BASE_URL + `/resetPassword/${user.id}/${token}`
+    console.log(link)
+    send_email(user.email, 'Password Recovery', 'resetPassword', { link })
+    res.status(200).json(responseDataCreator('Passwrod reset link is sent to your email address'))
+  } catch (err) {
+    return res.status(400).json(badRequestErrorCreator(err.message))
+  }
+}
+
+export const handleResetPassword = async (req, res) => {
+  try {
+    const { password } = req.body
+    const { userId, token } = req.params
+    const user = await getUser({ id: +userId })
+    if (!user) {
+      return res.status(400).json(badRequestErrorCreator('User not found'))
+    }
+    jwt.verify(token, process.env.FORGOT_PASSWORD_SECRET, async (err, decoded) => {
+      if (err || user.email !== decoded.email) return res.sendStatus(403)
+      const pwHashed = await bcrypt.hash(password, 10)
+      const updatedUser = await updateUserbyId(+userId, { password: pwHashed })
+      res.status(200).json(
+        responseDataCreator({
+          updatedUser,
+        })
+      )
+    })
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }

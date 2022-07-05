@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import hbs from 'nodemailer-express-handlebars'
+import { PASSWORD_RECOVERY_EXPIRE_TIME } from '../modules/constants.js'
 dotenv.config()
 
-export const send_email = async (mail_to) => {
+export const send_email = async (mail_to, subject, template, msgData) => {
   const mail = process.env.NOTYFICATE_GMAIL
   const pass = process.env.NOTYFICATE_GMAIL_PASS
 
@@ -25,14 +26,15 @@ export const send_email = async (mail_to) => {
   }
   transporter.use('compile', hbs(handlebarOptions))
 
+  if (template === 'resetPassword') msgData.expireTime = PASSWORD_RECOVERY_EXPIRE_TIME
+
   let mailOptions = {
     from: mail,
     to: mail_to,
-    subject: 'asd',
-    template: 'message',
+    subject,
+    template: `templates/${template}`,
     context: {
-      name: 'Adebola', // replace {{name}} with Adebola
-      company: 'My Company', // replace {{company}} with My Company
+      data: msgData,
     },
   }
 
