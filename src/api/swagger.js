@@ -35,6 +35,7 @@ export const swaggerOptions = {
     './src/modules/Test/routes.js',
     './src/modules/Users/routes.js',
     './src/modules/Chat/routes.js',
+    './src/modules/Role/routes.js',
   ],
 }
 

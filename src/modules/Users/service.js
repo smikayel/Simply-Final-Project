@@ -61,17 +61,16 @@ export const handleCreateUsers = async (req, res) => {
     }
 
     const createdUser = await createUsers(req.body)
-    users.map((user, i) => {
-      send_email(user.email, 'Welcome', 'createUser', {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        password: nonHashedPw[i],
-        email: user.email,
-      })
-    })
+    // users.map((user, i) => {
+    //   send_email(user.email, 'Welcome', 'createUser', {
+    //     firstName: user.firstName,
+    //     lastName: user.lastName,
+    //     password: nonHashedPw[i],
+    //     email: user.email,
+    //   })
+    // })
     res.status(201).json(responseDataCreator({ createdUser }))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator())
   }
 }
@@ -81,7 +80,6 @@ export const handleDeleteUsers = async (req, res) => {
     const deletedUser = await deleteUserByIds(req.body.ids)
     res.status(200).json(responseDataCreator({ deletedUser }))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
@@ -171,18 +169,17 @@ export const handleGetTopUsers = async (req, res) => {
 
 export const handleForgotPassword = async (req, res) => {
   try {
-    const email = req.email
+    const { email } = req.query
     const user = await getUser({ email })
     if (!user) {
       return res.status(400).json(badRequestErrorCreator('User not found'))
     }
-    const secret = process.env.FORGOT_PASSWORD_SECRET + email
+    const secret = process.env.FORGOT_PASSWORD_SECRET + user.password // to make sure that token is valid only one time unless user sets the same password
     const payload = { email, userId: user.id }
     const token = jwt.sign(payload, secret, { expiresIn: PASSWORD_RECOVERY_EXPIRE_TIME })
     const link = FRONT_BASE_URL + `/resetPassword/${user.id}/${token}`
-    console.log(link)
-    send_email(user.email, 'Password Recovery', 'resetPassword', { link })
-    res.status(200).json(responseDataCreator('Passwrod reset link is sent to your email address'))
+    // send_email(user.email, 'Password Recovery', 'resetPassword', { link })
+    res.status(200).json(responseDataCreator(token))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
@@ -196,13 +193,17 @@ export const handleResetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json(badRequestErrorCreator('User not found'))
     }
-    jwt.verify(token, process.env.FORGOT_PASSWORD_SECRET, async (err, decoded) => {
+
+    const { refreshToken: rT, password: pw, ...sendUserDataFront } = user // eslint-disable-line no-unused-vars
+
+    const secret = process.env.FORGOT_PASSWORD_SECRET + user.password
+    jwt.verify(token, secret, async (err, decoded) => {
       if (err || user.email !== decoded.email) return res.sendStatus(403)
       const pwHashed = await bcrypt.hash(password, 10)
       const updatedUser = await updateUserbyId(+userId, { password: pwHashed })
       res.status(200).json(
         responseDataCreator({
-          updatedUser,
+          sendUserDataFront,
         })
       )
     })
