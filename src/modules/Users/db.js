@@ -8,32 +8,30 @@ import {
   getQuestionMarks,
 } from './helpers.js'
 import { roleStudentName } from '../constants.js'
+
 const { user, userTest, userTestAnswers } = prisma
+
 export const getAllUsers = async (firstName) => {
-  try {
-    return prisma.$transaction(async (prisma) => {
-      const avgMarks = await getAvgMarks(prisma)
-      let users = await prisma.user.findMany({
-        where: {
-          firstName: {
-            contains: firstName,
-          },
+  return prisma.$transaction(async (prisma) => {
+    const avgMarks = await getAvgMarks(prisma)
+    let users = await prisma.user.findMany({
+      where: {
+        firstName: {
+          contains: firstName,
         },
-        include: {
-          role: true,
-        },
-      })
-      users = users.map((user) => {
-        //eslint-disable-next-line
-        const { password, refreshToken, ...userData } = user
-        userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
-        return userData
-      })
-      return users
+      },
+      include: {
+        role: true,
+      },
     })
-  } catch (error) {
-    return error
-  }
+    users = users.map((user) => {
+      //eslint-disable-next-line
+      const { password, refreshToken, ...userData } = user
+      userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
+      return userData
+    })
+    return users
+  })
 }
 export const getUserById = async (id) => {
   const userProfile = await user.findUnique({
@@ -75,27 +73,23 @@ export const getTopUsers = async () => {
   return users
 }
 export const getUser = async (data) => {
-  try {
-    return prisma.$transaction(async (prisma) => {
-      const foundUser = await prisma.user.findUnique({
-        where: data,
-        include: {
-          role: true,
-          userTest: true,
-          userGroup: {
-            select: { group: true },
-          },
+  return prisma.$transaction(async (prisma) => {
+    const foundUser = await prisma.user.findUnique({
+      where: data,
+      include: {
+        role: true,
+        userTest: true,
+        userGroup: {
+          select: { group: true },
         },
-      })
-      if (foundUser) {
-        const avgMarks = await getAvgMarks(prisma, foundUser.id)
-        foundUser['avgMark'] = avgMarks[0]?._avg?.mark
-      }
-      return foundUser
+      },
     })
-  } catch (error) {
-    return error
-  }
+    if (foundUser) {
+      const avgMarks = await getAvgMarks(prisma, foundUser.id)
+      foundUser['avgMark'] = avgMarks[0]?._avg?.mark
+    }
+    return foundUser
+  })
 }
 export const updateUserbyId = async (id, data) => {
   try {
@@ -121,31 +115,23 @@ export const deleteUserByIds = async (ids) => {
   return deletedUsers
 }
 export const createUsers = async (data) => {
-  try {
-    const createdUsers = await user.createMany({
-      data,
-    })
-    return createdUsers
-  } catch (error) {
-    return error
-  }
+  const createdUsers = await user.createMany({
+    data,
+  })
+  return createdUsers
 }
 export const getUserTests = async (email) => {
-  try {
-    const foundedTests = await user.findUnique({
-      where: { email },
-      select: {
-        userTest: {
-          select: {
-            test: true,
-          },
+  const foundedTests = await user.findUnique({
+    where: { email },
+    select: {
+      userTest: {
+        select: {
+          test: true,
         },
       },
-    })
-    return foundedTests.userTest
-  } catch (error) {
-    return error
-  }
+    },
+  })
+  return foundedTests.userTest
 }
 export const addMark = async (
   teacherEmail,
