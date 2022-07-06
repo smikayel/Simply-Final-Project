@@ -66,7 +66,7 @@ router.put(
   handleUpdateUserTest
 )
 router.get('/forgotPassword', handleForgotPassword)
-router.post(
+router.put(
   '/resetPassword/:userId/:token',
   validateSchema(resetPasswordSchema),
   handleResetPassword
@@ -181,6 +181,67 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
+
+/**
+ * @swagger
+ * /api/v1/users/forgotPassword:
+ *    get:
+ *     description: Use to get email containing instructions on how to reset user password
+ *     tags: [user]
+ *     parameters:
+ *      - in: query
+ *        name: email
+ *        description: User email
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: h@gmai.com
+ *     consumes:
+ *      - application/json
+ *     responses:
+ *      '200':
+ *        description: Successfully get email with link to reset user password. Link is valid for only one time and for 1h
+ *      '400':
+ *        description: Bad request
+ */
+
+/**
+ * @swagger
+ * /api/v1/users/resetPassword/{userId}/{token}:
+ *    put:
+ *     description: Use to reset user password
+ *     tags: [user]
+ *     parameters:
+ *      - in: path
+ *        name: userId
+ *        description: User id
+ *        required: true
+ *        schema:
+ *         type: number
+ *         example: 1
+ *      - in: path
+ *        name: token
+ *        description: token
+ *        required: true
+ *        schema:
+ *         type: string
+ *         example: asjdfaksd;laks;ldkas;lkd;alskd;lask
+ *      - in: body
+ *        name: New password
+ *        description: New password
+ *        required: true
+ *        schema:
+ *          type: string
+ *          example: newPassword
+ *     consumes:
+ *      - application/json
+ *     responses:
+ *      '200':
+ *        description: Successfully get email with link to reset user password. Link is valid for only one time and for 1h
+ *      '400':
+ *        description: Bad request
+ */
+
 /**
  * @swagger
  * /api/v1/users/:

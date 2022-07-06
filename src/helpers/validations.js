@@ -1,5 +1,6 @@
 import { badRequestErrorCreator, unauthorizedErrorCreator } from './errors.js'
 import jwt from 'jsonwebtoken'
+import { AUTH_NOT_REQUIRED } from '../modules/constants.js'
 
 export const validateSchema = (schema) => {
   if (typeof schema !== 'object' || schema === null) throw new Error('Schema is not an object')
@@ -29,6 +30,11 @@ export const validateSocketShcema = async (schema, data) => {
 }
 
 export const verifyJWT = (req, res, next) => {
+  console.log(req.url)
+  if (AUTH_NOT_REQUIRED.some((url) => req.url.startsWith(url))) {
+    return next()
+  }
+
   const authHeader = req.headers.authorization || req.headers.Authorization
   if (!authHeader?.startsWith('Bearer '))
     return res.json(unauthorizedErrorCreator('Access token expired!'))

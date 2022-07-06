@@ -12,26 +12,24 @@ import { roleStudentName } from '../constants.js'
 const { user, userTest, userTestAnswers } = prisma
 
 export const getAllUsers = async (firstName) => {
-  return prisma.$transaction(async (prisma) => {
-    const avgMarks = await getAvgMarks(prisma)
-    let users = await prisma.user.findMany({
-      where: {
-        firstName: {
-          contains: firstName,
-        },
+  const avgMarks = await getAvgMarks(prisma)
+  let users = await prisma.user.findMany({
+    where: {
+      firstName: {
+        contains: firstName,
       },
-      include: {
-        role: true,
-      },
-    })
-    users = users.map((user) => {
-      //eslint-disable-next-line
-      const { password, refreshToken, ...userData } = user
-      userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
-      return userData
-    })
-    return users
+    },
+    include: {
+      role: true,
+    },
   })
+  users = users.map((user) => {
+    //eslint-disable-next-line
+    const { password, refreshToken, ...userData } = user
+    userData['avgMark'] = avgMarks.find((avg) => avg.userId === +user.id)?._avg.mark
+    return userData
+  })
+  return users
 }
 export const getUserById = async (id) => {
   const userProfile = await user.findUnique({
