@@ -66,7 +66,7 @@ router.put(
   handleUpdateUserTest
 )
 router.get('/forgotPassword', handleForgotPassword)
-router.post(
+router.put(
   '/resetPassword/:userId/:token',
   validateSchema(resetPasswordSchema),
   handleResetPassword
@@ -208,7 +208,7 @@ export { router as usersRoutes }
 /**
  * @swagger
  * /api/v1/users/resetPassword/{userId}/{token}:
- *    get:
+ *    put:
  *     description: Use to reset user password
  *     tags: [user]
  *     parameters:
