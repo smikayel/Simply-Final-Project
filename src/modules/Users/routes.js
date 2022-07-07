@@ -34,11 +34,7 @@ router.get(
   validateSchema(getAllUsersSchema),
   handleGetAllUsers
 )
-router.get(
-  '/testResults/:userId/:testId',
-  validateSchema(getTestResultsSchema),
-  handleGetUserTestResults
-)
+
 router.get('/topUsers', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetTopUsers)
 router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
 router.put(
@@ -70,6 +66,11 @@ router.put(
   '/resetPassword/:userId/:token',
   validateSchema(resetPasswordSchema),
   handleResetPassword
+)
+router.get(
+  '/testResults/:userId/:testId',
+  validateSchema(getTestResultsSchema),
+  handleGetUserTestResults
 )
 router.get(
   '/:id',

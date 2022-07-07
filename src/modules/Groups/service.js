@@ -39,6 +39,7 @@ export const handleGetGroupById = async (req, res) => {
 }
 
 export const handleDeleteGroupsById = async (req, res) => {
+  console.log(req.body)
   try {
     const groupIds = req.body.ids
     const deletedGroup = await deleteGroupsById(groupIds)

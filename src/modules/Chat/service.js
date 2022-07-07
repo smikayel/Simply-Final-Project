@@ -25,7 +25,6 @@ io.on('connection', (socket) => {
 
   socket.on('join_chat', async (data) => {
     try {
-      // console.log(`groupId:${data.groupId}`, 'join')
       socket.join(`groupId:${data.groupId}`)
       socket.emit('join_status', 'Joined group successfully')
     } catch (err) {
@@ -38,14 +37,12 @@ io.on('connection', (socket) => {
       const valid = await validateSocketShcema(createMessageSchema, data)
       if (valid !== 0) {
         socket.emit('message_not_sent', data)
-        //todo: send error to client
         return
       }
       const msg = await createMessage(data)
       socket.emit('message_sent', msg)
       socket.broadcast.to(`groupId:${data.groupId}`).emit('receive_message', msg)
     } catch (err) {
-      // console.log(err)
       socket.emit('message_not_sent', err)
     }
   })
