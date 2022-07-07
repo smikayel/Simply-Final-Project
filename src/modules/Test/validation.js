@@ -5,11 +5,11 @@ export default {
     body: Joi.object({
       userId: Joi.number().strict().required(),
       name: Joi.string().min(3).required(),
-      subjectId: Joi.number().strict().required(),
+      subjectId: Joi.number().integer().required(),
       start: Joi.string().required(),
       length: Joi.number().strict().required(),
       highestScore: Joi.number().strict().required(),
-      group: Joi.number().strict().required(),
+      group: Joi.number().integer().required(),
       questions: Joi.array().items(
         Joi.object({
           name: Joi.string().min(3).max(160).required(),

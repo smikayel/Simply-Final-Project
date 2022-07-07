@@ -178,7 +178,7 @@ export const handleForgotPassword = async (req, res) => {
     const payload = { email, userId: user.id }
     const token = jwt.sign(payload, secret, { expiresIn: PASSWORD_RECOVERY_EXPIRE_TIME })
     const link = FRONT_BASE_URL + `/resetPassword/${user.id}/${token}`
-    // send_email(user.email, 'Password Recovery', 'resetPassword', { link })
+    send_email(user.email, 'Password Recovery', 'resetPassword', { link })
     res.status(200).json(responseDataCreator(token))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))

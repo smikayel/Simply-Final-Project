@@ -25,7 +25,7 @@ export function createTests(testData) {
     const newTest = await prisma.Test.create({
       data: {
         name: testData.name,
-        subjectId: testData.subjectId,
+        subjectId: +testData.subjectId,
         start: testData.start, //'2022-06-11T21:38:26.832Z'
         length: testData.length, // in minutes
         highestScore: testData.highestScore,
@@ -50,10 +50,10 @@ export function createTests(testData) {
       data: { userId: testData.userId, testId: newTest.id },
     })
     await prisma.GroupTest.create({
-      data: { groupId: testData.group, testId: newTest.id },
+      data: { groupId: +testData.group, testId: newTest.id },
     })
     const groupUsers = await prisma.userGroup.findMany({
-      where: { groupId: testData.group },
+      where: { groupId: +testData.group },
     })
     const groupUsersIds = groupUsers.map((userGroupElement) => {
       if (testData.userId !== userGroupElement.userId)
