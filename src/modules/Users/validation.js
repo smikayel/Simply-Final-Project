@@ -60,7 +60,7 @@ export default {
 
   getAllUsersSchema: {
     query: Joi.object({
-      firstName: Joi.string().allow('').max(30),
+      search: Joi.string().allow('').max(30),
     }).unknown(true),
   },
 

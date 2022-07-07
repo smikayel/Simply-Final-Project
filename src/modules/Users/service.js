@@ -33,8 +33,8 @@ export const handleGetUser = async (req, res) => {
 
 export const handleGetAllUsers = async (req, res) => {
   try {
-    const firstName = req.query.firstName
-    const users = await getAllUsers(firstName)
+    const search = req.query.search
+    const users = await getAllUsers(search)
     res.status(200).json(responseDataCreator({ users }))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())
@@ -71,7 +71,9 @@ export const handleCreateUsers = async (req, res) => {
     // })
     res.status(201).json(responseDataCreator({ createdUser }))
   } catch (err) {
-    return res.status(400).json(badRequestErrorCreator())
+    let errorMessage = ''
+    if (err.code === 'P2002') errorMessage = 'Email already exists'
+    return res.status(400).json(badRequestErrorCreator(errorMessage))
   }
 }
 

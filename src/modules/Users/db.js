@@ -11,12 +11,12 @@ import { roleStudentName } from '../constants.js'
 
 const { user, userTest, userTestAnswers } = prisma
 
-export const getAllUsers = async (firstName) => {
+export const getAllUsers = async (search) => {
   const avgMarks = await getAvgMarks(prisma)
   let users = await prisma.user.findMany({
     where: {
       firstName: {
-        contains: firstName,
+        contains: search,
       },
     },
     include: {

@@ -30,7 +30,6 @@ export const validateSocketShcema = async (schema, data) => {
 }
 
 export const verifyJWT = (req, res, next) => {
-  console.log(req.url)
   if (AUTH_NOT_REQUIRED.some((url) => req.url.startsWith(url))) {
     return next()
   }
