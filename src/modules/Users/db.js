@@ -90,17 +90,13 @@ export const getUser = async (data) => {
   })
 }
 export const updateUserbyId = async (id, data) => {
-  try {
-    const updatedUser = await user.update({
-      where: {
-        id,
-      },
-      data,
-    })
-    return updatedUser
-  } catch (error) {
-    return error
-  }
+  const updatedUser = await user.update({
+    where: {
+      id,
+    },
+    data,
+  })
+  return updatedUser
 }
 export const deleteUserByIds = async (ids) => {
   const deletedUsers = await user.deleteMany({
