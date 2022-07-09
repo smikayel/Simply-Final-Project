@@ -11,6 +11,9 @@
     "lint": "eslint --ext .js",
     "lint:fix": "eslint . --fix"
   },
+  "lint-staged": {
+    "**/*.{js,jsx}": ["eslint . --fix", "prettier --write ."]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
