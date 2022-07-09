@@ -200,7 +200,7 @@ export const handleResetPassword = async (req, res) => {
 
     const secret = process.env.FORGOT_PASSWORD_SECRET + user.password
     jwt.verify(token, secret, async (err, decoded) => {
-      if (err || user.email !== decoded.email) return res.sendStatus(403)
+      if (err || user.email !== decoded.email) return res.sendStatus(402)
       const pwHashed = await bcrypt.hash(password, 10)
       const updatedUser = await updateUserbyId(+userId, { password: pwHashed })
       res.status(200).json(

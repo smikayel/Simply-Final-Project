@@ -57,7 +57,7 @@ export const handleGetGroupMessages = async (req, res) => {
     if (req.role.name !== roleAdminName) {
       const user = await checkUserInGroup(req.id, +groupId)
       if (!user) {
-        res.status(403).json(badRequestErrorCreator('User is not in group'))
+        res.status(402).json(badRequestErrorCreator('User is not in group'))
         return
       }
     }

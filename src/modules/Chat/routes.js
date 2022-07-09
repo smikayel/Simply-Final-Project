@@ -61,6 +61,6 @@ export { router as chatsRoutes }
  *        description: Successfully get group messages sorted by date desc
  *      '400':
  *        description: Bad request
- *      '403':
+ *      '402':
  *        description: User is not authorized to get group messages
  */

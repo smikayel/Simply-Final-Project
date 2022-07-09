@@ -103,7 +103,7 @@ export { router as testsRoutes }
  *        description: Successfully get test by id
  *      '400':
  *        description: Bad request
- *      '403':
+ *      '402':
  *        description: No access to this test
  */
 
