@@ -293,3 +293,25 @@ export const getUserTestResults = async (userId, testId) => {
     questionMarks,
   }
 }
+
+export const getUsersIpAddresses = async (email) => {
+  const userIp = await user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      ipAddresses: true,
+    },
+  })
+  return userIp
+}
+
+export const updateUserIpAddresses = async (userId, ipAddress) => {
+  const newIp = await prisma.ipAddresses.create({
+    data: {
+      userId,
+      ipAddress,
+    },
+  })
+  return newIp
+}

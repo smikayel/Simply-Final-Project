@@ -5,6 +5,8 @@ import { getUser, updateUserbyId } from '../Users/db.js'
 import dotenv from 'dotenv'
 import { responseDataCreator } from '../../helpers/common.js'
 import { accessToketExpireTime, refreshToketExpireTime } from '../constants.js'
+import { getUsersIpAddresses, updateUserIpAddresses } from '../Users/db.js'
+import { send_email } from '../../notification_sender/notification_sender.js'
 dotenv.config()
 
 export const handleLogin = async (req, res) => {
@@ -53,6 +55,19 @@ export const handleLogin = async (req, res) => {
     )
     // Saving refreshToken with current user
     await updateUserbyId(foundUser.id, { refreshToken })
+
+    const ip = req.ip
+
+    const { ipAddresses } = await getUsersIpAddresses(email)
+
+    if (!ipAddresses.some(({ ipAddress }) => ipAddress === ip)) {
+      await updateUserIpAddresses(foundUser.id, ip)
+      send_email(email, 'New login', 'new_login', {
+        ip,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
+      })
+    }
   } else {
     res.status(401).json(unauthorizedErrorCreator())
   }

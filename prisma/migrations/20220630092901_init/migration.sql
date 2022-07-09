@@ -5,7 +5,7 @@
 
 */
 -- AlterTable
-ALTER TABLE `schedulesubject` MODIFY `time` TIME NOT NULL;
+-- ALTER TABLE `schedulesubject` MODIFY `time` TIME NOT NULL;
 
 -- AlterTable
-ALTER TABLE `test` MODIFY `start` TIMESTAMP NOT NULL;
+-- ALTER TABLE `test` MODIFY `start` TIMESTAMP NOT NULL;

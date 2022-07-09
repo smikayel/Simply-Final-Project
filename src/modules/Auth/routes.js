@@ -22,7 +22,7 @@ router.get('/refresh', handleRefreshToken)
  * @swagger
  * /api/v1/auth/login:
  *    post:
- *     description: Use to login user
+ *     description: Use to login user. Sends email to user if user has looged in from a new ip address.
  *     tags: [auth]
  *     consumes:
  *      - application/json

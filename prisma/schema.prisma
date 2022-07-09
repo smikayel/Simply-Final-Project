@@ -24,6 +24,14 @@ model User {
   UserTestAnswers UserTestAnswers[]
   userMessage     userMessage[]
   Message         Message[]
+  ipAddresses     IpAddresses[]
+}
+
+model IpAddresses {
+  id        Int    @id @default(autoincrement())
+  ipAddress String @db.VarChar(16)
+  userId    Int
+  User      User   @relation(fields: [userId], references: [id])
 }
 
 model UserGroup {
