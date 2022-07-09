@@ -11,14 +11,6 @@
     "lint": "eslint --ext .js",
     "lint:fix": "eslint . --fix"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*": "prettier --write"
-  },
   "keywords": [],
   "author": "",
   "license": "ISC",
