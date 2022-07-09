@@ -15,9 +15,23 @@ export const getAllUsers = async (search) => {
   const avgMarks = await getAvgMarks(prisma)
   let users = await prisma.user.findMany({
     where: {
-      firstName: {
-        contains: search,
-      },
+      OR: [
+        {
+          firstName: {
+            contains: search,
+          },
+        },
+        {
+          email: {
+            contains: search,
+          },
+        },
+        {
+          lastName: {
+            contains: search,
+          },
+        },
+      ],
     },
     include: {
       role: true,
@@ -90,6 +104,7 @@ export const getUser = async (data) => {
   })
 }
 export const updateUserbyId = async (id, data) => {
+  console.log(data)
   const updatedUser = await user.update({
     where: {
       id,
