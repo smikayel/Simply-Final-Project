@@ -1,5 +1,5 @@
 import { responseDataCreator } from '../../helpers/common.js'
-import { badRequestErrorCreator, unauthorizedErrorCreator } from '../../helpers/errors.js'
+import { badRequestErrorCreator } from '../../helpers/errors.js'
 import dotenv from 'dotenv'
 import jwt from 'jsonwebtoken'
 import {
@@ -94,14 +94,17 @@ export const handleUpdateUser = async (req, res) => {
     if (match) {
       const pwHashed = await bcrypt.hash(newPassword, 10)
       /* eslint-disable no-unused-vars */
+
       const { refreshToken, password, ...updatedUser } = await updateUserbyId(+id, {
         password: pwHashed,
       })
+
       /* eslint-disable no-unused-vars */
       return res.status(200).json(responseDataCreator({ updatedUser }))
     }
+    throw ''
   } catch (err) {
-    return res.status(401).json(unauthorizedErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator('Incorrect password.'))
   }
 }
 
@@ -179,11 +182,11 @@ export const handleForgotPassword = async (req, res) => {
     const secret = process.env.FORGOT_PASSWORD_SECRET + user.password // to make sure that token is valid only one time unless user sets the same password
     const payload = { email, userId: user.id }
     const token = jwt.sign(payload, secret, { expiresIn: PASSWORD_RECOVERY_EXPIRE_TIME })
-    const link = FRONT_BASE_URL + `/resetPassword/${user.id}/${token}`
+    const link = FRONT_BASE_URL + `/reset-password/${user.id}/${token}`
     send_email(user.email, 'Password Recovery', 'resetPassword', { link })
     res.status(200).json(responseDataCreator(token))
   } catch (err) {
-    return res.status(400).json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator(err))
   }
 }
 
@@ -200,7 +203,8 @@ export const handleResetPassword = async (req, res) => {
 
     const secret = process.env.FORGOT_PASSWORD_SECRET + user.password
     jwt.verify(token, secret, async (err, decoded) => {
-      if (err || user.email !== decoded.email) return res.sendStatus(402)
+      if (err || user.email !== decoded.email)
+        return res.status(400).json(badRequestErrorCreator('Link is not valid!'))
       const pwHashed = await bcrypt.hash(password, 10)
       const updatedUser = await updateUserbyId(+userId, { password: pwHashed })
       res.status(200).json(
@@ -210,6 +214,6 @@ export const handleResetPassword = async (req, res) => {
       )
     })
   } catch (err) {
-    return res.status(400).json(badRequestErrorCreator(err.message))
+    return res.status(400).json(badRequestErrorCreator('Link is not valid'))
   }
 }
