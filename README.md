@@ -6,7 +6,7 @@ This project was created with love for internship of [Simply technologies](https
 
 In the project directory, you can run:
 
-### `npm run dev` 
+### `npm run dev`
 
 Runs the app in the development mode.\
 In [http://localhost:5000](http://localhost:5000).
@@ -16,14 +16,14 @@ You may also see any lint errors in the console.\
 For uninterrupted work you need to install all\
 packages which are used in project.\
 
-### `npm install` 
+### `npm install`
 
 You can try to work with Api with Postman \
 or with other applications.\
 Or you can download and test it with\
 [Front Part](https://github.com/smikayel/Simply-Final-Project-Frontpart)
 
-## You have questions ? 
+## You have questions ?
 
 We will be happy to help you.\
 Our git hub links. \

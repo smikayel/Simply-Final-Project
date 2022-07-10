@@ -1,38 +1,38 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <title>Congratulations</title>
-  <style>
-    .welcom-text {
-      font-size: 24px;
-      line-height: 32px;
-      color: rgba(10, 16, 22, 0.856);
-    }
-    .welcom-container {
-      max-width: 446px
-    }
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <title>Congratulations</title>
+    <style>
+      .welcom-text {
+        font-size: 24px;
+        line-height: 32px;
+        color: rgba(10, 16, 22, 0.856);
+      }
+      .welcom-container {
+        max-width: 446px;
+      }
 
-    .message-text {
-      font-size: 20px;
-      line-height: 28px;
-      letter-spacing: -0.2px;
-      margin-bottom: 28px;
-      word-break: break-word;
-      color: rgba(20, 29, 39, 0.856);
-    }
-  </style>
-</head>
+      .message-text {
+        font-size: 20px;
+        line-height: 28px;
+        letter-spacing: -0.2px;
+        margin-bottom: 28px;
+        word-break: break-word;
+        color: rgba(20, 29, 39, 0.856);
+      }
+    </style>
+  </head>
 
-<body>
-  <div class="welcom-container">
-    <h2 class="welcom-text">Hello dear {{data.firstName}} {{data.lastName}}! </h2>
-    <p class="message-text">You have been logged in from a new IP address {{data.ip}} at {{data.date}}</p>
-    <p class="message-text">Please contact addminstrators if this wasnt you</p>
-    <div class="">
-      
+  <body>
+    <div class="welcom-container">
+      <h2 class="welcom-text">Hello dear {{data.firstName}} {{data.lastName}}!</h2>
+      <p class="message-text">
+        You have been logged in from a new IP address {{data.ip}} at {{data.date}}
+      </p>
+      <p class="message-text">Please contact addminstrators if this wasnt you</p>
+      <div class=""></div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

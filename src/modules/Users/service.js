@@ -69,7 +69,7 @@ export const handleCreateUsers = async (req, res) => {
     //     email: user.email,
     //   })
     // })
-    res.status(201).json(responseDataCreator({ createdUser }))
+    res.status(201).json(responseDataCreator(createdUser))
   } catch (err) {
     let errorMessage = ''
     if (err.code === 'P2002') errorMessage = 'Email already exists'

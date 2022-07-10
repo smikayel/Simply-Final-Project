@@ -104,7 +104,6 @@ export const getUser = async (data) => {
   })
 }
 export const updateUserbyId = async (id, data) => {
-  console.log(data)
   const updatedUser = await user.update({
     where: {
       id,
@@ -124,10 +123,32 @@ export const deleteUserByIds = async (ids) => {
   return deletedUsers
 }
 export const createUsers = async (data) => {
-  const createdUsers = await user.createMany({
-    data,
+  return prisma.$transaction(async (prisma) => {
+    for (const { firstName, lastName, email, password, roleId, groupIds } of data) {
+      const user = await prisma.user.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password,
+          roleId,
+        },
+      })
+
+      for (const groupId of groupIds) {
+        await prisma.userGroup.upsert({
+          where: { userId_groupId: { userId: user.id, groupId } },
+          update: {},
+          create: {
+            userId: user.id,
+            groupId,
+          },
+        })
+      }
+    }
+
+    return { error: null }
   })
-  return createdUsers
 }
 export const getUserTests = async (email) => {
   const foundedTests = await user.findUnique({
