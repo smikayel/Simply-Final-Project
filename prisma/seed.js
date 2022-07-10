@@ -2,6 +2,17 @@ import { prisma } from '../src/services/Prisma.js'
 
 async function main() {
   const roleData = [{ name: 'Admin' }, { name: 'Teacher' }, { name: 'Student' }]
+  const subjectsData = [
+    { name: 'Free class' },
+    { name: 'Math' },
+    { name: 'English' },
+    { name: 'History' },
+    { name: 'Geography' },
+    { name: 'Science' },
+    { name: 'Art' },
+    { name: 'Philosophy' },
+    { name: 'Linear algebra' },
+  ]
 
   await prisma.$transaction(
     roleData.map((role) =>
@@ -18,13 +29,15 @@ async function main() {
     select: { id: true },
   })
 
-  await prisma.subject.upsert({
-    where: {
-      name: 'Free Class',
-    },
-    update: {},
-    create: { name: 'Free Class' },
-  })
+  await prisma.$transaction(
+    subjectsData.map((subject) =>
+      prisma.subject.upsert({
+        where: { name: subject.name },
+        update: {},
+        create: { name: subject.name },
+      })
+    )
+  )
 
   await prisma.user.upsert({
     where: { email: 'admin@gmail.com' },
