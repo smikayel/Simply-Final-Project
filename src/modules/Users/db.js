@@ -7,12 +7,13 @@ import {
   getUsersAnsweredQuestions,
   getQuestionMarks,
 } from './helpers.js'
-import { roleStudentName } from '../constants.js'
+import { roleStudentName, roleAdminName } from '../constants.js'
+import { getAllGroups } from '../Groups/db.js'
 
 const { user, userTest, userTestAnswers } = prisma
 
 export const getAllUsers = async (search) => {
-  const avgMarks = await getAvgMarks(prisma)
+  const avgMarks = await getAvgMarks()
   let users = await prisma.user.findMany({
     where: {
       OR: [
@@ -63,7 +64,7 @@ export const getUserById = async (id) => {
   return userProfile
 }
 export const getTopUsers = async () => {
-  const avgMarks = await getAvgMarks(prisma, undefined, 3)
+  const avgMarks = await getAvgMarks(undefined, 3)
   const userIds = avgMarks.map((avg) => avg.userId)
   let users = await prisma.user.findMany({
     where: {
@@ -85,23 +86,27 @@ export const getTopUsers = async () => {
   return users
 }
 export const getUser = async (data) => {
-  return prisma.$transaction(async (prisma) => {
-    const foundUser = await prisma.user.findUnique({
-      where: data,
-      include: {
-        role: true,
-        userTest: true,
-        userGroup: {
-          select: { group: true },
-        },
+  const foundUser = await prisma.user.findUnique({
+    where: data,
+    include: {
+      role: true,
+      userTest: true,
+      userGroup: {
+        select: { group: true },
       },
-    })
-    if (foundUser) {
-      const avgMarks = await getAvgMarks(prisma, foundUser.id)
-      foundUser['avgMark'] = avgMarks[0]?._avg?.mark
-    }
-    return foundUser
+    },
   })
+  if (foundUser) {
+    const avgMarks = await getAvgMarks(foundUser.id)
+    foundUser['avgMark'] = avgMarks[0]?._avg?.mark
+  }
+  if (foundUser.role.name === roleAdminName) {
+    const tmp = await getAllGroups()
+    foundUser.userGroup = tmp.map((group) => {
+      return { group }
+    })
+  }
+  return foundUser
 }
 export const updateUserbyId = async (id, data) => {
   const updatedUser = await user.update({

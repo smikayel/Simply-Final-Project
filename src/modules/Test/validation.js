@@ -1,12 +1,14 @@
 import Joi from 'joi'
 
+const now = () => new Date() - 10000 * 60 // add 1 mintue delay
+
 export default {
   createTestSchema: {
     body: Joi.object({
       userId: Joi.number().strict().required(),
       name: Joi.string().min(3).required(),
       subjectId: Joi.number().integer().required(),
-      start: Joi.string().required(),
+      start: Joi.date().required().min(now()),
       length: Joi.number().strict().required(),
       highestScore: Joi.number().strict().required(),
       group: Joi.number().integer().required(),
@@ -18,7 +20,7 @@ export default {
       answers: Joi.array().items(
         Joi.array().items(
           Joi.object({
-            name: Joi.string().min(3).max(160).required(),
+            name: Joi.string().min(1).max(160).required(),
             isCorrect: Joi.boolean().required(),
           })
         )
