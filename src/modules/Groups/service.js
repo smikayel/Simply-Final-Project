@@ -52,7 +52,6 @@ export const handleGetGroupUsers = async (req, res) => {
   try {
     const { id } = req.params
     const group = await getGroupUsers(+id)
-    console.log(group)
     res.status(200).json(responseDataCreator(group))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator())

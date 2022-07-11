@@ -22,6 +22,21 @@ export const getTest = async (id) => {
 export function createTests(testData) {
   return prisma.$transaction(async (prisma) => {
     const startDate = new Date(testData.start)
+    let questions = testData.questions
+
+    questions.forEach((question, i) => {
+      let isMulti = false
+      let count = 0
+      for (const answer of testData.answers[i]) {
+        if (answer.isCorrect) count++
+        if (count > 1) {
+          isMulti = true
+          break
+        }
+      }
+      question.isMultiSelect = isMulti
+    })
+
     const newTest = await prisma.Test.create({
       data: {
         name: testData.name,
@@ -36,7 +51,7 @@ export function createTests(testData) {
       include: includes,
     })
 
-    const questions = newTest.questions
+    questions = newTest.questions
     const questionsIds = questions.reduce((acc, element) => {
       acc.push(element.id)
       return acc

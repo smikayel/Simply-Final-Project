@@ -156,6 +156,7 @@ model Question {
   updatedAt       DateTime          @updatedAt
   test            Test?             @relation(fields: [testId], references: [id], onDelete: Cascade)
   testId          Int?
+  isMultiSelect   Boolean           @default(false)
   answers         Answer[]
   userTestAnswers UserTestAnswers[]
 }
