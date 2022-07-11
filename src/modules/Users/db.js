@@ -129,7 +129,7 @@ export const deleteUserByIds = async (ids) => {
 }
 export const createUsers = async (data) => {
   return prisma.$transaction(async (prisma) => {
-    for (const { firstName, lastName, email, password, roleId, groupIds } of data) {
+    for (const { firstName, lastName, email, password, roleId, groups } of data) {
       const user = await prisma.user.create({
         data: {
           firstName,
@@ -139,6 +139,11 @@ export const createUsers = async (data) => {
           roleId,
         },
       })
+
+      const groupIds = groups.reduce((acc, group) => {
+        if (group.checked) acc.push(group.id)
+        return acc
+      }, [])
 
       for (const groupId of groupIds) {
         await prisma.userGroup.upsert({

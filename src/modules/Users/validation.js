@@ -12,7 +12,13 @@ export default {
         password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
         // userGroup: Joi.array().items()
         roleId: Joi.number().strict().required(),
-        groupIds: Joi.array().items(Joi.number().strict().required()),
+        groups: Joi.array().items(
+          Joi.object({
+            name: Joi.string().min(3).max(150),
+            id: Joi.number().integer().required(),
+            checked: Joi.boolean().required(),
+          })
+        ),
       })
     ),
   },
