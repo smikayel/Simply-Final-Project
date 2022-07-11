@@ -21,8 +21,6 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-  console.log('connected')
-
   socket.on('join_chat', async (data) => {
     try {
       socket.join(`groupId:${data.groupId}`)
