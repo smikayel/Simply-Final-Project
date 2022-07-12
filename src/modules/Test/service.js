@@ -26,18 +26,19 @@ export const handleGetMarks = async (req, res) => {
 
 export const handleGetTest = async (req, res) => {
   try {
-    if (req.url.includes('?')) {
-      handleGetMarks(req, res)
-      return
-    }
     const { id: testId } = req.params
+    let completed = false
     if (req.role.name !== roleAdminName) {
       const tests = await getUserTests(req.email)
-      const match = tests.some(({ test }) => {
+      const match = tests.some(({ test, isComplete }) => {
         if (req.role.name !== roleTeacherName) {
-          const tmp = new Date()
-
-          return +test.id === +testId && test.start <= tmp
+          if (+test.id === +testId) {
+            completed = isComplete
+          }
+          return (
+            +test.id === +testId &&
+            test.start <= new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
+          )
         }
         return +test.id === +testId
       })
@@ -47,7 +48,7 @@ export const handleGetTest = async (req, res) => {
       }
     }
 
-    const test = await getTest(+testId)
+    const test = await getTest(+testId, completed)
 
     res.status(200).json(responseDataCreator(test))
   } catch (err) {
@@ -60,7 +61,6 @@ export const handleCreateTest = async (req, res) => {
     const createdTest = await createTests(req.body)
     res.status(201).json(responseDataCreator({ createdTest }))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
@@ -70,7 +70,6 @@ export const handleDeleteTest = async (req, res) => {
     const deletedTest = await deleteTest(req.body)
     res.status(200).json(responseDataCreator(deletedTest))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }
@@ -84,7 +83,6 @@ export const handleGetAllTestsForUser = async (req, res) => {
     const userTests = await getAllUserTests(req.id, isComplete, take, skip, subjectId)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

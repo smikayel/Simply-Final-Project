@@ -137,6 +137,7 @@ export const handleUserTestSubmit = async (req, res) => {
       req.body,
       req.id
     )
+
     res
       .status(201)
       .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))

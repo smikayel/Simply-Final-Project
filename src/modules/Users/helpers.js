@@ -92,6 +92,12 @@ export const getQuestionMarks = async (
 ) => {
   const questionMarks = {}
   let mark = 0
+  console.log(
+    console.log(answerCounts['correct']),
+    answerCounts['wrong'],
+    questionAnswerCount,
+    questionMaxMark
+  )
   for (const key of testQuestions) {
     questionMarks[key] = 0 // if student chose all answers of question give 0
     if (!questionAnswerCount[key] || (!answerCounts['correct'][key] && !answerCounts['wrong'][key]))
@@ -114,12 +120,14 @@ export const getQuestionMarks = async (
       questionMarks[key] = questionMarks[key] < 0 ? 0 : questionMarks[key] // give 0 if more answers are wrong than correct
       questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
     }
+    console.log(questionMarks[key], key)
     mark += questionMarks[key]
   }
+  console.log(mark)
   // if student answered all questions correct give highest score to avoid round errors
   if (mark > highestScore) mark = highestScore
   mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
-
+  console.log(mark)
   return { mark, questionMarks }
 }
 

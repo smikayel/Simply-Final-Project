@@ -167,6 +167,7 @@ export const getUserTests = async (email) => {
       userTest: {
         select: {
           test: true,
+          isComplete: true,
         },
       },
     },
@@ -259,8 +260,8 @@ export const calculateUserTestMark = async (prisma, answersIds, userId, testId) 
   const questionAnswers = []
   answerData.forEach((answer) => {
     questionAnswers.push({ questionId: answer.questionId, answerId: answer.id, userId, testId })
-    answerCounts['wrong'][answer.questionId] = 0
-    answerCounts['correct'][answer.questionId] = 0
+    answerCounts['wrong'][answer.questionId] = answerCounts['wrong'][answer.questionId] || 0
+    answerCounts['correct'][answer.questionId] = answerCounts['correct'][answer.questionId] || 0
     if (answer.isCorrect) {
       answerCounts['correct'][answer.questionId]++
       answerResult['correct'].push(answer.id)
@@ -284,6 +285,7 @@ export const calculateUserTestMark = async (prisma, answersIds, userId, testId) 
     questionMarks,
   }
 }
+
 export const submitTest = async (body, userId) => {
   return prisma.$transaction(async (prisma) => {
     const { testId, answersIds } = body
@@ -292,6 +294,7 @@ export const submitTest = async (body, userId) => {
       return { mark: 0 }
     }
     const data = await calculateUserTestMark(prisma, answersIds, userId, testId)
+
     await addMark('dummy', { studentId: userId, testId, mark: data.mark }, true, prisma)
     await storeUsersTest(prisma, data.questionAnswers, userId, testId)
     return data
@@ -314,18 +317,21 @@ export const getUserTestResults = async (userId, testId) => {
   })
   const answerCounts = { wrong: {}, correct: {} }
   const answerResult = {}
+
   usersAnswers.forEach(({ answer }) => {
-    answerCounts['wrong'][answer.questionId] = 0
-    answerCounts['correct'][answer.questionId] = 0
-    answerResult[answer.questionId] = answerResult[answer.questionId] || []
+    answerCounts['wrong'][answer.questionId] = answerCounts['wrong'][answer.questionId] || 0
+    answerCounts['correct'][answer.questionId] = answerCounts['correct'][answer.questionId] || 0
+
+    answerResult[answer.questionId] = answerResult[answer.questionId] || {}
     if (answer.isCorrect) {
       answerCounts['correct'][answer.questionId]++
-      answerResult[answer.questionId].push({ [answer.id]: true })
+      answerResult[answer.questionId][answer.id] = true
       return
     }
     answerCounts['wrong'][answer.questionId]++
-    answerResult[answer.questionId].push({ [answer.id]: false })
+    answerResult[answer.questionId][answer.id] = false
   })
+
   const { mark, questionMarks } = await getQuestionMarks(
     testQuestions,
     answerCounts,
@@ -333,6 +339,7 @@ export const getUserTestResults = async (userId, testId) => {
     questionMaxMark,
     highestScore
   )
+
   return {
     mark,
     answerResult,

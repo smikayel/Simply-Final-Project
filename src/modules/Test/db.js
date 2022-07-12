@@ -6,15 +6,15 @@ const { userTest } = prisma
 
 export const getAllTests = async () => {
   const allTests = await prisma.test.findMany({
-    include: includes,
+    include: includes(true), // include answers with isCorrect
   })
   return allTests
 }
 
-export const getTest = async (id) => {
+export const getTest = async (id, completed) => {
   const foundedTest = await prisma.test.findUnique({
     where: { id },
-    include: includes,
+    include: includes(completed),
   })
   return foundedTest
 }
@@ -48,7 +48,7 @@ export function createTests(testData) {
           create: testData.questions,
         },
       },
-      include: includes,
+      include: includes(false),
     })
 
     questions = newTest.questions
@@ -115,11 +115,12 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
       },
     },
     include: {
-      test: { include: { questions: { include: { answers: true } } } },
+      test: { include: { questions: true } },
     },
     take,
     skip,
   })
+
   const userTestsCount = await prisma.UserTest.aggregate({
     where: {
       userId,
@@ -135,6 +136,7 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
     const test = userTest.test
     test.mark = userTest.mark
     test.isComplete = userTest.isComplete
+    test.questions = test.questions.length
     return test
   })
   return { allTests, count: userTestsCount }
