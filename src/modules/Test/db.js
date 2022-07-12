@@ -82,6 +82,8 @@ export function createTests(testData) {
       data: groupUsersIdsFilterd,
     })
 
+    const dateInLocal = new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000)
+
     setTimeout(async () => {
       await userTest.updateMany({
         where: {
@@ -90,7 +92,7 @@ export function createTests(testData) {
         },
         data: { isComplete: true, mark: 0 },
       })
-    }, startDate - Date.now() + testData.length * 60 * 1000)
+    }, startDate - dateInLocal + testData.length * 60 * 1000)
 
     return newTest
   })
@@ -119,6 +121,11 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
     },
     take,
     skip,
+    orderBy: {
+      test: {
+        start: 'asc',
+      },
+    },
   })
 
   const userTestsCount = await prisma.UserTest.aggregate({
