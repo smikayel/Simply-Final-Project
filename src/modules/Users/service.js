@@ -142,6 +142,7 @@ export const handleUserTestSubmit = async (req, res) => {
       .status(201)
       .json(responseDataCreator({ mark, correctAnswerIds, wrongAnswerIds, questionMarks }))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

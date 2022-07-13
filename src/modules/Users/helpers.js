@@ -92,17 +92,20 @@ export const getQuestionMarks = async (
 ) => {
   const questionMarks = {}
   let mark = 0
+  let correctQuestionsCount = 0
 
   for (const key of testQuestions) {
-    questionMarks[key] = 0 // if student chose all answers of question give 0
-    if (!questionAnswerCount[key] || (!answerCounts['correct'][key] && !answerCounts['wrong'][key]))
-      continue
-    if (questionAnswerCount[key]['all'] === questionAnswerCount[key]['correct']) {
-      questionMarks[key] = questionMaxMark
-      mark += questionMarks[key]
-      continue
-    }
+    questionMarks[key] = 0
+    if (!questionAnswerCount[key] || !answerCounts['correct'][key]) continue // 0 if user doesnt have correct answers or any answers
+
     if (
+      answerCounts['correct'][key] === questionAnswerCount[key]['correct'] &&
+      answerCounts['wrong'][key] === 0
+    ) {
+      // all answers were correct and user chose them
+      questionMarks[key] = questionMaxMark
+      correctQuestionsCount++
+    } else if (
       !(
         answerCounts['correct'][key] + answerCounts['wrong'][key] ===
         questionAnswerCount[key]['all']
@@ -113,14 +116,16 @@ export const getQuestionMarks = async (
         ((answerCounts['correct'][key] - answerCounts['wrong'][key]) /
           questionAnswerCount[key]['correct'])
       questionMarks[key] = questionMarks[key] < 0 ? 0 : questionMarks[key] // give 0 if more answers are wrong than correct
-      questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
     }
 
+    // if none of ifs worket it means chose all answers of question and there were worng answers so give 0
+    questionMarks[key] = Math.round(questionMarks[key] * 1e2) / 1e2 // round to 2 decimal places
     mark += questionMarks[key]
   }
 
   // if student answered all questions correct give highest score to avoid round errors
-  if (mark > highestScore) mark = highestScore
+  if (mark > highestScore || correctQuestionsCount === testQuestions.length) mark = highestScore
+  console.log(mark, correctQuestionsCount, testQuestions.length)
   mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
 
   return { mark, questionMarks }

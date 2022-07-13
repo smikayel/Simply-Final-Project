@@ -108,6 +108,8 @@ export async function deleteTest(testData) {
 }
 
 export const getAllUserTests = async (userId, isCompleteVal, take, skip, subjectId) => {
+  const order = !isCompleteVal ? 'asc' : 'desc'
+
   const userTests = await prisma.UserTest.findMany({
     where: {
       userId,
@@ -123,7 +125,7 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
     skip,
     orderBy: {
       test: {
-        start: 'asc',
+        start: order,
       },
     },
   })
