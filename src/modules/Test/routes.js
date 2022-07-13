@@ -8,34 +8,35 @@ import {
   handleGetAllTestsForUser,
 } from './service.js'
 import validations from './validation.js'
+import { ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER } from '../constants.js'
 
 const { createTestSchema, getUsersTestsSchema, deleteTestSchema, getTestSchema } = validations
 
 const router = Router()
 
-router.get('/', verifyRoles(['Admin']), handleGetAllTests)
+router.get('/', verifyRoles([ROLE_ADMIN]), handleGetAllTests)
 router.get(
   '/usersAll',
-  verifyRoles(['Admin', 'Student', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER]),
   validateSchema(getUsersTestsSchema),
   handleGetAllTestsForUser
 )
 router.get(
   '/:id',
   validateSchema(getTestSchema),
-  verifyRoles(['Admin', 'Student', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER]),
   handleGetTest
 )
 router.post(
   '/',
   validateSchema(createTestSchema),
-  verifyRoles(['Admin', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER]),
   handleCreateTest
 )
 router.delete(
   '/',
   validateSchema(deleteTestSchema),
-  verifyRoles(['Admin', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER]),
   handleDeleteTest
 )
 

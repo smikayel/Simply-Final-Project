@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { validateSchema, verifyRoles } from '../../helpers/validations.js'
+import { ROLE_STUDENT, ROLE_TEACHER, ROLE_ADMIN } from '../constants.js'
 import { handleGetGroupMessages } from './service.js'
 import validations from './validation.js'
 
@@ -9,7 +10,7 @@ const router = Router()
 
 router.get(
   '/:groupId/messages',
-  verifyRoles(['Admin', 'Student', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER]),
   validateSchema(getGroupMessagesSchema),
   handleGetGroupMessages
 )

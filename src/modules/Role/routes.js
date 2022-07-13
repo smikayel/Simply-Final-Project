@@ -1,10 +1,11 @@
 import { Router } from 'express'
 import { verifyRoles } from '../../helpers/validations.js'
 import { handleGetAllRoles } from './service.js'
+import { ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER } from '../constants.js'
 
 const router = Router()
 
-router.get('/', verifyRoles(['Admin', 'Students', 'Teacher']), handleGetAllRoles)
+router.get('/', verifyRoles([ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER]), handleGetAllRoles)
 
 export { router as rolesRoutes }
 

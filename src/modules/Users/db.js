@@ -7,7 +7,7 @@ import {
   getUsersAnsweredQuestions,
   getQuestionMarks,
 } from './helpers.js'
-import { roleStudentName, roleAdminName } from '../constants.js'
+import { ROLE_STUDENT, ROLE_ADMIN } from '../constants.js'
 import { getAllGroups } from '../Groups/db.js'
 
 const { user, userTest, userTestAnswers } = prisma
@@ -100,7 +100,7 @@ export const getUser = async (data) => {
     const avgMarks = await getAvgMarks(foundUser.id)
     foundUser['avgMark'] = avgMarks[0]?._avg?.mark
   }
-  if (foundUser.role.name === roleAdminName) {
+  if (foundUser.role.name === ROLE_ADMIN) {
     const tmp = await getAllGroups()
     foundUser.userGroup = tmp.map((group) => {
       return { group }
@@ -203,7 +203,7 @@ export const addMark = async (
         },
         user: {
           role: {
-            name: roleStudentName,
+            name: ROLE_STUDENT,
           },
         },
       },

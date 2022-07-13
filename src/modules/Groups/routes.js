@@ -8,27 +8,33 @@ import {
   handleGetGroupUsers,
 } from './service.js'
 import validations from './validation.js'
+import { ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER } from '../constants.js'
 
 const { createGroupSchema, getGroupByIdSchema, deleteGroupsSchema, getGroupUsersSchema } =
   validations
 
 const router = Router()
 
-router.get('/', verifyRoles(['Admin']), handleGetAllGroups)
+router.get('/', verifyRoles([ROLE_ADMIN]), handleGetAllGroups)
 router.get(
   '/:id/users',
   validateSchema(getGroupUsersSchema),
-  verifyRoles(['Admin', 'Teacher', 'Student']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]),
   handleGetGroupUsers
 )
-router.post('/', validateSchema(createGroupSchema), verifyRoles(['Admin']), handleCreateGroup)
+router.post('/', validateSchema(createGroupSchema), verifyRoles([ROLE_ADMIN]), handleCreateGroup)
 router.delete(
   '/',
   validateSchema(deleteGroupsSchema),
-  verifyRoles(['Admin']),
+  verifyRoles([ROLE_ADMIN]),
   handleDeleteGroupsById
 )
-router.get('/:id', validateSchema(getGroupByIdSchema), verifyRoles(['Admin']), handleGetGroupById)
+router.get(
+  '/:id',
+  validateSchema(getGroupByIdSchema),
+  verifyRoles([ROLE_ADMIN]),
+  handleGetGroupById
+)
 
 /**
  * @swagger

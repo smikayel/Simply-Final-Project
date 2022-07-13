@@ -7,7 +7,7 @@ import validations from './validation.js'
 import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
 import { checkUserInGroup } from './db.js'
-import { roleAdminName } from '../constants.js'
+import { ROLE_ADMIN } from '../constants.js'
 
 const { createMessageSchema } = validations
 
@@ -52,7 +52,7 @@ export const handleGetGroupMessages = async (req, res) => {
   skip = +skip || 0
   take = +take || take
   try {
-    if (req.role.name !== roleAdminName) {
+    if (req.role.name !== ROLE_ADMIN) {
       const user = await checkUserInGroup(req.id, +groupId)
       if (!user) {
         res.status(402).json(badRequestErrorCreator('User is not in group'))

@@ -2,7 +2,7 @@ import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, forbiddenErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests, getAllUserTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
-import { roleAdminName, roleTeacherName } from '../constants.js'
+import { ROLE_ADMIN, ROLE_TEACHER } from '../constants.js'
 
 export const handleGetAllTests = async (req, res) => {
   try {
@@ -28,10 +28,10 @@ export const handleGetTest = async (req, res) => {
   try {
     const { id: testId } = req.params
     let completed = false
-    if (req.role.name !== roleAdminName) {
+    if (req.role.name !== ROLE_ADMIN) {
       const tests = await getUserTests(req.email)
       const match = tests.some(({ test, isComplete }) => {
-        if (req.role.name !== roleTeacherName) {
+        if (req.role.name !== ROLE_TEACHER) {
           if (+test.id === +testId) {
             completed = isComplete
           }

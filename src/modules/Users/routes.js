@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { validateSchema, verifyRoles } from '../../helpers/validations.js'
+import { ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER } from '../constants.js'
 import {
   handleGetAllUsers,
   handleCreateUsers,
@@ -30,34 +31,34 @@ const {
 const router = Router()
 router.get(
   '/',
-  verifyRoles(['Admin', 'Teacher', 'Student']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]),
   validateSchema(getAllUsersSchema),
   handleGetAllUsers
 )
 
-router.get('/topUsers', verifyRoles(['Admin', 'Teacher', 'Student']), handleGetTopUsers)
-router.post('/', validateSchema(createUsersSchema), verifyRoles(['Admin']), handleCreateUsers)
+router.get('/topUsers', verifyRoles([ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]), handleGetTopUsers)
+router.post('/', validateSchema(createUsersSchema), verifyRoles([ROLE_ADMIN]), handleCreateUsers)
 router.put(
   '/',
-  verifyRoles(['Admin', 'Student', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER]),
   validateSchema(changePasswordSchema),
   handleUpdateUser
 )
 router.post(
   '/submitTest/',
-  verifyRoles(['Student', 'Admin']),
+  verifyRoles([ROLE_STUDENT, ROLE_ADMIN]),
   validateSchema(submitTestSchema),
   handleUserTestSubmit
 )
 router.put(
   '/setMark',
-  verifyRoles(['Teacher']),
+  verifyRoles([ROLE_TEACHER]),
   validateSchema(setUserMarkSchema),
   handleSetUserMark
 )
 router.put(
   '/finishTest',
-  verifyRoles(['Student']),
+  verifyRoles([ROLE_STUDENT]),
   validateSchema(setTestFinishSchema),
   handleUpdateUserTest
 )
@@ -74,11 +75,11 @@ router.get(
 )
 router.get(
   '/:id',
-  verifyRoles(['Admin', 'Teacher', 'Student']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]),
   validateSchema(getUserByIdSchema),
   handleGetUserById
 )
-router.delete('/', validateSchema(deleteUsersSchema), verifyRoles(['Admin']), handleDeleteUsers)
+router.delete('/', validateSchema(deleteUsersSchema), verifyRoles([ROLE_ADMIN]), handleDeleteUsers)
 export { router as usersRoutes }
 /**
  * @swagger

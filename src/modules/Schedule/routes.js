@@ -8,6 +8,7 @@ import {
   handleUpdateSchedule,
   handleGetScheduleById,
 } from './service.js'
+import { ROLE_ADMIN, ROLE_TEACHER } from '../constants.js'
 
 const {
   createScheduleSchema,
@@ -23,20 +24,20 @@ router.get('/:id', validateSchema(getScheduleSchema), handleGetScheduleById)
 router.get('/group/:groupId', validateSchema(getSchedulebyGroupSchema), handleGetScheduleByGroup)
 router.post(
   '/',
-  verifyRoles(['Admin', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER]),
   validateSchema(createScheduleSchema),
   handleCreateSchedule
 )
 router.delete(
   '/:id',
   validateSchema(deleteScheduleSchema),
-  verifyRoles(['Admin']),
+  verifyRoles([ROLE_ADMIN]),
   handleDeleteSchedule
 )
 router.put(
   '/',
   validateSchema(updateScheduleSchema),
-  verifyRoles(['Admin', 'Teacher']),
+  verifyRoles([ROLE_ADMIN, ROLE_TEACHER]),
   handleUpdateSchedule
 )
 
