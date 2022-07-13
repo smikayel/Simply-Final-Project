@@ -13,8 +13,9 @@ export const validateSchema = (schema) => {
       schema.query && (await schema.query.validateAsync(query))
       return next()
     } catch (error) {
-      console.log(`⚠️ ${error.details[0].message}`)
-      next(badRequestErrorCreator(error.details[0].message))
+      console.log(error)
+      console.log(`⚠️ ${error.details}`)
+      next(badRequestErrorCreator(error.details))
     }
   }
 }

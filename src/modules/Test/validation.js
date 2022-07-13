@@ -12,20 +12,35 @@ export default {
       length: Joi.number().strict().required(),
       highestScore: Joi.number().strict().required(),
       group: Joi.number().integer().required(),
-      questions: Joi.array().items(
-        Joi.object({
-          name: Joi.string().min(3).max(160).required(),
-        })
-      ),
-      answers: Joi.array().items(
-        Joi.array().items(
+      questions: Joi.array()
+        .items(
           Joi.object({
-            name: Joi.string().min(1).max(160).required(),
-            isCorrect: Joi.boolean().required(),
+            name: Joi.string().min(3).max(160).required(),
           })
         )
-      ),
-    }),
+        .required(),
+      answers: Joi.array()
+        .items(
+          Joi.array()
+            .items(
+              Joi.object({
+                name: Joi.string().min(1).max(160).required(),
+                isCorrect: Joi.boolean().required(),
+              })
+            )
+            .has(
+              Joi.object({
+                name: Joi.string().min(1).max(160).required(),
+                isCorrect: true,
+              })
+            )
+        )
+        .required(),
+    }).assert(
+      '.questions.length',
+      Joi.ref('answers.length'),
+      'questions and answers must have the same length'
+    ),
   },
 
   getUsersTestsSchema: {
