@@ -61,6 +61,9 @@ export const getUserById = async (id) => {
       updatedAt: true,
     },
   })
+  const avgMark = await getAvgMarks(+id)
+  userProfile.avgMark = avgMark[0]?._avg?.mark || 0
+
   return userProfile
 }
 export const getTopUsers = async () => {
@@ -367,4 +370,15 @@ export const updateUserIpAddresses = async (userId, ipAddress) => {
     },
   })
   return newIp
+}
+
+export const updateUserIsOnline = async (userId, isOnline) => {
+  await user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      isOnline,
+    },
+  })
 }

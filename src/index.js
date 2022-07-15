@@ -1,7 +1,7 @@
 import app from './app.js'
 import * as routes from './api/index.js'
 import { internalServerErrorCreator, notFoundErrorCreator } from './helpers/errors.js'
-import { server } from './modules/Chat/service.js'
+import { server } from './modules/Socket/service.js'
 
 const PORT = app.get('port')
 const { API_VERSIONS } = app.get('config')

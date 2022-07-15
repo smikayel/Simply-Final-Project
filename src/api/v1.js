@@ -6,7 +6,7 @@ import { verifyJWT } from '../helpers/validations.js'
 import { testsRoutes } from '../modules/Test/routes.js'
 import { scheduleRoutes } from '../modules/Schedule/routes.js'
 import { subjectRoutes } from '../modules/Subject/routes.js'
-import { chatsRoutes } from '../modules/Chat/routes.js'
+import { chatsRoutes } from '../modules/Socket/routes.js'
 import { rolesRoutes } from '../modules/Role/routes.js'
 
 import { swaggerRoutes } from './swagger.js'

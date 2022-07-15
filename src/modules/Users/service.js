@@ -47,6 +47,7 @@ export const handleGetUserById = async (req, res) => {
     const user = await getUserById(id)
     res.status(200).json(responseDataCreator({ user }))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator())
   }
 }

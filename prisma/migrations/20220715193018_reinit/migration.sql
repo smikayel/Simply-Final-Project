@@ -1,6 +1,7 @@
 -- CreateTable
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `isOnline` BOOLEAN NOT NULL DEFAULT false,
     `firstName` VARCHAR(30) NOT NULL,
     `lastName` VARCHAR(30) NOT NULL,
     `email` VARCHAR(30) NOT NULL,

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Server } from 'socket.io'
 import http from 'http'
 import app from '../../app.js'
@@ -8,6 +9,7 @@ import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
 import { checkUserInGroup } from './db.js'
 import { ROLE_ADMIN } from '../constants.js'
+import { updateUserIsOnline } from '../Users/db.js'
 
 const { createMessageSchema } = validations
 
@@ -21,6 +23,11 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
+  let userId
+  socket.on('login', async (data) => {
+    userId = data.id
+  })
+
   socket.on('join_chat', async (data) => {
     try {
       socket.join(`groupId:${data.groupId}`)
@@ -43,6 +50,10 @@ io.on('connection', (socket) => {
     } catch (err) {
       socket.emit('message_not_sent', err)
     }
+  })
+
+  socket.on('disconnect', async () => {
+    await updateUserIsOnline(userId, false)
   })
 })
 

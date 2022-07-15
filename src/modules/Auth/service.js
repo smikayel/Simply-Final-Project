@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { unauthorizedErrorCreator, internalServerErrorCreator } from '../../helpers/errors.js'
-import { getUser, updateUserbyId } from '../Users/db.js'
+import { getUser, updateUserbyId, updateUserIsOnline } from '../Users/db.js'
 import dotenv from 'dotenv'
 import { responseDataCreator } from '../../helpers/common.js'
 import { ACCESS_TOKEN_EXPIRE_TIME, REFRESH_TOKEN_EXPIRE_TIME } from '../constants.js'
@@ -21,6 +21,7 @@ export const handleLogin = async (req, res) => {
 
     const match = await bcrypt.compare(password, foundUser.password)
     if (match) {
+      await updateUserIsOnline(foundUser.id, true)
       // create JWTs
       const accessToken = jwt.sign(
         {
@@ -89,7 +90,7 @@ export const handleRefreshToken = async (req, res) => {
 
     const foundUser = await getUser({ refreshToken })
     if (!foundUser) return res.sendStatus(403) //Forbidden
-
+    await updateUserIsOnline(foundUser.id, true)
     const sendUserDataFront = { ...foundUser }
     delete sendUserDataFront.refreshToken
     // evaluate jwt
@@ -106,6 +107,7 @@ export const handleRefreshToken = async (req, res) => {
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: ACCESS_TOKEN_EXPIRE_TIME }
       )
+
       res.status(200).json(
         responseDataCreator({
           user: sendUserDataFront,
@@ -134,7 +136,6 @@ export const handleLogout = async (req, res) => {
     // Delete refreshToken in db
 
     await updateUserbyId(foundUser.id, { refreshToken: null })
-
     res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true })
     res.sendStatus(204)
   } catch (err) {
