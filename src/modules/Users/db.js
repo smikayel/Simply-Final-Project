@@ -56,7 +56,7 @@ export const getUserById = async (id) => {
       firstName: true,
       lastName: true,
       email: true,
-      roleId: true,
+      role: { select: { id: true, name: true } },
       createdAt: true,
       updatedAt: true,
     },
@@ -100,7 +100,7 @@ export const getUser = async (data) => {
     const avgMarks = await getAvgMarks(foundUser.id)
     foundUser['avgMark'] = avgMarks[0]?._avg?.mark
   }
-  if (foundUser.role.name === ROLE_ADMIN) {
+  if (foundUser?.role.name === ROLE_ADMIN) {
     const tmp = await getAllGroups()
     foundUser.userGroup = tmp.map((group) => {
       return { group }
@@ -136,7 +136,7 @@ export const createUsers = async (data) => {
           lastName,
           email,
           password,
-          roleId,
+          roleId: +roleId,
         },
       })
 

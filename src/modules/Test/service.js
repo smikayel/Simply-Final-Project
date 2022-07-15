@@ -43,7 +43,7 @@ export const handleGetTest = async (req, res) => {
         return +test.id === +testId
       })
       if (!match) {
-        res.status(402).json(forbiddenErrorCreator('You cant access this test'))
+        res.status(406).json(forbiddenErrorCreator('You cant access this test'))
         return
       }
     }

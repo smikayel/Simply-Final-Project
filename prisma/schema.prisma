@@ -31,7 +31,7 @@ model IpAddresses {
   id        Int       @id @default(autoincrement())
   ipAddress String    @db.VarChar(16)
   userId    Int
-  User      User      @relation(fields: [userId], references: [id])
+  User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
 }
@@ -82,7 +82,7 @@ model ScheduleSubject {
   time       DateTime @db.Time()
   scheduleId Int
   subjectId  Int
-  subject    Subject  @relation(fields: [subjectId], references: [id])
+  subject    Subject  @relation(fields: [subjectId], references: [id], onDelete: Cascade)
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 
   @@unique([scheduleId, time])
@@ -100,11 +100,11 @@ model Subject {
 model Test {
   id              Int               @id @default(autoincrement())
   name            String
-  subjectId       Int
+  subjectId       Int?
   start           DateTime          @db.Timestamp()
   length          Int
   highestScore    Int
-  subject         Subject           @relation(fields: [subjectId], references: [id])
+  subject         Subject?          @relation(fields: [subjectId], references: [id], onDelete: SetNull)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   questions       Question[]

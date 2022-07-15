@@ -61,16 +61,17 @@ export const handleCreateUsers = async (req, res) => {
     }
 
     const createdUser = await createUsers(req.body)
-    // users.map((user, i) => {
-    //   send_email(user.email, 'Welcome', 'createUser', {
-    //     firstName: user.firstName,
-    //     lastName: user.lastName,
-    //     password: nonHashedPw[i],
-    //     email: user.email,
-    //   })
-    // })
+    users.map((user, i) => {
+      send_email(user.email, 'Welcome', 'createUser', {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        password: nonHashedPw[i],
+        email: user.email,
+      })
+    })
     res.status(201).json(responseDataCreator(createdUser))
   } catch (err) {
+    console.log(err)
     let errorMessage = ''
     if (err.code === 'P2002') errorMessage = 'Email already exists'
     return res.status(400).json(badRequestErrorCreator(errorMessage))

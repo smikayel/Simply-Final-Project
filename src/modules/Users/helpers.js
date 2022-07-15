@@ -125,7 +125,6 @@ export const getQuestionMarks = async (
 
   // if student answered all questions correct give highest score to avoid round errors
   if (mark > highestScore || correctQuestionsCount === testQuestions.length) mark = highestScore
-  console.log(mark, correctQuestionsCount, testQuestions.length)
   mark = Math.round(mark * 1e2) / 1e2 // round to 2 decimal places
 
   return { mark, questionMarks }

@@ -35,8 +35,6 @@ export default {
             scheduleSubject: Joi.array().items(
               Joi.object({ subjectId: Joi.number(), time: Joi.string().required() })
             ),
-
-            // time: Joi.date().format("YYYY-MM-DD HH:mm:ss").required(),
           })
         )
         .required(),
