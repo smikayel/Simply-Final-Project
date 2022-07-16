@@ -63,6 +63,7 @@ export const getGroupUsers = async (id) => {
           lastName: true,
           email: true,
           roleId: true,
+          isOnline: true,
         },
       },
     },

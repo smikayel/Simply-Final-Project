@@ -379,6 +379,7 @@ export const getOnlineUsers = async () => {
     },
     select: {
       role: true,
+      id: true,
     },
   })
 
