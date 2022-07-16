@@ -24,11 +24,15 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
+  console.log("SOCKET CONNNECTED")
   let userId
-  socket.on('login', async (data) => {
+  socket.on('login', (data) => {
     userId = data.id
-    const onlineUsers = await handleGetOnlineUsers()
-    io.emit('online_users', onlineUsers)
+    setTimeout(async () => {
+      const onlineUsers = await handleGetOnlineUsers()
+      console.log(onlineUsers)
+      socket.broadcast.emit('online_users', onlineUsers)
+    }, 2000)
   })
 
   socket.on('join_chat', (data) => {
@@ -56,9 +60,16 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', async () => {
-    await updateUserbyId(userId, { isOnline: false })
-    const onlineUsers = await handleGetOnlineUsers()
-    socket.broadcast.emit('online_users', onlineUsers)
+    try {
+      await updateUserbyId(userId, { isOnline: false })
+      setTimeout(async () => {
+        const onlineUsers = await handleGetOnlineUsers()
+        console.log(onlineUsers)
+        socket.broadcast.emit('online_users', onlineUsers)
+      }, 2000)
+    } catch (err) {
+      console.log(err)
+    }
   })
 })
 

@@ -72,6 +72,25 @@ export const handleGetOnlineUsers = async () => {
   }
 }
 
+export const handleGetOnlineUsersRequest = async (req, res) => {
+  try {
+    const usersOnline = await getOnlineUsers()
+    const onlineUsersCount = usersOnline.reduce(
+      (acc, { role: { name } }) => {
+        acc[name] += 1
+        return acc
+      },
+      { Admin: 0, Student: 0, Teacher: 0 }
+    )
+    return res.status(200).json(responseDataCreator({ onlineUsersCount }))
+  } catch (err) {
+    console.log(err)
+    let errorMessage = ''
+    if (err.code === 'P2002') errorMessage = 'Forbiden request!'
+    return res.status(400).json(badRequestErrorCreator(errorMessage))
+  }
+}
+
 export const handleCreateUsers = async (req, res) => {
   try {
     const users = req.body

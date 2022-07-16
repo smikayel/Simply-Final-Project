@@ -14,7 +14,7 @@ import {
   handleGetUserById,
   handleForgotPassword,
   handleResetPassword,
-  handleGetOnlineUsers,
+  handleGetOnlineUsersRequest,
 } from './service.js'
 import validations from './validation.js'
 const {
@@ -36,7 +36,7 @@ router.get(
   validateSchema(getAllUsersSchema),
   handleGetAllUsers
 )
-router.get('/onlineUsers', verifyRoles([ROLE_ADMIN]), handleGetOnlineUsers)
+router.get('/onlineUsers', verifyRoles([ROLE_ADMIN]), handleGetOnlineUsersRequest)
 router.get('/topUsers', verifyRoles([ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT]), handleGetTopUsers)
 router.post('/', validateSchema(createUsersSchema), verifyRoles([ROLE_ADMIN]), handleCreateUsers)
 router.put(
