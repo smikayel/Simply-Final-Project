@@ -371,14 +371,3 @@ export const updateUserIpAddresses = async (userId, ipAddress) => {
   })
   return newIp
 }
-
-export const updateUserIsOnline = async (userId, isOnline) => {
-  await user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      isOnline,
-    },
-  })
-}

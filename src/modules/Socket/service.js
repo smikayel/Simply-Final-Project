@@ -9,7 +9,7 @@ import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
 import { checkUserInGroup } from './db.js'
 import { ROLE_ADMIN } from '../constants.js'
-import { updateUserIsOnline } from '../Users/db.js'
+import { updateUserbyId } from '../Users/db.js'
 
 const { createMessageSchema } = validations
 
@@ -53,7 +53,7 @@ io.on('connection', (socket) => {
   })
 
   socket.on('disconnect', async () => {
-    await updateUserIsOnline(userId, false)
+    await updateUserbyId(userId, { isOnline: false })
   })
 })
 
