@@ -98,7 +98,19 @@ export function createTests(testData) {
   })
 }
 
-export async function deleteTest(testData) {
+export async function deleteTest(testData, userId, isTeacher) {
+  if (isTeacher) {
+    const foundTest = await prisma.userTest.findUnique({
+      where: {
+        userId_testId: {
+          testId: testData.id,
+          userId,
+        },
+      },
+    })
+    if (!foundTest) throw new Error('You cant delete this test')
+  }
+
   const deletedTest = await prisma.Test.delete({
     where: {
       id: testData.id,
