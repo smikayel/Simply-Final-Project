@@ -9,7 +9,8 @@ import { badRequestErrorCreator } from '../../helpers/errors.js'
 import { responseDataCreator } from '../../helpers/common.js'
 import { checkUserInGroup } from './db.js'
 import { ROLE_ADMIN } from '../constants.js'
-import { updateUserIsOnline } from '../Users/db.js'
+import { getOnlineUsers, updateUserIsOnline } from '../Users/db.js'
+import { handleGetOnlineUsers } from '../Users/service.js'
 
 const { createMessageSchema } = validations
 
@@ -26,9 +27,11 @@ io.on('connection', (socket) => {
   let userId
   socket.on('login', async (data) => {
     userId = data.id
+    const onlineUsers = await handleGetOnlineUsers()
+    io.emit('online_users', onlineUsers)
   })
 
-  socket.on('join_chat', async (data) => {
+  socket.on('join_chat', (data) => {
     try {
       socket.join(`groupId:${data.groupId}`)
       socket.emit('join_status', 'Joined group successfully')
@@ -54,6 +57,8 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', async () => {
     await updateUserIsOnline(userId, false)
+    const onlineUsers = await handleGetOnlineUsers()
+    socket.broadcast.emit('online_users', onlineUsers)
   })
 })
 

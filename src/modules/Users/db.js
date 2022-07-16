@@ -382,3 +382,16 @@ export const updateUserIsOnline = async (userId, isOnline) => {
     },
   })
 }
+
+export const getOnlineUsers = async () => {
+  const onlineUsers = await user.findMany({
+    where: {
+      isOnline: true,
+    },
+    select: {
+      role: true,
+    },
+  })
+
+  return onlineUsers
+}

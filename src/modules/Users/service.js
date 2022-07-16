@@ -14,6 +14,7 @@ import {
   deleteUserByIds,
   getTopUsers,
   getUserById,
+  getOnlineUsers,
 } from './db.js'
 import { FRONT_BASE_URL, PASSWORD_RECOVERY_EXPIRE_TIME } from '../constants.js'
 import { validateTestResultReq, validateTestSubmit } from './helpers.js'
@@ -49,6 +50,25 @@ export const handleGetUserById = async (req, res) => {
   } catch (err) {
     console.log(err)
     return res.status(400).json(badRequestErrorCreator())
+  }
+}
+
+export const handleGetOnlineUsers = async () => {
+  try {
+    const usersOnline = await getOnlineUsers()
+    const onlineUsersCount = usersOnline.reduce(
+      (acc, { role: { name } }) => {
+        acc[name] += 1
+        return acc
+      },
+      { Admin: 0, Student: 0, Teacher: 0 }
+    )
+    return onlineUsersCount
+  } catch (err) {
+    console.log(err)
+    let errorMessage = ''
+    if (err.code === 'P2002') errorMessage = 'Forbiden request!'
+    return errorMessage
   }
 }
 
