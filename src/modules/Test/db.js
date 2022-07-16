@@ -24,6 +24,12 @@ export function createTests(testData) {
     const startDate = new Date(testData.start)
     let questions = testData.questions
 
+    if (
+      startDate <
+      new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000 - 60 * 1000)
+    )
+      throw new Error('Test can not start in the past')
+
     questions.forEach((question, i) => {
       let isMulti = false
       let count = 0
