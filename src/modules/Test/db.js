@@ -1,4 +1,5 @@
 import { prisma } from '../../services/Prisma.js'
+import { ROLE_STUDENT } from '../constants.js'
 import { changeStructureForAnswers } from './helpers.js'
 import includes from './includes.js'
 
@@ -95,6 +96,11 @@ export function createTests(testData) {
         where: {
           testId: newTest.id,
           isComplete: false,
+          user: {
+            role: {
+              name: ROLE_STUDENT,
+            },
+          },
         },
         data: { isComplete: true, mark: 0 },
       })
