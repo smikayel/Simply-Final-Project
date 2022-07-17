@@ -45,6 +45,7 @@ export const handleLogin = async (req, res) => {
         maxAge: 24 * 60 * 60 * 1000,
       })
 
+      foundUser.isOnline = true
       const { refreshToken: rT, password: pw, ...sendUserDataFront } = foundUser // eslint-disable-line no-unused-vars
 
       // Send authorization roles and access token to user

@@ -70,7 +70,7 @@ export const handleDeleteTest = async (req, res) => {
     const teacher = req.role.name === ROLE_TEACHER
 
     const deletedTest = await deleteTest(req.body, req.id, teacher)
-    res.status(204).json(responseDataCreator(deletedTest))
+    res.status(202).json(responseDataCreator(deletedTest))
   } catch (err) {
     return res.status(400).json(badRequestErrorCreator(err.message))
   }

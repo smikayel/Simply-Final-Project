@@ -36,7 +36,7 @@ export const verifyJWT = (req, res, next) => {
 
   const authHeader = req.headers.authorization || req.headers.Authorization
   if (!authHeader?.startsWith('Bearer '))
-    return res.json(unauthorizedErrorCreator('Access token expired!'))
+    return res.status(401).json(unauthorizedErrorCreator('Access token expired!'))
 
   const token = authHeader.split(' ')[1]
 
@@ -62,7 +62,7 @@ export const verifyRoles = (allowedRoles) => {
 
     const result = allowedRoles.some((allowedRole) => allowedRole === name)
 
-    if (!result) return res.json(unauthorizedErrorCreator('Role not allowed!'))
+    if (!result) return res.status(405).json(unauthorizedErrorCreator('Role not allowed!'))
 
     next()
   }

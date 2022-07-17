@@ -1,4 +1,4 @@
-export const ACCESS_TOKEN_EXPIRE_TIME = '30000s'
+export const ACCESS_TOKEN_EXPIRE_TIME = '1200s'
 export const REFRESH_TOKEN_EXPIRE_TIME = '1d'
 export const ROLE_STUDENT = 'Student'
 export const ROLE_TEACHER = 'Teacher'

@@ -25,10 +25,17 @@ const io = new Server(server, {
 
 io.on('connection', (socket) => {
   let userId
-  socket.on('login', async (data) => {
-    userId = data.id
+  let groupIds
+  socket.on('login', async ({ id, groupIds: groups }) => {
+    userId = id
+    groupIds = groups
     const onlineUsers = await handleGetOnlineUsers()
     socket.broadcast.emit('online_users', onlineUsers)
+    groupIds?.forEach((groupId) =>
+      socket.broadcast
+        .to(`groupId:${groupId}`)
+        .emit('online_group_users', { userId, loggedIn: true })
+    )
   })
 
   socket.on('join_chat', (data) => {
@@ -60,6 +67,11 @@ io.on('connection', (socket) => {
       userId && (await updateUserbyId(userId, { isOnline: false }))
       const onlineUsers = await handleGetOnlineUsers()
       socket.broadcast.emit('online_users', onlineUsers)
+      groupIds?.forEach((groupId) =>
+        socket.broadcast
+          .to(`groupId:${groupId}`)
+          .emit('online_group_users', { userId, loggedIn: false })
+      )
     } catch (err) {
       console.log(err)
     }
