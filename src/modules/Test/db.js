@@ -100,6 +100,9 @@ export function createTests(testData) {
       })
     }, startDate - dateInLocal + testData.length * 60 * 1000)
 
+    newTest.questions = newTest.questions.length
+    newTest.mark = -1
+
     return newTest
   })
 }

@@ -55,11 +55,12 @@ export const createSchedule = async (prisma, { scheduleSubject, ...data }) => {
     },
   })
   if (exists) {
-    await schedule.delete({
-      where: {
-        day_groupId: data,
-      },
+    exists.scheduleSubject.forEach((elem, i) => {
+      elem.subjectId = scheduleSubject[i].subjectId
+      elem.time = scheduleSubject[i].time
     })
+    const newSchedule = await updateSchedule(exists)
+    return newSchedule
   }
   const schedules = await schedule.create({
     data: {
@@ -101,19 +102,16 @@ export const updateSchedule = async ({ id, day, groupId, scheduleSubject }) => {
         },
       })
       for (const { time, subjectId, id: schSubId } of scheduleSubject) {
-        await prisma.scheduleSubject.update({
+        const schSubject = await prisma.scheduleSubject.update({
           data: {
             time: new Date(time).toISOString(),
             subjectId,
           },
           where: {
             id: schSubId,
-            // scheduleId_time: {
-            //   scheduleId: id,
-            //   time: new Date(oldTime).toISOString(),
-            // },
           },
         })
+        schedules.scheduleSubject = schSubject
       }
       return schedules
     })

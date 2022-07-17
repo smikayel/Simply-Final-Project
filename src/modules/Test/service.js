@@ -2,7 +2,7 @@ import { responseDataCreator } from '../../helpers/common.js'
 import { badRequestErrorCreator, forbiddenErrorCreator } from '../../helpers/errors.js'
 import { createTests, getTest, deleteTest, getAllTests, getAllUserTests } from './db.js'
 import { getUserTests, getMarks } from '../Users/db.js'
-import { ROLE_ADMIN, ROLE_STUDENT, ROLE_TEACHER } from '../constants.js'
+import { ROLE_ADMIN, ROLE_TEACHER } from '../constants.js'
 
 export const handleGetAllTests = async (req, res) => {
   try {
@@ -67,8 +67,6 @@ export const handleCreateTest = async (req, res) => {
 
 export const handleDeleteTest = async (req, res) => {
   try {
-    if (req.role.name === ROLE_STUDENT) return res.setStatus(405)
-
     const teacher = req.role.name === ROLE_TEACHER
 
     const deletedTest = await deleteTest(req.body, req.id, teacher)

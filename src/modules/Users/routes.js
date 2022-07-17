@@ -443,3 +443,20 @@ export { router as usersRoutes }
  *      '400':
  *        description: Bad request
  */
+
+/**
+ * @swagger
+ * /api/v1/users/onlineUsers:
+ *    get:
+ *     description: Use to online users count divided by roles. Only admin
+ *     tags: [user]
+ *     consumes:
+ *      - application/json
+ *     security:
+ *      - bearerAuth: []
+ *     responses:
+ *      '200':
+ *        description: Successfully get online users
+ *      '400':
+ *        description: Bad request
+ */
