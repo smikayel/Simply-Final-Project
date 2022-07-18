@@ -27,7 +27,3 @@ app.use((err, req, res, next) => {
 server.listen(PORT, function () {
   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
 })
-
-// app.listen(PORT, function () {
-//   console.log(`\n🚀 Server ready at: http://localhost:${this.address().port}\n`)
-// })

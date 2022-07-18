@@ -40,7 +40,6 @@ export const handleCreateSchedule = async (req, res) => {
     const schedules = await createSchedules(data)
     res.status(201).json(responseDataCreator(schedules))
   } catch (err) {
-    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

@@ -59,10 +59,11 @@ export const getUserById = async (id) => {
       role: { select: { id: true, name: true } },
       createdAt: true,
       updatedAt: true,
+      userGroup: { select: { group: { select: { name: true } } } },
     },
   })
   const avgMark = await getAvgMarks(+id)
-  userProfile.avgMark = avgMark[0]?._avg?.mark || 0
+  userProfile.avgMark = avgMark[0]?._avg?.mark || -1
 
   return userProfile
 }

@@ -82,9 +82,11 @@ export const handleGetAllTestsForUser = async (req, res) => {
     if (take !== undefined) take = +take
     if (skip !== undefined) skip = +skip
     if (subjectId !== undefined) subjectId = +subjectId
-    const userTests = await getAllUserTests(req.id, isComplete, take, skip, subjectId)
+    const userId = req.role.name === ROLE_ADMIN ? undefined : req.id
+    const userTests = await getAllUserTests(userId, isComplete, take, skip, subjectId)
     res.status(200).json(responseDataCreator(userTests))
   } catch (err) {
+    console.log(err)
     return res.status(400).json(badRequestErrorCreator(err.message))
   }
 }

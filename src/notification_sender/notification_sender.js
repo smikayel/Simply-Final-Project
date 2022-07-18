@@ -41,8 +41,9 @@ export const send_email = async (mail_to, subject, template, msgData) => {
   transporter.sendMail(mailOptions, (err) => {
     if (err) {
       console.log(err)
-      return console.log(`Error with email ${mail_to}`)
+      console.log(`Error with email ${mail_to}`)
+      return
     }
-    return console.log(`Notification sended to ${mail_to}`)
+    console.log(`Notification sended to ${mail_to}`)
   })
 }

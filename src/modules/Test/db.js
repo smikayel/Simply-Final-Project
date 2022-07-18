@@ -75,7 +75,14 @@ export function createTests(testData) {
       data: { groupId: +testData.group, testId: newTest.id },
     })
     const groupUsers = await prisma.userGroup.findMany({
-      where: { groupId: +testData.group },
+      where: {
+        groupId: +testData.group,
+        user: {
+          role: {
+            name: ROLE_STUDENT,
+          },
+        },
+      },
     })
     const groupUsersIds = groupUsers.map((userGroupElement) => {
       if (testData.userId !== userGroupElement.userId)
@@ -145,6 +152,7 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
         subjectId,
       },
     },
+    distinct: ['testId'],
     include: {
       test: { include: { questions: true } },
     },
@@ -157,7 +165,7 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
     },
   })
 
-  const userTestsCount = await prisma.UserTest.aggregate({
+  const userTestsCount = await prisma.UserTest.findMany({
     where: {
       userId,
       isComplete: isCompleteVal,
@@ -165,15 +173,15 @@ export const getAllUserTests = async (userId, isCompleteVal, take, skip, subject
         subjectId,
       },
     },
-    _count: true,
+    distinct: ['testId'],
   })
 
   const allTests = userTests.map((userTest) => {
     const test = userTest.test
-    test.mark = userTest.mark
+    test.mark = userId ? userTest.mark : -1
     test.isComplete = userTest.isComplete
     test.questions = test.questions.length
     return test
   })
-  return { allTests, count: userTestsCount }
+  return { allTests, count: { _count: userTestsCount.length } }
 }

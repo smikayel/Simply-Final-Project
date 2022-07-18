@@ -56,7 +56,7 @@ router.get('/refresh', handleRefreshToken)
  * @swagger
  * /api/v1/auth/logout:
  *    get:
- *     description: Use to logout user. Will delete all cookies and clear refresh token from db
+ *     description: Use to logout user. Will clear refresh token from db
  *     tags: [auth]
  *     consumes:
  *      - application/json
