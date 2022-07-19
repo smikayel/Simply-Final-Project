@@ -94,6 +94,7 @@ export const handleRefreshToken = async (req, res) => {
     await updateUserbyId(foundUser.id, { isOnline: true })
     const sendUserDataFront = { ...foundUser }
     delete sendUserDataFront.refreshToken
+    delete sendUserDataFront.password
     // evaluate jwt
     jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
       if (err || foundUser.email !== decoded.email) return res.sendStatus(403)

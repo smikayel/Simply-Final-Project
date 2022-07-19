@@ -60,12 +60,6 @@ router.get('/refresh', handleRefreshToken)
  *     tags: [auth]
  *     consumes:
  *      - application/json
- *     parameters:
- *      - in: cookie
- *        name: jwt
- *        schema:
- *         type: string
- *         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJpZCI6NCwiZW1haWwiOiJhQGdtYWlsLmNvbSIsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJTdHVkZW50In19LCJpYXQiOjE2NTYxNzM5ODUsImV4cCI6MTY1NjE3NDI4NX0.hOnGzInMr_tJV4rwo75g0cgYgPAQSz4wiVaAU7Fmor4
  *     responses:
  *      '204':
  *        description: Successfully logout user
@@ -77,13 +71,6 @@ router.get('/refresh', handleRefreshToken)
  *    get:
  *     description: Use to get new access token.
  *     tags: [auth]
- *
- *     parameters:
- *      - in: cookie
- *        name: jwt
- *        schema:
- *         type: string
- *         example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJpZCI6NCwiZW1haWwiOiJhQGdtYWlsLmNvbSIsInJvbGUiOnsiaWQiOjMsIm5hbWUiOiJTdHVkZW50In19LCJpYXQiOjE2NTYxNzM5ODUsImV4cCI6MTY1NjE3NDI4NX0.hOnGzInMr_tJV4rwo75g0cgYgPAQSz4wiVaAU7Fmor4
  *     responses:
  *      '200':
  *        description: Successfully send new access token to user
